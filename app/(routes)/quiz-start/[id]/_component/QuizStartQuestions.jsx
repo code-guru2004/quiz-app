@@ -39,53 +39,45 @@ function QuizStartQuestions({ timeLeft,setTimeLeft }) {
     const isCorrect =
       prefixes[selectedOption] === quizQuestions[currQuizIndex]?.correctAnswer;
   
-    if (isCorrect) {
-      setScore((prev) => prev + 1);
-    }
-  
     const isLastQuestion = currQuizIndex === quizQuestions.length - 1;
+    const updatedScore = score + (isCorrect ? 1 : 0);
   
-    setTimeout(async () => {
-      if (!isLastQuestion) {
-        setCurrQuizIndex((prev) => prev + 1);
-        setSelectedOption(null);
-      } else {
-        // Wait a moment for score to be updated correctly
-        setTimeout(async () => {
-          const finalScore =
-            isCorrect && score === 0 ? 1 : score + (isCorrect ? 0 : 0); // rely on useState's already updated score
+    if (!isLastQuestion) {
+      if (isCorrect) setScore(updatedScore); // update score for next round
+      setCurrQuizIndex((prev) => prev + 1);
+      setSelectedOption(null);
+    } else {
+      setQuizCompleted(true);
+      setScore(updatedScore); // ensure displayed score is correct
+      console.log("Final score:", updatedScore);
   
-          setQuizCompleted(true);
-          console.log("Final score:", finalScore);
+      try {
+        const resp = await axios.post("/api/submit-quiz", {
+          quizId: quizToStartObject.selectQuizToStart._id,
+          email: email,
+          score: updatedScore,
+        });
   
-          try {
-            const resp = await axios.post("/api/submit-quiz", {
-              quizId: quizToStartObject.selectQuizToStart._id,
-              email: email,
-              score: finalScore,
-            });
-  
-            if (resp?.data.success) {
-              localStorage.setItem(
-                quizToStartObject.selectQuizToStart._id,
-                "1"
-              );
-              toast.success(resp?.data.message, {
-                icon: "👏",
-              });
-            } else {
-              toast.error(resp?.data.message, {
-                icon: "😕",
-              });
-            }
-          } catch (err) {
-            console.error("Error submitting quiz:", err);
-            toast.error("Submission failed!");
-          }
-        }, 300); // allow score to update
+        if (resp?.data.success) {
+          localStorage.setItem(
+            quizToStartObject.selectQuizToStart._id,
+            "1"
+          );
+          toast.success(resp?.data.message, {
+            icon: "👏",
+          });
+        } else {
+          toast.error(resp?.data.message, {
+            icon: "😕",
+          });
+        }
+      } catch (err) {
+        console.error("Error submitting quiz:", err);
+        toast.error("Submission failed!");
       }
-    }, 300);
+    }
   };
+  
   
   // const handleSubmit = () => {
   //   if (currQuizIndex === quizQuestions.length - 1 || timeLeft===0) {
