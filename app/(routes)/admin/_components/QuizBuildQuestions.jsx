@@ -162,7 +162,7 @@ function QuizBuildQuestions({quizQuestions,setQuizQuestions}) {
     <div className="w-full p-3  mt-3 flex justify-between border border-green-700 rounded-md">
       <div className="flex flex-col w-full gap-3">
         <div className="flex gap-2 items-center">
-          <div className="bg-green-700 px-4 py-2 rounded-md text-white">2</div>
+          <div className="bg-green-700 px-4 py-2 rounded-md text-white">4</div>
           <span className="font-bold">Quiz questions</span>
         </div>
         {quizQuestions.map((question, idx) => (

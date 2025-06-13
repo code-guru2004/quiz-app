@@ -6,8 +6,8 @@ export async function POST(request) {
   await dbConnect();
 
   try {
-    const { quizTitle, quizIcon, quizQuestions } = await request.json();
-    console.log(quizTitle, quizIcon, quizQuestions);
+    const { quizTitle, quizIcon, quizQuestions,quizDescription,quizTime } = await request.json();
+    console.log(quizTitle, quizIcon, quizQuestions,quizDescription,quizTime);
     
     // Optional: Add basic validation
     if (!quizTitle || !Array.isArray(quizQuestions) || quizQuestions.length === 0) {
@@ -20,7 +20,7 @@ export async function POST(request) {
       );
     }
 
-    await Quiz.create({ quizTitle, quizIcon, quizQuestions });
+    await Quiz.create({ quizTitle, quizIcon, quizQuestions,quizDescription,quizTime });
 
     return NextResponse.json(
       {

@@ -3,6 +3,7 @@ import React from "react";
 import QuizCard from "./QuizCard";
 import Placeholder from "./Placeholder";
 import useGlobalContextProvider from "@/app/_context/ContextApi";
+import Card from "./QuizCard1";
 
 function QuizArea() {
     const { allQuiz } = useGlobalContextProvider();
@@ -29,10 +30,11 @@ function QuizArea() {
             {
               allQuiz.map((quiz,idx)=>(
                 <div key={idx}>
-                  <QuizCard quiz={quiz}/>
+                  <Card quiz={quiz}/>
                 </div>
               ))
             }
+            
           </div>
         </>
       )}

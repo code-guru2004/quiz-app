@@ -13,7 +13,7 @@ function QuizStart({ params }) {
   const { allQuiz, quizToStartObject } = useGlobalContextProvider();
   const { selectQuizToStart, setSelectQuizToStart } = quizToStartObject;
 
-  const [timeLeft, setTimeLeft] = useState(3600);
+  const [timeLeft, setTimeLeft] = useState((quizToStartObject?.selectQuizToStart?.quizTime)*60);
   const [quizCompleted, setQuizCompleted] = useState(false);
 
   useEffect(() => {
@@ -30,7 +30,8 @@ function QuizStart({ params }) {
       route.push("/dashboard");
     }
   }, []);
- 
+  //console.log("quizToStartObject",quizToStartObject.selectQuizToStart.quizTime);
+  
   return (
     <div className="flex flex-col px-24 mt-[35px]">
       {selectQuizToStart === null ? (

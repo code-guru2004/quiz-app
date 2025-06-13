@@ -57,6 +57,7 @@ function QuizStartQuestions({ timeLeft,setTimeLeft }) {
           score:score+1
         })
         if(resp?.data.success){
+          localStorage.setItem(quizToStartObject.selectQuizToStart._id,'1');
           toast.success(resp?.data.message,{
             icon: '👏',
           })

@@ -8,6 +8,8 @@ function QuizCard({quiz}) {
 
   const { _id,quizTitle,icon,quizQuestions }=quiz;
   const totalQuestions = quizQuestions.length;
+  console.log(quiz);
+  
 
   return (
     <div onClick={()=>{

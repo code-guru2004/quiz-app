@@ -42,6 +42,15 @@ const quizSchema = new mongoose.Schema({
   quizIcon: {
     type: Number, // or String depending on your use case
   },
+  quizDescription:{
+    type : String,
+    required: true
+  },
+  quizTime:{
+    type: Number, 
+    required: true,
+    default: 10, // default 10 Minutes 
+  },
   quizQuestions: {
     type: [quizQuestionSchema],
     required: true,

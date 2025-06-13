@@ -2,6 +2,8 @@ import { ICONS } from "@/app/Icon";
 import React from "react";
 
 function QuizHeader({selectQuizToStart,timer}) {
+  //console.log(timer);
+  
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
     const secs = seconds % 60;
