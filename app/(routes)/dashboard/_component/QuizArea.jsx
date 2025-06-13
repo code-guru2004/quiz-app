@@ -14,7 +14,7 @@ function QuizArea() {
         <Placeholder />
       ) : (
         <>
-          <h2 className="px-9 text-2xl font-bold">My Quizs</h2>
+          <h2 className="px-9 text-2xl font-bold mb-16">My Quizs</h2>
           <div className="flex flex-wrap gap-2 items-center justify-center">
             {/* <QuizCard />
             <QuizCard />
