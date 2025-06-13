@@ -50,7 +50,7 @@ const Card = ({ quiz }) => {
             {/* Footer with button and metadata */}
             <div className="p-6 pt-0 flex items-center justify-between">
                 <Link
-                    href={`/quiz-start/${_id}`}
+                    href={!isSubmit?`/quiz-start/${_id}`:`/quiz-start/${_id}/result`}
                     className="rounded-lg bg-green-600 px-6 py-3 text-xs font-bold uppercase text-white shadow-md transition-all hover:shadow-lg"
                 >
                     {isSubmit?"Leaderboard〽️":"Attend"}
