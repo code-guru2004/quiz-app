@@ -4,76 +4,59 @@ import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import React, {  useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
-
-function QuizStartQuestions({ timeLeft,setTimeLeft }) {
+function QuizStartQuestions({ timeLeft, setTimeLeft }) {
   const params = useParams();
   const quizId = params.id;
   const prefixes = ["A", "B", "C", "D", "E"];
-  const { quizToStartObject,email } = useGlobalContextProvider();
+  const { quizToStartObject, email } = useGlobalContextProvider();
   const { selectQuizToStart } = quizToStartObject;
   const { quizQuestions } = selectQuizToStart;
+
   const [currQuizIndex, setCurrQuizIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
-  const [indexOfQuizSelected, setIndexOfQuizSelected] = useState(null);
-  const [isEnded, setIsEnded] = useState(false);
   const [score, setScore] = useState(0);
-  //const [timeLeft, setTimeLeft] = useState(60);
-
   const [quizCompleted, setQuizCompleted] = useState(false);
+  const [showSidebar, setShowSidebar] = useState(false); // For mobile
 
-  let res = 0;
   useEffect(() => {
     if (timeLeft > 0 && !quizCompleted) {
       const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
       return () => clearTimeout(timer);
     } else if (timeLeft === 0 && !quizCompleted) {
-      console.log("Completed");
-      toast.success('Successfully completed!',{
-        icon: '👏',
-      })
+      toast.success("Successfully completed!", { icon: "👏" });
       setQuizCompleted(true);
-      console.log(score);
     }
   }, [timeLeft, quizCompleted]);
 
   const handleSubmit = async () => {
     const isCorrect =
       prefixes[selectedOption] === quizQuestions[currQuizIndex]?.correctAnswer;
-  
-    const isLastQuestion = currQuizIndex === quizQuestions.length - 1;
+
     const updatedScore = score + (isCorrect ? 1 : 0);
-  
+    const isLastQuestion = currQuizIndex === quizQuestions.length - 1;
+
     if (!isLastQuestion) {
-      if (isCorrect) setScore(updatedScore); // update score for next round
+      if (isCorrect) setScore(updatedScore);
       setCurrQuizIndex((prev) => prev + 1);
       setSelectedOption(null);
     } else {
       setQuizCompleted(true);
-      setScore(updatedScore); // ensure displayed score is correct
-      console.log("Final score:", updatedScore);
-  
+      setScore(updatedScore);
+
       try {
         const resp = await axios.post("/api/submit-quiz", {
           quizId: quizToStartObject.selectQuizToStart._id,
           email: email,
           score: updatedScore,
         });
-  
+
         if (resp?.data.success) {
-          // localStorage.setItem(
-          //   quizToStartObject.selectQuizToStart._id,
-          //   "1"
-          // );
-          toast.success(resp?.data.message, {
-            icon: "👏",
-          });
+          toast.success(resp?.data.message, { icon: "👏" });
         } else {
-          toast.error(resp?.data.message, {
-            icon: "😕",
-          });
+          toast.error(resp?.data.message, { icon: "😕" });
         }
       } catch (err) {
         console.error("Error submitting quiz:", err);
@@ -81,123 +64,175 @@ function QuizStartQuestions({ timeLeft,setTimeLeft }) {
       }
     }
   };
-  
-  
-  // const handleSubmit = () => {
-  //   if (currQuizIndex === quizQuestions.length - 1 || timeLeft===0) {
-  //       console.log("Quiz ended");
-  //       console.log(score);
-
-  //     return;
-  //   }
-  //   if(selectedOption===quizQuestions[currQuizIndex]?.correctAnswer){
-  //       console.log("Currect Answer");
-  //       setScore(score+1)
-  //   }else{
-  //       console.log("Wrong");
-
-  //   }
-  //   setCurrQuizIndex(currQuizIndex + 1);
-  //   setSelectedOption(null)
-  //   setTimeLeft(300);
-  // };
 
   const selectChoiceFunction = (idx) => {
-    //console.log(idx);
     setSelectedOption(idx);
   };
 
-  function emojiIconScore(){
-    const emojis=[
-      'confused-emoji.png',
-      'happy-emoji.png',
-      'very-happy-emoji.png'
-    ]
-
-    let result = (score / quizQuestions.length) * 100;
-
-    if(result < 25){
-      return emojis[0];
-    }
-    if (result < 70) {
-      return emojis[1]
-    }
-    return emojis[2]
+  function emojiIconScore() {
+    const emojis = [
+      "confused-emoji.png",
+      "happy-emoji.png",
+      "very-happy-emoji.png",
+    ];
+    const result = (score / quizQuestions.length) * 100;
+    if (result < 25) return emojis[0];
+    if (result < 70) return emojis[1];
+    return emojis[2];
   }
+
   return (
-    <div className="w-full flex items-center justify-center">
-      {quizCompleted ? (
-        <div className="mt-3 flex flex-col items-center gap-8">
-          <Image
-            src={`/${emojiIconScore()}`}
-            alt="happy"
-            width={150}
-            height={150}
-          />
-          <div className="flex flex-col items-center gap-1">
-            <h2>You have completed quiz</h2>
-            <h1 className="text-base font-bold">Your Score: {score}</h1>
-          </div>
-          <div className="flex gap-2">
-            <Image
-              src={"/correct-answer.png"}
-              alt="correct"
-              width={24}
-              height={20}
-            />
-            <h1 className="text-green-600 font-bold">Correct answer: {score}</h1>
-          </div>
-          <div className="flex gap-2">
-            <Image
-              src={"/incorrect-answer.png"}
-              alt="correct"
-              width={24}
-              height={20}
-            />
-            <h1 className="text-red-600 font-bold">Incorrect answer: {quizQuestions.length - score}</h1>
-          </div>
-          <div>
-            <Link href={`/quiz-start/${quizId}/result`} className="bg-green-700 text-white rounded-md px-5 py-3 mt-10">View Result</Link>
-          </div>
-        </div>
-      ) : (
+    <div className="w-full my-10 flex items-start justify-center md:flex-row flex-col ">
+
+      {/* Sidebar for question bookmarks */}
+      {!quizCompleted && (
         <>
-          <div className="rounded-sm w-9/12 m-9">
-            {/* question part */}
-            <div className="flex justify-start items-center gap-2">
-              <div className="bg-green-700 flex justify-center items-center rounded-md w-11 h-11 text-white">
-                {currQuizIndex + 1}
-              </div>
-              <p>{quizQuestions[currQuizIndex]?.mainQuestion}</p>
+          {/* Sidebar container */}
+          <div
+            className={`md:w-64 w-full md:static md:h-auto md:translate-x-0 bg-green-50 border-r p-4 z-40 overflow-y-auto transition-transform duration-300 ease-in-out
+    ${showSidebar ? "fixed top-0 left-0 h-full translate-x-0" : "fixed top-0 left-0 h-full -translate-x-full"} md:relative`}
+          >
+            {/* Close button for mobile */}
+            <div className="flex justify-end md:hidden mb-4">
+              <button
+                onClick={() => setShowSidebar(false)}
+                className="text-green-700 text-lg font-bold"
+              >
+                ✕
+              </button>
             </div>
-            {/* options */}
-            <div className="mt-7 flex flex-col gap-2">
-              {quizQuestions[currQuizIndex]?.choices.map((option, idx) => (
-                <div
+
+            <h2 className="text-green-900 font-semibold text-lg mb-2">Questions</h2>
+            <div className="grid grid-cols-4 gap-2">
+              {quizQuestions.map((_, idx) => (
+                <button
                   key={idx}
-                  className={`p-3 ml-11 w-10/12 border border-green-700 rounded-md bg-green-50 hover:bg-green-200 transition-all cursor-pointer hover:border-l-green-700 hover:border-l-8 hover:text-green-800  ${
-                    selectedOption === idx ? "bg-green-400" : "bg-green-50"
-                  }`}
-                  onClick={() => selectChoiceFunction(idx)}
+                  onClick={() => {
+                    setCurrQuizIndex(idx);
+                    setShowSidebar(false); // close on mobile
+                  }}
+                  className={`px-3 py-2  text-sm rounded-md ${currQuizIndex === idx
+                      ? "bg-green-700 text-white"
+                      : "bg-green-100 text-green-800 hover:bg-green-200"
+                    }`}
                 >
-                  {option}
-                </div>
+                  Q{idx + 1}
+                </button>
               ))}
             </div>
-            <div className="flex justify-end mt-14">
-              <button
-                className="p-2 px-5 text-[15px] text-white rounded-md bg-green-700 mr-[70px] cursor-pointer transition-all hover:bg-green-800"
-                onClick={handleSubmit}
-                disabled={quizCompleted}
-              >
-                Submit
-              </button> 
-            </div>
           </div>
+
+          {/* Backdrop for mobile */}
+          {showSidebar && (
+            <div
+              onClick={() => setShowSidebar(false)}
+              className="fixed inset-0 bg-black bg-opacity-40 z-30 md:hidden"
+            />
+          )}
         </>
       )}
+
+      {/* Hamburger button */}
+      {!quizCompleted && (
+        <button
+          className="md:hidden fixed top-4 left-4 z-50 bg-green-700 text-white p-2 rounded-md"
+          onClick={() => setShowSidebar(true)}
+        >
+          ☰
+        </button>
+      )}
+
+      {/* Main quiz area */}
+      <div className="flex-grow flex justify-center items-center px-4 ">
+        <div className="w-full max-w-2xl ">
+          {quizCompleted ? (
+            <div className="mt-3 flex flex-col items-center justify-center gap-8 text-center">
+              <Image
+                src={`/${emojiIconScore()}`}
+                alt="emoji"
+                width={150}
+                height={150}
+              />
+              <div className="flex flex-col items-center gap-1">
+                <h2 className="text-lg font-medium">You have completed the quiz</h2>
+                <h1 className="text-base font-bold">Your Score: {score}</h1>
+              </div>
+              <div className="flex gap-2">
+                <Image
+                  src={"/correct-answer.png"}
+                  alt="correct"
+                  width={24}
+                  height={20}
+                />
+                <h1 className="text-green-600 font-bold">
+                  Correct: {score}
+                </h1>
+              </div>
+              <div className="flex gap-2">
+                <Image
+                  src={"/incorrect-answer.png"}
+                  alt="incorrect"
+                  width={24}
+                  height={20}
+                />
+                <h1 className="text-red-600 font-bold">
+                  Incorrect: {quizQuestions.length - score}
+                </h1>
+              </div>
+              <Link
+                href={`/quiz-start/${quizId}/result`}
+                className="bg-green-700 text-white rounded-md px-5 py-3 mt-10"
+              >
+                View Result
+              </Link>
+            </div>
+          ) : (
+            <>
+              {/* make it at center */}
+              <div className="mb-4 text-sm md:text-lg font-semibold text-green-900 whitespace-pre-line break-words w-full">
+                {currQuizIndex + 1}.{" "}
+                {quizQuestions[currQuizIndex]?.mainQuestion}
+              </div>
+
+
+              <div className="space-y-3 px-4 flex flex-col items-center justify-center">
+                {quizQuestions[currQuizIndex]?.choices.map((choice, idx) => (
+                  <div
+                    key={idx}
+                    onClick={() => selectChoiceFunction(idx)}
+                    className={`p-4 w-screen lg:w-full border rounded-lg cursor-pointer transition-all 
+      ${selectedOption === idx
+                        ? "bg-green-600 text-white border-green-700"
+                        : "bg-white border-green-300 hover:bg-green-100"
+                      }`}
+                  >
+                    <span className="font-bold mr-2">{prefixes[idx]}.</span>
+                    <span className="whitespace-pre-line break-words w-full block">
+                      {choice}
+                    </span>
+                  </div>
+                ))}
+
+              </div>
+
+              <div className="mt-6 flex justify-end">
+                <button
+                  onClick={handleSubmit}
+                  disabled={quizCompleted}
+                  className="px-6 py-2 bg-green-700 text-white rounded-md hover:bg-green-800 transition-all"
+                >
+                  {currQuizIndex === quizQuestions.length - 1
+                    ? "Submit"
+                    : "Next"}
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
     </div>
   );
+
 }
 
 export default QuizStartQuestions;

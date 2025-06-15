@@ -33,7 +33,7 @@ function QuizStart({ params }) {
   //console.log("quizToStartObject",quizToStartObject.selectQuizToStart.quizTime);
   
   return (
-    <div className="flex flex-col px-24 mt-[35px]">
+    <div className="flex flex-col px-4 md:px-24 mt-[35px]">
       {selectQuizToStart === null ? (
         <div className="h-svh flex flex-col gap-2 items-center justify-center">
           <Image src={"/errorIcon.png"} alt="image" width={180} height={180} />
@@ -45,7 +45,7 @@ function QuizStart({ params }) {
           <div>
             <QuizHeader selectQuizToStart={selectQuizToStart} timer={timeLeft}/>
           </div>
-          <div className="mt-10 flex items-center justify-center">
+          <div className="mt-10 w-full flex items-center justify-center">
             <QuizStartQuestions timeLeft={timeLeft} setTimeLeft={setTimeLeft}/>
           </div>
         </>
