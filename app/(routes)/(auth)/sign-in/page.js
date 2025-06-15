@@ -1,30 +1,35 @@
 'use client';
+import useGlobalContextProvider from '@/app/_context/ContextApi';
+import { Loader } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 export default function LoginPage() {
+  const {setEmail} = useGlobalContextProvider();
   const router = useRouter();
-  const [email, setEmail] = useState('');
+  const [userEmail, setUserEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-
+  const [isLoading, setIsLoading] = useState(false)
   const handleSubmit = async (e) => {
+    setIsLoading(true)
     e.preventDefault();
-
     const res = await fetch('/api/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email:userEmail, password }),
     });
 
     const data = await res.json();
 
     if (res.ok && data.token) {
       localStorage.setItem('token', data.token);
+      setEmail(userEmail)
       router.push('/dashboard');
     } else {
       setError(data.message || 'Login failed');
     }
+    //setIsLoading(false)
   };
 
   return (
@@ -41,7 +46,7 @@ export default function LoginPage() {
             type="email"
             placeholder="Email"
             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => setUserEmail(e.target.value)}
             required
           />
           <input
@@ -53,9 +58,10 @@ export default function LoginPage() {
           />
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition text-center"
+            disabled={isLoading}
           >
-            Login
+            {isLoading ? ('Authernticating...') : ("Login")}
           </button>
         </form>
         <p className="mt-4 text-sm text-center text-gray-600">

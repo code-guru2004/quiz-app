@@ -1,9 +1,14 @@
 import React, { useState } from 'react'
+import toast from 'react-hot-toast';
 
 function QuizDescription({onDescriptionChange}) {
     const [description, setDescription] = useState('');
     function handleChange(text){
-        setDescription(text)
+        if(text.length<1000){
+            setDescription(text)
+        }else{
+            toast.error("Description must be within 1000 letters")
+        }
         onDescriptionChange(text);
     }
     return (

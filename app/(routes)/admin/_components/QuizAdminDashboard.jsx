@@ -21,6 +21,7 @@ function QuizAdminDashboard() {
             const filtered = allQuiz.filter((q, i) => q._id !== id);
             setAllQuiz(filtered);
             toast.success(response?.data.message);
+            setOpenMenuIndex(null)
             route.refresh()
         } catch (error) {
             toast.error(response?.data.message)

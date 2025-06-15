@@ -33,11 +33,7 @@ export default function Header({ email }) {
         {/* Desktop Menu */}
         <nav className="hidden md:flex space-x-6 text-sm text-gray-700">
           <NavItem href="#">About</NavItem>
-          <NavItem href="#">Careers</NavItem>
-          <NavItem href="#">History</NavItem>
-          <NavItem href="#">Services</NavItem>
-          <NavItem href="#">Projects</NavItem>
-          <NavItem href="#">Blog</NavItem>
+          <NavItem href="#">Quizes</NavItem>
         </nav>
 
         {/* Right-side buttons */}

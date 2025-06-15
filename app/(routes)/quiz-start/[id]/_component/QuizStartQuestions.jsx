@@ -2,11 +2,15 @@
 import useGlobalContextProvider from "@/app/_context/ContextApi";
 import axios from "axios";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import React, {  useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 
 function QuizStartQuestions({ timeLeft,setTimeLeft }) {
+  const params = useParams();
+  const quizId = params.id;
   const prefixes = ["A", "B", "C", "D", "E"];
   const { quizToStartObject,email } = useGlobalContextProvider();
   const { selectQuizToStart } = quizToStartObject;
@@ -59,10 +63,10 @@ function QuizStartQuestions({ timeLeft,setTimeLeft }) {
         });
   
         if (resp?.data.success) {
-          localStorage.setItem(
-            quizToStartObject.selectQuizToStart._id,
-            "1"
-          );
+          // localStorage.setItem(
+          //   quizToStartObject.selectQuizToStart._id,
+          //   "1"
+          // );
           toast.success(resp?.data.message, {
             icon: "👏",
           });
@@ -123,7 +127,7 @@ function QuizStartQuestions({ timeLeft,setTimeLeft }) {
   return (
     <div className="w-full flex items-center justify-center">
       {quizCompleted ? (
-        <div className="mt-3 flex flex-col items-center gap-4">
+        <div className="mt-3 flex flex-col items-center gap-8">
           <Image
             src={`/${emojiIconScore()}`}
             alt="happy"
@@ -151,6 +155,9 @@ function QuizStartQuestions({ timeLeft,setTimeLeft }) {
               height={20}
             />
             <h1 className="text-red-600 font-bold">Incorrect answer: {quizQuestions.length - score}</h1>
+          </div>
+          <div>
+            <Link href={`/quiz-start/${quizId}/result`} className="bg-green-700 text-white rounded-md px-5 py-3 mt-10">View Result</Link>
           </div>
         </div>
       ) : (

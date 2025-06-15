@@ -6,6 +6,7 @@ import Placeholder from './_component/Placeholder'
 import useGlobalContextProvider from '@/app/_context/ContextApi';
 import { useRouter } from 'next/navigation'
 import { jwtDecode } from 'jwt-decode'
+import Footer from './_component/Footer'
 
 
 function Dashboard() {
@@ -43,6 +44,7 @@ function Dashboard() {
     setSelectQuizToStart(null)
   }, []);
 
+
   // useEffect(() => {
   //   route.refresh();
   // }, [allQuiz])
@@ -50,10 +52,11 @@ function Dashboard() {
   return (
     <div className='h-screen w-full'>
       <Header email={email}/>
-      <div className=''>
+      <div className='pb-20'>
         <QuizArea />
 
       </div>
+      <Footer/>
     </div>
   )
 }

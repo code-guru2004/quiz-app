@@ -70,7 +70,7 @@ function QuizBuild() {
       quizQuestions,
       setQuizQuestions
     }
-    console.log(newQuiz);
+    //console.log(newQuiz);
     
   return (
     <div>
