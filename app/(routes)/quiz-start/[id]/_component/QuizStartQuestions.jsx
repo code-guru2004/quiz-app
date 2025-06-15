@@ -26,6 +26,7 @@ function QuizStartQuestions({ timeLeft, setTimeLeft }) {
       const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
       return () => clearTimeout(timer);
     } else if (timeLeft === 0 && !quizCompleted) {
+      handleSubmit();
       toast.success("Successfully completed!", { icon: "👏" });
       setQuizCompleted(true);
     }
@@ -180,10 +181,10 @@ function QuizStartQuestions({ timeLeft, setTimeLeft }) {
                 </h1>
               </div>
               <Link
-                href={`/quiz-start/${quizId}/result`}
+                href={`/quiz-start/${quizId}/leaderboard`}
                 className="bg-green-700 text-white rounded-md px-5 py-3 mt-10"
               >
-                View Result
+                View Leaderboard
               </Link>
             </div>
           ) : (
@@ -200,7 +201,7 @@ function QuizStartQuestions({ timeLeft, setTimeLeft }) {
                   <div
                     key={idx}
                     onClick={() => selectChoiceFunction(idx)}
-                    className={`p-4 w-screen lg:w-full border rounded-lg cursor-pointer transition-all 
+                    className={`p-4 w-screen lg:w-full border rounded-lg cursor-pointer transition-all flex
       ${selectedOption === idx
                         ? "bg-green-600 text-white border-green-700"
                         : "bg-white border-green-300 hover:bg-green-100"
@@ -208,7 +209,7 @@ function QuizStartQuestions({ timeLeft, setTimeLeft }) {
                   >
                     <span className="font-bold mr-2">{prefixes[idx]}.</span>
                     <span className="whitespace-pre-line break-words w-full block">
-                      {choice}
+                      {choice.slice(3)}
                     </span>
                   </div>
                 ))}
