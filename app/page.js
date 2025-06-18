@@ -136,7 +136,7 @@ export default function LandingPage() {
           <p className="text-xl opacity-90 mb-8">
             Join thousands of learners enhancing their knowledge with QuizMaster today!
           </p>
-          <Link href="/auth/signup" className="px-10 py-4 bg-white text-emerald-600 text-2xl font-bold rounded-full shadow-lg hover:bg-emerald-100 transform hover:scale-105 transition-all duration-300">
+          <Link href="/sign-up" className="px-10 py-4 bg-white text-emerald-600 text-2xl font-bold rounded-full shadow-lg hover:bg-emerald-100 transform hover:scale-105 transition-all duration-300">
             Sign Up for Free
           </Link>
         </div>
