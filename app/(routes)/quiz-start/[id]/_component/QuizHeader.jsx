@@ -10,7 +10,7 @@ function QuizHeader({selectQuizToStart,timer}) {
     return `${minutes}:${secs < 10 ? `0${secs}` : secs}`;
   };
   return (
-    <div className="flex justify-between">
+    <div className="flex justify-between max-w-screen mt-8 md:mt-1">
       {/* quiz name */}
       <div className="flex gap-2 justify-center">
         <div className="bg-gray-100 w-12 h-12 flex items-center justify-center p-2 rounded-sm border-1 border-green-200 hover:bg-green-100">
@@ -24,7 +24,7 @@ function QuizHeader({selectQuizToStart,timer}) {
       </div>
 
       {/* timer */}
-      <div className="flex gap-2 items-center justify-center bg-green-200 px-3 rounded-full ">
+      <div className="flex gap-2 items-center justify-center bg-green-200 px-4 rounded-full ">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           className="w-8 h-8 text-teal-600 animate-caret-blink"

@@ -150,6 +150,7 @@ const QuizAboutPage = () => {
                                 <p className="text-green-800 font-semibold mb-1">Before You Start:</p>
                                 <ul className="text-sm text-green-900 list-disc ml-5 space-y-1">
                                     <li>Ensure a stable internet connection.</li>
+                                    <li>It is advised to use <strong>desktop</strong> to atten quiz.</li>
                                     <li>Use a modern browser (Chrome, Firefox, Edge).</li>
                                     <li>Complete the quiz in one go without interruptions.</li>
                                     <li>Read each question carefully before answering.</li>

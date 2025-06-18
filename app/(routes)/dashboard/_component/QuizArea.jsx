@@ -27,7 +27,7 @@ function QuizArea() {
         <Placeholder />
       ) : (
         <>
-          <h2 className="px-9 text-2xl font-bold mb-16">My Quizs</h2>
+          <h2 className="px-10 lg:px-40 text-2xl font-bold mb-6 md:mb-16">All Quizs🤔</h2>
           <div className="flex flex-wrap gap-5 items-center justify-center">
             {
               allQuiz.map((quiz,idx)=>(

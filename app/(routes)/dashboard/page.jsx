@@ -54,7 +54,6 @@ function Dashboard() {
       <Header email={email}/>
       <div className='pb-20'>
         <QuizArea />
-
       </div>
       <Footer/>
     </div>
