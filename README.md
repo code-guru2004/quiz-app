@@ -41,7 +41,7 @@ Install my-project with npm
 
 ## Feedback
 
-If you have any feedback, please reach out to us at www.quizo.com/feedback
+If you have any feedback, please reach out to us at https://letterbox-beta.vercel.app/send-message/quizo
 
 
 ## Environment Variables
