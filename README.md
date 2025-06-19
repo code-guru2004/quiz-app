@@ -1,37 +1,66 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Getting Started
+![Logo](https://github.com/user-attachments/assets/e7378701-ce02-40b3-a3f9-e6037d2eb6b0)
 
-First, run the development server:
+
+# Project Title
+
+Quizo
+
+# Description
+Welcome to the ultimate quiz experience! Our application Quizo lets you attend quizzes across diverse categories. Easily view your score after each quiz and monitor your performance. Compete with others to climb the ranks and show off your expertise. Get ready to quiz, learn, and win!
+## Tech Stack
+
+**Client:** React, ContextApi, TailwindCSS
+
+**Server:** Node, Express
+
+
+## Demo
+
+www.quizo-eta.vercel.app
+## Installation
+
+Install my-project with npm
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+  npm install quiz-app
+  cd quiz-app
 ```
+    
+## License
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+## Authors
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- [@nayan](https://www.https://github.com/code-guru2004)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
+## Feedback
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+If you have any feedback, please reach out to us at www.quizo.com/feedback
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-"# quiz-app" 
+
+## Environment Variables
+
+To run this project, you will need to add the following environment variables to your .env or .evn.local file
+
+
+`ADMIN_USERNAME=`
+
+
+`HASHED_ADMIN_PASSWORD=`
+
+
+`MONGODB_URI=`
+
+
+`JWT_SECRET=`
+
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)
+
