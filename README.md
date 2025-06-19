@@ -36,7 +36,7 @@ Install my-project with npm
 
 ## Authors
 
-- [@nayan](https://www.https://github.com/code-guru2004)
+- [@nayan](https://github.com/code-guru2004)
 
 
 ## Feedback
