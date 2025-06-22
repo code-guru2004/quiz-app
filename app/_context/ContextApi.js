@@ -21,6 +21,7 @@ export function ContextProvider({ children }) {
   const [allQuiz, setAllQuiz] = useState([]);
   const [selectQuizToStart, setSelectQuizToStart] = useState(null);
   const [email, setEmail] = useState(null);
+  const [username, setUsername] = useState(null);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -40,6 +41,7 @@ export function ContextProvider({ children }) {
         try {
           const decoded = jwtDecode(token);
           setEmail(decoded.email);
+          setUsername(decoded.username);
         } catch (err) {
           localStorage.removeItem("token");
           route.push("/sign-in");
@@ -71,6 +73,8 @@ export function ContextProvider({ children }) {
         setAllQuiz,
         email,
         setEmail,
+        username,
+        setUsername,
         quizToStartObject: { selectQuizToStart, setSelectQuizToStart },
         // userObject: {user,setUser},
       }}

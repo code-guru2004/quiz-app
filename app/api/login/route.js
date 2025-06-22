@@ -11,13 +11,13 @@ export async function POST(req) {
 
   await dbConnect;
   const user = await User.findOne({ email });
-  //console.log("user",user);
+  console.log("user",user?.username);
   
   if (!user || !(await bcrypt.compare(password, user.password))) {
     return NextResponse.json({ message: 'Invalid credentials' }, { status: 401 });
   }
 
-  const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET, {
+  const token = jwt.sign({ email: user.email, username: user?.username }, process.env.JWT_SECRET, {
     expiresIn: '1h',
   });
 //console.log("token",token);

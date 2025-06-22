@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 
 export default function SignUpPage() {
   const router = useRouter();
-  const [form, setForm] = useState({ email: '', password: '', confirmPassword: '' });
+  const [form, setForm] = useState({username:'', email: '', password: '', confirmPassword: '' });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
@@ -24,7 +24,7 @@ export default function SignUpPage() {
     const res = await fetch('/api/signup', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: form.email, password: form.password }),
+      body: JSON.stringify({username:form.username, email: form.email, password: form.password }),
     });
 
     const data = await res.json();
@@ -44,6 +44,15 @@ export default function SignUpPage() {
         {error && <div className="bg-red-100 text-red-700 px-4 py-2 rounded mb-4">{error}</div>}
         {success && <div className="bg-green-100 text-green-700 px-4 py-2 rounded mb-4">{success}</div>}
         <form onSubmit={handleSubmit} className="space-y-4">
+        <input
+            type="username"
+            name="username"
+            placeholder="username"
+            value={form.username}
+            onChange={handleChange}
+            className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            required
+          />
           <input
             type="email"
             name="email"

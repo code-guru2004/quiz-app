@@ -9,6 +9,7 @@ import { jwtDecode } from 'jwt-decode'
 import Footer from './_component/Footer'
 
 
+
 function Dashboard() {
   const {email} = useGlobalContextProvider();
   const [loading, setLoading] = useState(true);
@@ -52,6 +53,7 @@ function Dashboard() {
   return (
     <div className='h-screen w-full'>
       <Header email={email}/>
+ 
       <div className='pb-20'>
         <QuizArea />
       </div>

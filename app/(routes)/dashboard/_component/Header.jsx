@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import useGlobalContextProvider from "@/app/_context/ContextApi";
 
 export default function Header({ email }) {
+  const {username} = useGlobalContextProvider()
   const [isOpen, setIsOpen] = useState(false);
 
   const handleLogout = () => {
@@ -40,10 +42,10 @@ export default function Header({ email }) {
         <div className="flex items-center gap-4">
           {email ? (
             <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-700 hidden sm:inline">👋 {email}</span>
+              <Link href={`/profile/${username}`} className="text-sm text-gray-700 hidden sm:inline hover:border-b-green-700 hover:border-b-2 transition-all">👋 {email}</Link>
               <button
                 onClick={handleLogout}
-                className="bg-red-500 text-white px-4 py-2 rounded-md text-sm hover:bg-red-600"
+                className="bg-red-500 text-white px-4 py-2 rounded-md text-sm hover:bg-red-600 hidden md:block"
               >
                 Logout
               </button>
@@ -82,11 +84,8 @@ export default function Header({ email }) {
       {isOpen && (
         <nav className="md:hidden bg-gray-50 p-4 space-y-2 rounded-md">
           <NavItem href="#">About</NavItem>
-          <NavItem href="#">Careers</NavItem>
-          <NavItem href="#">History</NavItem>
-          <NavItem href="#">Services</NavItem>
-          <NavItem href="#">Projects</NavItem>
-          <NavItem href="#">Blog</NavItem>
+          <NavItem href="#">Quiz</NavItem>
+          <NavItem href="#">Profile</NavItem>
 
           {!email ? (
             <>
@@ -106,7 +105,7 @@ export default function Header({ email }) {
           ) : (
             <button
               onClick={handleLogout}
-              className="block w-full text-center bg-red-500 text-white px-5 py-2.5 rounded-md shadow hover:bg-red-600"
+              className=" w-full text-center bg-red-500 text-white px-5 py-2.5 rounded-md shadow hover:bg-red-600 block md:hidden"
             >
               Logout
             </button>

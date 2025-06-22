@@ -24,6 +24,10 @@ const userQuizSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  username:{
+    type: String,
+    required: true
+  },
   score:{
     type:Number,
     default:0,

@@ -15,7 +15,7 @@ const LeaderboardPage = () => {
   const params = useParams();
   const quizId = params.id;
 
-  const { quizToStartObject, email } = useGlobalContextProvider();
+  const { quizToStartObject, email,username } = useGlobalContextProvider();
   const { selectQuizToStart } = quizToStartObject;
 
   const [allSubmissions, setAllSubmissions] = useState([]);
@@ -28,22 +28,32 @@ const LeaderboardPage = () => {
       if (!quizId) return;
       try {
         const res = await axios.post("/api/submissions", { quizId });
+        console.log(res.data.submissions);
+        
         const sorted = res.data.submissions
           .sort((a, b) => b.score - a.score)
           .map((sub, idx) => ({ ...sub, rank: idx + 1 }));
 
         setAllSubmissions(sorted);
+        // find my rank for profile page
+        const index = sorted.findIndex((s) => s.email === email);
+        if (index !== -1) {
+          setYourRankNo(index + 1);
+          console.log("Your rank:", index + 1);
+          const response = await axios.patch('/api/save-rank',{quizId,rank:index + 1,email});
+        }
+        // find me in leaderboard in top 10
         setTopTen(sorted.slice(0, 10));
-        const yourRankNo = sorted.find((s,idx)=>{
-          if(s.email === email){
-            setYourRankNo(idx+1)
-            console.log(idx);
+        const yourRankNoInTop_10 = sorted.find((s, idx) => {
+          if (s.email === email) {
+            setYourRankNo(idx + 1)
+            //console.log(idx);
           }
         });
-        console.log(yourRankNo);
-        
+        //console.log(yourRankNo);
+
         const yourRank = sorted.find((s) => s.email === email);
-        if (yourRank){ 
+        if (yourRank) {
           setUserRank(yourRank);
         }
         //console.log(yourRank);
@@ -65,7 +75,7 @@ const LeaderboardPage = () => {
   return (
     <div className="max-w-3xl mx-auto mt-2 p-4 ">
       <div className="relative">
-        <Link href={"/dashboard"} className="absolute -left-3 p-2 bg-green-200 rounded-full hover:bg-green-300 transition-all"><ArrowLeft/></Link>
+        <Link href={"/dashboard"} className="absolute -left-3 p-2 bg-green-200 rounded-full hover:bg-green-300 transition-all"><ArrowLeft /></Link>
         <h1 className="text-3xl font-bold text-center text-blue-600 mb-8 ">
           🏆 Quiz Leaderboard
         </h1>
@@ -102,12 +112,13 @@ const LeaderboardPage = () => {
                 {topTen.map((user) => (
                   <tr
                     key={user.email}
-                    className={`border-t hover:bg-gray-50 ${
-                      user.email === email ? "bg-green-100 font-bold text-green-700" : ""
-                    }`}
+                    className={`border-t hover:bg-gray-50 ${user.email === email ? "bg-green-100 font-bold text-green-700" : ""
+                      }`}
                   >
                     <td className="py-3 px-4">#{user.rank}</td>
-                    <td className="py-3 px-4">{user.email.split("@")[0]}</td>
+                    <td className="py-3 px-4">
+                      <Link href={`/profile/${user.username}`}>{user.username}</Link>
+                    </td>
                     <td className="py-3 px-4 text-center">{user.score}</td>
                   </tr>
                 ))}
