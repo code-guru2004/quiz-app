@@ -14,7 +14,7 @@ export default function Header({ email }) {
   };
 
   return (
-    <header className="bg-white shadow-md mb-5">
+    <header className="sticky top-0 z-50 bg-white shadow mb-4">
       <div className="mx-auto flex h-16 max-w-screen-xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo */}
         <Link href="/" className="block">
@@ -83,9 +83,9 @@ export default function Header({ email }) {
       {/* Mobile Menu */}
       {isOpen && (
         <nav className="md:hidden bg-gray-50 p-4 space-y-2 rounded-md">
-          <NavItem href="#">About</NavItem>
-          <NavItem href="#">Quiz</NavItem>
-          <NavItem href="#">Profile</NavItem>
+          <NavItem href="/">About</NavItem>
+          <NavItem href="/dashboard">Quiz</NavItem>
+          <NavItem href={`/profile/${username}`}>Profile</NavItem>
 
           {!email ? (
             <>

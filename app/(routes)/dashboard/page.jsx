@@ -60,14 +60,14 @@ function Dashboard() {
           <Loader /> {/* or just: "Loading..." */}
         </div>
       ): (
-        <div className='h-screen w-full'>
-          <Header email={email}/>
-    
-          <div className='pb-20'>
-            <QuizArea />
-          </div>
-          <Footer/>
-        </div>
+        <div className="flex flex-col min-h-screen w-full">
+        <Header email={email} />
+        <main className="flex-grow pb-20">
+          <QuizArea />
+        </main>
+        <Footer />
+      </div>
+      
 
       )
     }
