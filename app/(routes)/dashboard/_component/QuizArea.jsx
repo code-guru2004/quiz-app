@@ -6,9 +6,9 @@ import useGlobalContextProvider from "@/app/_context/ContextApi";
 import Card from "./QuizCard1";
 
 function QuizArea() {
-    const { allQuiz } = useGlobalContextProvider();
-    
-      const [mostPopularQuiz, setMostPopularQuiz] = useState(null);
+    const { allQuiz,setIsLoading } = useGlobalContextProvider();
+    //const [isLoading, setIsLoading] = useState(true)
+    const [mostPopularQuiz, setMostPopularQuiz] = useState(null);
     
     useEffect(() => {
       if (allQuiz?.length > 0) {
@@ -19,6 +19,7 @@ function QuizArea() {
         
         setMostPopularQuiz(sorted[0]);
       }
+      setIsLoading(false)
     }, [allQuiz]);
    // console.log(allQuiz);
   return (
@@ -27,7 +28,7 @@ function QuizArea() {
         <Placeholder />
       ) : (
         <>
-          <h2 className="px-10 lg:px-40 text-2xl font-bold mb-6 md:mb-16">All Quizs🤔</h2>
+          <h2 className="px-10 lg:px-40 text-2xl font-bold mb-6 md:mb-16">💡All Quizs</h2>
           <div className="flex flex-wrap gap-5 items-center justify-center">
             {
               allQuiz.map((quiz,idx)=>(

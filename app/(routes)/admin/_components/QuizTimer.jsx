@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 function QuizTimer({onTimerChange}) {
-  const [timer, setTimer] = useState(0);
+  const [timer, setTimer] = useState(1);
   function handleChange(time){
     setTimer(time);
     onTimerChange(time);

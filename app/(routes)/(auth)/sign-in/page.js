@@ -1,8 +1,9 @@
 'use client';
 import useGlobalContextProvider from '@/app/_context/ContextApi';
+import { jwtDecode } from 'jwt-decode';
 import { Loader } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function LoginPage() {
   const {setEmail} = useGlobalContextProvider();
@@ -31,6 +32,24 @@ export default function LoginPage() {
     }
     //setIsLoading(false)
   };
+
+  // if user is alreay logged in then redirect user to dashbaord
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+  
+    if (token) {
+      try {
+        const decode = jwtDecode(token);
+        if (decode.email || decode.username) {
+          router.replace("/dashboard");
+        }
+      } catch (error) {
+        console.error("Invalid token:", error);
+        // Optional: localStorage.removeItem("token"); // to clear bad token
+      }
+    }
+  }, []);
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-blue-300">

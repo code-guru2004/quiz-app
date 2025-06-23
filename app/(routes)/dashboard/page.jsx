@@ -7,6 +7,7 @@ import useGlobalContextProvider from '@/app/_context/ContextApi';
 import { useRouter } from 'next/navigation'
 import { jwtDecode } from 'jwt-decode'
 import Footer from './_component/Footer'
+import Loader from '@/components/ui/shared/Loader'
 
 
 
@@ -38,10 +39,11 @@ function Dashboard() {
   //     }
   //   }
   // }, []);
-  const { allQuiz, quizToStartObject } = useGlobalContextProvider();
+  const { allQuiz, quizToStartObject,isLoading,setIsLoading } = useGlobalContextProvider();
   const { selectQuizToStart, setSelectQuizToStart } = quizToStartObject;
 
   useEffect(() => {
+    setIsLoading(false)
     setSelectQuizToStart(null)
   }, []);
 
@@ -51,14 +53,25 @@ function Dashboard() {
   // }, [allQuiz])
 
   return (
-    <div className='h-screen w-full'>
-      <Header email={email}/>
- 
-      <div className='pb-20'>
-        <QuizArea />
-      </div>
-      <Footer/>
-    </div>
+    <>
+    {
+      isLoading? (
+        <div className="w-full h-screen flex items-center justify-center bg-white shadow-md rounded-xl">
+          <Loader /> {/* or just: "Loading..." */}
+        </div>
+      ): (
+        <div className='h-screen w-full'>
+          <Header email={email}/>
+    
+          <div className='pb-20'>
+            <QuizArea />
+          </div>
+          <Footer/>
+        </div>
+
+      )
+    }
+    </>
   )
 }
 

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"; // adjust if not using shadcn/u
 import useGlobalContextProvider from "@/app/_context/ContextApi";
 import Image from "next/image";
 import { ICONS } from "@/app/Icon";
+import LikeDislike from "../_component/LikeDislike";
 
 const QuizAboutPage = () => {
     const router = useRouter();
@@ -123,6 +124,14 @@ const QuizAboutPage = () => {
                                 <p className="text-md font-semibold">{selectQuizToStart?.quizQuestions.length}</p>
                             </div>
                         </div>
+                    </div>
+                    <div>
+                        <LikeDislike
+                            quizId={selectQuizToStart._id}
+                            initialLikes={selectQuizToStart.quizLikes}
+                            initialDislikes={selectQuizToStart.quizDislikes}
+                            email={email}
+                        />
                     </div>
                 </div>
                 {/* div-2 */}

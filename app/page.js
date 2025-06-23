@@ -32,10 +32,10 @@ export default function LandingPage() {
           <nav className="hidden md:flex justify-center items-center space-x-6">
             <Link href="#features" className="hover:text-emerald-200 transition-colors duration-200">Features</Link>
             <Link href="#how-it-works" className="hover:text-emerald-200 transition-colors duration-200">How It Works</Link>
-            <Link href="/auth/sign-in" className="px-4 py-2 bg-white text-emerald-600 rounded-full font-semibold hover:bg-emerald-100 transition-colors duration-200 shadow-md">
+            <Link href="/sign-in" className="px-4 py-2 bg-white text-emerald-600 rounded-full font-semibold hover:bg-emerald-100 transition-colors duration-200 shadow-md">
               Login
             </Link>
-            <Link href="/auth/sign-up" className="px-4 py-2 bg-transparent border-2 border-white rounded-full font-semibold hover:bg-white hover:text-emerald-600 transition-colors duration-200 shadow-md">
+            <Link href="/sign-up" className="px-4 py-2 bg-transparent border-2 border-white rounded-full font-semibold hover:bg-white hover:text-emerald-600 transition-colors duration-200 shadow-md">
               Sign Up
             </Link>
           </nav>

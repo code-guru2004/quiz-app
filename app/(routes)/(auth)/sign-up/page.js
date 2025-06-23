@@ -1,6 +1,7 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { jwtDecode } from 'jwt-decode';
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -36,6 +37,23 @@ export default function SignUpPage() {
       setError(data.message || 'Something went wrong.');
     }
   };
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+  
+    if (token) {
+      try {
+        const decode = jwtDecode(token);
+        if (decode.email || decode.username) {
+          router.replace("/dashboard");
+        }
+      } catch (error) {
+        console.error("Invalid token:", error);
+        // Optional: localStorage.removeItem("token"); // to clear bad token
+      }
+    }
+  }, []);
+  
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-sky-100 to-blue-200 flex items-center justify-center px-4">

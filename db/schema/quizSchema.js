@@ -38,6 +38,7 @@ const userQuizSchema = new mongoose.Schema({
   }
 });
 
+
 const quizSchema = new mongoose.Schema({
   quizTitle: {
     type: String,
@@ -61,6 +62,14 @@ const quizSchema = new mongoose.Schema({
   },
   userSubmissions: {
     type: [userQuizSchema],
+    default: [],
+  },
+  quizLikes: {
+    type: [String], // array of user emails or user IDs
+    default: [],
+  },
+  quizDislikes: {
+    type: [String],
     default: [],
   }
 });
