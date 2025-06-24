@@ -6,6 +6,7 @@ import { CheckCircle, Timer, ListChecks } from 'lucide-react';
 import useGlobalContextProvider from '@/app/_context/ContextApi';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { ICONS } from '@/app/Icon';
 
 const ResultPage = () => {
   const route = useRouter();
@@ -20,7 +21,7 @@ const ResultPage = () => {
       <div className="text-center text-gray-500 mt-10">
         No quiz result found. Please attempt a quiz.
         <br />
-        <Link href={'/dashboard'} className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Go To Dashboard</Link>
+        <Link href={'/dashboard'} className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mt-14">Go To Dashboard</Link>
       </div>
     );
   }
@@ -36,14 +37,12 @@ const ResultPage = () => {
     
     setQuizScore(userInfo[0]?.score)
   },[])
+
+  
   return (
     <div className="max-w-xl mx-auto mt-12 p-6 bg-white shadow-xl rounded-xl border border-gray-200">
       <div className="text-center mb-6">
-        <div className="flex justify-center mb-4">
-          {quizIcon && quizIcon.icon && (
-            <div className="text-5xl">{quizIcon.icon}</div>
-          )}
-        </div>
+        <h1 className="text-3xl sm:text-4xl font-bold text-green-800 mb-3  p-2 rounded-md flex items-center justify-center">{ICONS[selectQuizToStart.quizIcon].icon}</h1>
         <h1 className="text-2xl font-bold text-gray-800">{quizTitle}</h1>
         <p className="text-sm text-gray-500">Your Quiz Result</p>
       </div>
