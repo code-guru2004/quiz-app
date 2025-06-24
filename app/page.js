@@ -35,7 +35,7 @@ export default function LandingPage() {
             <Link href="#features" className="hover:text-emerald-200 transition-colors duration-200">Features</Link>
             <Link href="#how-it-works" className="hover:text-emerald-200 transition-colors duration-200">How It Works</Link>
             <Link href={email&&username?`/profile/${username}`:`/sign-in`} className="px-4 py-2 bg-white text-emerald-600 rounded-full font-semibold hover:bg-emerald-100 transition-colors duration-200 shadow-md">
-              {email&&username?`Profile`:`Login`}
+              {username?`Profile`:`Login`}
             </Link>
             {
               !email&&(
