@@ -3,8 +3,10 @@
 import Head from 'next/head';
 import Link from 'next/link'; // For client-side navigation
 import Image from 'next/image'; // For optimized images
+import useGlobalContextProvider from './_context/ContextApi';
 
 export default function LandingPage() {
+  const {email,username} = useGlobalContextProvider();
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-500 to-green-600 text-white font-inter">
 
@@ -32,12 +34,17 @@ export default function LandingPage() {
           <nav className="hidden md:flex justify-center items-center space-x-6">
             <Link href="#features" className="hover:text-emerald-200 transition-colors duration-200">Features</Link>
             <Link href="#how-it-works" className="hover:text-emerald-200 transition-colors duration-200">How It Works</Link>
-            <Link href="/sign-in" className="px-4 py-2 bg-white text-emerald-600 rounded-full font-semibold hover:bg-emerald-100 transition-colors duration-200 shadow-md">
-              Login
+            <Link href={email&&username?`/profile/${username}`:`/sign-in`} className="px-4 py-2 bg-white text-emerald-600 rounded-full font-semibold hover:bg-emerald-100 transition-colors duration-200 shadow-md">
+              {email&&username?`Profile`:`Login`}
             </Link>
-            <Link href="/sign-up" className="px-4 py-2 bg-transparent border-2 border-white rounded-full font-semibold hover:bg-white hover:text-emerald-600 transition-colors duration-200 shadow-md">
+            {
+              !email&&(
+                <Link href="/sign-up" className="px-4 py-2 bg-transparent border-2 border-white rounded-full font-semibold hover:bg-white hover:text-emerald-600 transition-colors duration-200 shadow-md">
               Sign Up
             </Link>
+              )
+            }
+            
           </nav>
           {/* Mobile menu button removed */}
         </div>
@@ -62,9 +69,12 @@ export default function LandingPage() {
             <Link href="/dashboard" className="px-8 py-4 bg-white text-emerald-600 text-xl font-bold rounded-full shadow-lg hover:bg-emerald-100 transform hover:scale-105 transition-all duration-300">
               Start Quiz Now
             </Link>
-            <Link href="/sign-up" className="px-8 py-4 bg-transparent border-2 border-white text-white text-xl font-bold rounded-full shadow-lg hover:bg-white hover:text-emerald-600 transform hover:scale-105 transition-all duration-300">
+            {
+              !email&&<Link href="/sign-up" className="px-8 py-4 bg-transparent border-2 border-white text-white text-xl font-bold rounded-full shadow-lg hover:bg-white hover:text-emerald-600 transform hover:scale-105 transition-all duration-300">
               Create Free Account
             </Link>
+            }
+            
           </div>
         </div>
       </section>
