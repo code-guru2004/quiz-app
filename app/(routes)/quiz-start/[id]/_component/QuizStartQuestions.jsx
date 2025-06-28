@@ -315,18 +315,18 @@ function QuizStartQuestions({ timeLeft, setTimeLeft }) {
 
               </div>
 
-              <div className="mt-6 flex justify-between px-5">
+              <div className="mt-6 flex justify-between gap-4 px-5">
                 {isCurrQuizMarked ? (
                   <button
                     onClick={handleRemoveMarkForReview}
-                    className="px-6 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 transition-all"
+                    className="px-3 lg:px-6 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 transition-all"
                   >
                     Unmark Review
                   </button>
                 ) : (
                   <button
                     onClick={handleAddMarkForReview}
-                    className="px-6 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 transition-all"
+                    className="px-3 lg:px-6 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 transition-all"
                   >
                     Mark For Review
                   </button>
@@ -336,14 +336,14 @@ function QuizStartQuestions({ timeLeft, setTimeLeft }) {
                   <button
                     onClick={handlePreviousQuestion}
                     disabled={quizCompleted}
-                    className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-all"
+                    className="px-3 lg:px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-all"
                   >
                     Previous
                   </button>
                   <button
                     onClick={handleSubmit}
                     disabled={quizCompleted}
-                    className="px-6 py-2 bg-green-700 text-white rounded-md hover:bg-green-800 transition-all"
+                    className="px-3 lg:px-6 py-2 bg-green-700 text-white rounded-md hover:bg-green-800 transition-all"
                   >
                     {currQuizIndex === quizQuestions.length - 1
                       ? "Submit"
