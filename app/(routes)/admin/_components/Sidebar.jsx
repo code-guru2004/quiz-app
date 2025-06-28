@@ -1,24 +1,33 @@
 import Link from 'next/link';
-import { Home, Users, Settings, Plus, MailQuestion } from 'lucide-react';
+import { Home, Plus, MailQuestion } from 'lucide-react';
+import ThemeToggle from '@/components/shared/ModeToggle';
 
 const Sidebar = () => {
   return (
-    <div className="h-full w-64 bg-gray-800 text-white fixed">
+    <div className="h-full w-64 bg-gray-800 text-white fixed shadow-md">
       <div className="p-4 text-2xl font-bold border-b border-gray-700">
         Admin Panel
+        {/* <ThemeToggle/> */}
       </div>
-      <nav className="mt-4 flex flex-col space-y-2 p-4">
-        <Link href="/admin" className="flex items-center gap-2 hover:bg-gray-700 p-2 rounded">
-          <Home size={18} /> Dashboard
-        </Link>
-        <Link href="/admin/quiz-build" className="flex items-center gap-2 hover:bg-gray-700 p-2 rounded">
-          <Plus size={18} /> Create Quiz
-        </Link>
-        <Link href="/admin/all-quizes" className="flex items-center gap-2 hover:bg-gray-700 p-2 rounded">
-          <MailQuestion size={18} /> All Quizes
-        </Link>
+      <nav className="mt-4 flex flex-col space-y-1 px-4">
+        <SidebarLink href="/admin" icon={<Home size={18} />} label="Dashboard" />
+        <SidebarLink href="/admin/quiz-build" icon={<Plus size={18} />} label="Create Quiz" />
+        <SidebarLink href="/admin/all-quizes" icon={<MailQuestion size={18} />} label="All Quizes" />
       </nav>
     </div>
+  );
+};
+
+const SidebarLink = ({ href, icon, label }) => {
+  return (
+    <Link
+      href={href}
+      className="flex items-center gap-2 p-2 rounded-md transition-colors duration-200 
+                 hover:bg-gray-700 hover:text-white"
+    >
+      {icon}
+      <span className="text-sm">{label}</span>
+    </Link>
   );
 };
 

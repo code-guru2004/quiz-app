@@ -62,7 +62,7 @@ const QuizCard = ({ quiz, onSelect }) => {
       {/* Start Quiz Button */}
       <Link
         href={`/quiz-start/${quiz._id}/about`}
-        className="mt-2 flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-indigo-600 text-white text-base font-semibold py-3 px-6 rounded-xl text-center transition-all duration-300 transform hover:scale-105 shadow-lg"
+        className="mt-2 flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 text-white text-base font-semibold py-3 px-6 rounded-xl text-center transition-all duration-300 transform hover:scale-105 shadow-lg"
       >
         Start Quiz
         <ArrowRight className="w-5 h-5" />

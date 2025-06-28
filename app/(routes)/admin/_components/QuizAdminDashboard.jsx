@@ -2,6 +2,7 @@
 import useGlobalContextProvider from '@/app/_context/ContextApi';
 import axios from 'axios';
 import { MoreVertical, NotebookPen, Trash2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import React, { useState, useEffect, useContext, createContext } from 'react';
 import toast from 'react-hot-toast';
 
@@ -29,6 +30,7 @@ const calculateAverageCompletionTime = (submissions, totalQuestions) => {
 };
 
 const Dashboard = () => {
+    const route = useRouter();
 
     const { allQuiz, setAllQuiz, isLoading, email, username } = useGlobalContextProvider(); // Changed to named import for mock context
 
@@ -47,7 +49,6 @@ const Dashboard = () => {
 
     const handleDelete = async (id) => {
         // console.log(id);
-
         try {
             const response = await axios.post("/api/delete-quiz", { id });
             const filtered = allQuiz.filter((q, i) => q._id !== id);
@@ -319,31 +320,31 @@ const Dashboard = () => {
                                 </tr>
                             </thead>
                             <tbody className="bg-gray-800 divide-y divide-gray-700">
-                                {allQuiz.map((quiz, index) => (
-                                    <tr key={quiz._id} className="hover:bg-gray-700 transition-colors duration-200">
+                                {allQuiz.length>0 && allQuiz.map((quiz, index) => (
+                                    <tr key={index} className="hover:bg-gray-700 transition-colors duration-200">
                                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-200">
-                                            {quiz.quizTitle}
+                                            {quiz?.quizTitle}
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                                            {quiz.quizCategory}
+                                            {quiz?.quizCategory}
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
                                             <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${quiz.mode === 'Live Quiz' ? 'bg-green-100 text-green-800' : 'bg-purple-100 text-purple-800'}`}>
-                                                {quiz.quizMode}
+                                                {quiz?.quizMode}
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
                                             {quiz.userSubmissions?.length}
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                                            {calculateAverageScore(quiz.userSubmissions)}%
+                                            {calculateAverageScore(quiz?.userSubmissions)}%
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                                            {!quiz.minimumTime ? 'N/A' : quiz.minimumTime}
+                                            {!quiz?.minimumTime ? 'N/A' : quiz?.minimumTime}
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                                            <span className="text-green-500 mr-2">👍 {quiz.quizLikes.length}</span>
-                                            <span className="text-red-500">👎 {quiz.quizDislikes.length}</span>
+                                            <span className="text-green-500 mr-2">👍 {quiz?.quizLikes?.length}</span>
+                                            <span className="text-red-500">👎 {quiz?.quizDislikes?.length}</span>
                                         </td>
                                         <td className="x-6 py-4 whitespace-nowrap text-sm text-gray-300 relative">
                                         <button

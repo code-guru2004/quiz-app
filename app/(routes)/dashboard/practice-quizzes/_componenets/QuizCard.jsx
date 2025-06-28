@@ -39,7 +39,7 @@ const Card = ({ quiz }) => {
     //setIsLoading(false)
   }
   return (
-    <Link href={`/quiz-start/${_id}/about`} className="relative block border rounded-lg p-5 hover:shadow-green-300 hover:shadow-md transition card hover:border-1 hover:border-green-500"
+    <Link href={`/quiz-start/${_id}/about`} className="relative block border rounded-lg p-5 hover:shadow-green-300 hover:shadow-md transition bg-slate-100 card hover:border-1 hover:border-green-500"
       onClick={() => {
         setSelectQuizToStart(quiz)
       }}>
