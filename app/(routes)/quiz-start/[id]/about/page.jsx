@@ -80,26 +80,26 @@ const QuizAboutPage = () => {
     const visibleText = readMore ? description : description.slice(0, MAX_LENGTH);
 
     return (
-        <div className="min-h-screen flex items-center justify-between bg-gradient-to-br from-green-50 to-green-100 px-4">
+        <div className="min-h-screen flex items-center justify-between bg-gradient-to-br from-green-50 to-green-100 dark:from-gray-900 dark:to-gray-800 px-4 text-gray-900 dark:text-gray-100">
             <div className="flex flex-col lg:flex-row justify-between gap-10 w-full px-[10%] mx-auto my-8 items-center">
 
                 {/* div-1 */}
                 <div className="lg:w-3/5 w-full">
                     <div className="flex flex-col items-start gap-1 ">
                         {/* Icon */}
-                        <h1 className="text-3xl sm:text-4xl font-bold text-green-800 mb-3 bg-gray-100 p-2 rounded-md">{ICONS[selectQuizToStart.quizIcon].icon}</h1>
+                        <h1 className="text-3xl sm:text-4xl font-bold text-green-800 dark:text-green-400 mb-3 bg-gray-100 dark:bg-green-100 p-2 rounded-md">{ICONS[selectQuizToStart.quizIcon].icon}</h1>
                         {/* Title */}
                         <h1 className="text-3xl sm:text-4xl font-bold text-green-800 mb-3">{selectQuizToStart.quizTitle}</h1>
                     </div>
 
                     {/* Description */}
-                    <div className="text-gray-700 whitespace-pre-line break-words mb-6 text-start">
+                    <div className="text-gray-100 dark:text-slate-100 whitespace-pre-line break-words mb-6 text-start">
                         {visibleText}
                         {shouldTruncate && !readMore && "..."}
                         {shouldTruncate && (
                             <button
                                 onClick={toggleReadMore}
-                                className="text-green-700 underline ml-1 font-semibold"
+                                className="text-green-700 dark:text-green-300 underline ml-1 font-semibold"
                             >
                                 {readMore ? "Read Less" : "Read More"}
                             </button>
@@ -109,18 +109,18 @@ const QuizAboutPage = () => {
 
                     {/* Info Boxes */}
                     <div className="grid grid-col-1 sm:grid-cols-2 gap-4 mb-6">
-                        <div className="flex items-center space-x-3 bg-green-200 px-4 py-4 rounded-xl">
-                            <FaClock className="text-green-700 text-xl" />
+                        <div className="flex items-center space-x-3 bg-green-200 dark:bg-green-900 px-4 py-4 rounded-xl">
+                            <FaClock className="text-green-700 dark:text-green-500 text-xl" />
                             <div>
-                                <p className="text-sm text-gray-600">Time Limit</p>
+                                <p className="text-sm text-gray-600 subheading">Time Limit</p>
                                 <p className="text-md font-semibold">{selectQuizToStart.quizTime} minutes</p>
                             </div>
                         </div>
 
-                        <div className="flex items-center space-x-3 bg-green-200 p-4 rounded-xl">
-                            <FaListAlt className="text-green-700 text-xl" />
+                        <div className="flex items-center space-x-3 bg-green-200 dark:bg-green-900 p-4 rounded-xl">
+                            <FaListAlt className="text-green-700 dark:text-green-500 text-xl" />
                             <div>
-                                <p className="text-sm text-gray-600">Total Questions</p>
+                                <p className="text-sm text-gray-600 subheading">Total Questions</p>
                                 <p className="text-md font-semibold">{selectQuizToStart?.quizQuestions.length}</p>
                             </div>
                         </div>
@@ -137,12 +137,12 @@ const QuizAboutPage = () => {
                 {/* div-2 */}
                 <div className="lg:w-2/5 w-full">
                     {/* Warnings */}
-                    <div className="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-lg mb-5">
+                    <div className="bg-yellow-50 dark:bg-yellow-900 border-l-4 border-yellow-500 p-4 rounded-lg mb-5">
                         <div className="flex items-start space-x-3">
-                            <FaExclamationTriangle className="text-yellow-600 mt-1" />
+                            <FaExclamationTriangle className="text-yellow-600 dark:text-yellow-400 mt-1" />
                             <div>
-                                <p className="text-yellow-700 font-semibold mb-1">Important Warnings:</p>
-                                <ul className="text-sm text-yellow-800 list-disc ml-5 space-y-1">
+                                <p className="text-yellow-700 dark:text-yellow-100 font-semibold mb-1">Important Warnings:</p>
+                                <ul className="text-sm text-yellow-800 dark:text-yellow-300 list-disc ml-5 space-y-1">
                                     <li>Do not switch tabs during the quiz.</li>
                                     <li>Do not try to refresh or reload the page.</li>
                                     <li>Each attempt is monitored for unfair behavior.</li>
@@ -152,12 +152,12 @@ const QuizAboutPage = () => {
                     </div>
 
                     {/* Precautions / What Not To Do */}
-                    <div className="bg-green-50 border-l-4 border-green-400 p-4 rounded-lg mb-8">
+                    <div className="bg-green-50 dark:bg-green-950 border-l-4 border-green-400 p-4 rounded-lg mb-8">
                         <div className="flex items-start space-x-3">
-                            <BsPatchCheckFill className="text-green-600 mt-1" />
+                            <BsPatchCheckFill className="text-green-600 dark:text-green-300 mt-1" />
                             <div>
-                                <p className="text-green-800 font-semibold mb-1">Before You Start:</p>
-                                <ul className="text-sm text-green-900 list-disc ml-5 space-y-1">
+                                <p className="text-green-800 dark:text-green-300 font-semibold mb-1">Before You Start:</p>
+                                <ul className="text-sm text-green-900 dark:text-green-400 list-disc ml-5 space-y-1">
                                     <li>Ensure a stable internet connection.</li>
                                     <li>It is advised to use <strong>desktop</strong> to attend quiz.</li>
                                     <li>Use a modern browser (Chrome, Firefox, Edge).</li>
@@ -174,7 +174,7 @@ const QuizAboutPage = () => {
                             isSubmit ?
                                 (<Button
                                     onClick={startQuiz}
-                                    className="bg-green-700 hover:bg-green-800 text-white px-8 py-3 text-md font-semibold rounded-full shadow-md transition-transform hover:scale-105"
+                                    className="bg-green-700 hover:bg-green-800 text-white px-8 py-3 text-md font-semibold rounded-full shadow-md transition-transform hover:scale-105 dark:bg-green-600 dark:hover:bg-green-500"
                                 >
                                     {isLoading ? 'Redirecting...' : 'View Result 🎓'}
                                 </Button>) : (

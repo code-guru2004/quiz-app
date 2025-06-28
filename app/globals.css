@@ -116,6 +116,9 @@ body {
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
 }
+html {
+  transition: background 0.3s, color 0.3s;
+}
 
 @layer base {
   * {
@@ -145,3 +148,70 @@ body {
 }
 
 /* From Uiverse.io by SachinKumar666 */ 
+/* styles/globals.css */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.shimmer-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-image: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.6) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: shimmer 1.5s infinite;
+}
+
+/* dark
+ */
+ body {
+  @apply bg-white text-gray-900;
+}
+
+/* Dark Mode */
+.dark body {
+  @apply bg-gray-900 text-gray-100;
+}
+.dark .card {
+  @apply bg-gray-800 text-gray-100;
+}
+.dark .card-para {
+  @apply  text-gray-300;
+}
+.dark .select{
+  @apply text-black
+}
+/* Optional extras */
+.dark .sidebar {
+  @apply bg-gray-900;
+}
+
+.dark .hover-bg {
+  @apply hover:bg-gray-800;
+}
+
+.dark .logout-btn {
+  @apply bg-red-900 text-red-300 hover:bg-red-800;
+}
+.dark .subheading{
+  @apply text-slate-200
+}
+.dark .para{
+  @apply text-slate-100
+}

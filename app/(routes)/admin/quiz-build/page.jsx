@@ -17,8 +17,10 @@ function QuizBuild() {
       quizTitle:"",
       quizIcon: 0,
       quizDescription:"",
-      quizTime: 0,
+      quizTime: 1,
       quizQuestions:quizQuestions,
+      quizMode: 'Live Quiz',
+      quizCategory: '',
     });
     // prevent the auto scrolling
     useEffect(() => {
@@ -70,8 +72,10 @@ function QuizBuild() {
       quizQuestions,
       setQuizQuestions
     }
-    //console.log(newQuiz);
-    
+    // useEffect(()=>{
+      
+    //   console.log(newQuiz);
+    // },[newQuiz])
   return (
     <div>
         <QuizBuildNavbar {...quizNavbarProps}/>

@@ -27,7 +27,18 @@ const quizSubmitSchema = new mongoose.Schema({
   submittedAt: {
     type: Date,
     default: new Date() 
-  }
+  },
+  time:{
+    type:Number
+  },
+  quizMode: {
+    type: String,
+    required: true, // optional but recommended to enforce it
+  },
+  quizCategory: { // ✅ added field
+    type: String,
+    required: true,
+  },
 })
 const UserSchema = new mongoose.Schema({
   username:{

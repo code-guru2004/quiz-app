@@ -4,7 +4,7 @@ import { Clock, FileQuestion } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { ICONS } from "@/app/Icon"; // Make sure ICONS is imported correctly
 import Link from "next/link";
-import Loader from "@/components/ui/shared/Loader";
+import Loader from "@/components/shared/Loader";
 import { useRouter } from "next/navigation";
 
 const Card = ({ quiz, isMostPopular }) => {

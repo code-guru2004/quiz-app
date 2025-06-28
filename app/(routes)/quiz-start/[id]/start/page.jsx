@@ -36,7 +36,7 @@ function QuizStart({ params }) {
     }
   }, []);
   return (
-    <div className="flex flex-col px-24 mt-[35px]">
+    <div className="flex flex-col px-24 mt-[35px] w-full">
       {selectQuizToStart === null ? (
         <div className="h-svh flex flex-col gap-2 items-center justify-center">
           <Image src={"/errorIcon.png"} alt="image" width={180} height={180} />
@@ -45,7 +45,7 @@ function QuizStart({ params }) {
         </div>
       ) : (
         <>
-          <div>
+          <div className="min-w-screen">
             <QuizHeader selectQuizToStart={selectQuizToStart} />
           </div>
           <div className="mt-10 flex items-center justify-center">

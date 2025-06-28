@@ -3,57 +3,64 @@ import useGlobalContextProvider from '@/app/_context/ContextApi';
 import axios from 'axios';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import React from 'react';
+import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 
 function QuizBuildNavbar({ newQuiz, quizQuestions }) {
   const route = useRouter();
   const { allQuiz, setAllQuiz } = useGlobalContextProvider();
-  //console.log(newQuiz);
-
+ const [category, setCategory] = useState('')
+  // 🟢 Handle quiz type change
+  function handleQuizTypeChange(e) {
+    newQuiz.quizMode = e.target.value; // Add/Update quizMode in newQuiz
+  }
+  function handleQuizCategoryChange(e){
+    setCategory(e.target.value)
+    newQuiz.quizCategory = e.target.value;
+  }
   async function addNewQuiz() {
-    // validation before the submission
     for (let i = 0; i < quizQuestions.length; i++) {
       const q = quizQuestions[i];
       const isMainEmpty = q.mainQuestion.trim() === "";
       const hasEmptyChoice = q.choices.some((choice) => {
-        const content = choice.slice(3).trim(); // Remove "A. ", "B. ", etc.
+        const content = choice.slice(3).trim();
         return content.length === 0;
       });
-
       const isInsufficientChoices = q.choices.length < 3;
-      const isAnswerEmpty = q.correctAnswer.trim() === ""; //🟡 check the answser is empty or not i.e. validation is already done in the AnswerInputSection section
+      const isAnswerEmpty = q.correctAnswer.trim() === "";
+
       if (isMainEmpty || hasEmptyChoice || isInsufficientChoices) {
         isMainEmpty
           ? toast.error(`Please complete question ${i + 1}.`)
           : toast.error(`Please fill all options in question ${i + 1}.`);
         return;
       } else if (isAnswerEmpty) {
-        toast.error("Write the answer of quoestion " + (i + 1))
+        toast.error("Write the answer of question " + (i + 1));
         return;
       }
     }
-    // check the title empty or not
-    if (newQuiz.quizTitle.trim(' ').length === 0) {
-      return toast.error("Write the quiz title first")
+    if(newQuiz.quizCategory===''){
+      toast.error("Select the quiz category.");
+      return;
     }
-    setAllQuiz([...allQuiz, newQuiz]);
 
+    if (newQuiz.quizTitle.trim(' ').length === 0) {
+      return toast.error("Write the quiz title first");
+    }
+
+    setAllQuiz([...allQuiz, newQuiz]);
 
     try {
       const addNewQuiz = await axios.post("/api/add-quiz", { ...newQuiz });
       if (!addNewQuiz?.data.success) {
-        toast.success(addNewQuiz?.data.message)
+        toast.success(addNewQuiz?.data.message);
       }
-      toast.success(addNewQuiz?.data.message)
-      route.replace('/admin')
+      toast.success(addNewQuiz?.data.message);
+      route.replace('/admin');
     } catch (error) {
       toast.error("Failed to add quiz");
     }
-
-    // console.log(allQuiz);
   }
-  //console.log(allQuiz);
 
   return (
     <nav className="bg-white shadow-md py-3 rounded-md sticky top-0 z-50">
@@ -72,10 +79,47 @@ function QuizBuildNavbar({ newQuiz, quizQuestions }) {
           </span>
         </div>
 
-        {/* Save Button */}
-        <button className="p-2 px-4 bg-green-700 rounded-md text-white hover:bg-green-800 transition-all " onClick={addNewQuiz}>
-          Save
-        </button>
+        {/* Select & Save Section */}
+        <div className="flex gap-4 items-center">
+          <div className='flex   border-r-2 p-2'>
+              <label className="block text-sm font-medium">Quiz Category</label>
+              <select
+                value={category}
+                onChange={handleQuizCategoryChange}
+                className="border rounded px-3 py-2 w-full"
+              >
+                <option value="">Select Category</option>
+                <option value="Computer Science">Computer Science</option>
+                <option value="Programming">Programming</option>
+                <option value="Math">Math</option>
+                <option value="Aptitude">Aptitude</option>
+                <option value="Science">Science</option>
+                <option value="Healthcare">Healthcare</option>
+                <option value="Engineering">Engineering</option>
+                <option value="History">History</option>
+                <option value="General Science">General Science</option>
+              </select>
+          </div>
+
+          {/* 🟡 Select Input */}
+          <label className="block text-sm font-medium">Quiz Type</label>
+          <select
+            defaultValue="Live Quiz"
+            onChange={handleQuizTypeChange}
+            className="border border-gray-300 rounded-md py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+          >
+            <option value="Live Quiz">Live Quiz</option>
+            <option value="Practice Quiz">Practice Quiz</option>
+          </select>
+
+          {/* Save Button */}
+          <button
+            className="p-2 px-4 bg-green-700 rounded-md text-white hover:bg-green-800 transition-all"
+            onClick={addNewQuiz}
+          >
+            Save
+          </button>
+        </div>
       </div>
     </nav>
   );

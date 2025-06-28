@@ -23,7 +23,7 @@ export function ContextProvider({ children }) {
   const [email, setEmail] = useState(null);
   const [username, setUsername] = useState(null);
   const [isLoading, setIsLoading] = useState(false)
-
+  const [practiceQuiz, setPracticeQuiz] = useState([]);
   useEffect(() => {
     const fetchUser = async () => {
       if (typeof window !== "undefined") {
@@ -62,7 +62,7 @@ export function ContextProvider({ children }) {
         toast.error("Failed to get quiz");
       }
     };
-
+    
     fetchQuizData();
     fetchUser();
   }, [pathname]);
@@ -72,6 +72,8 @@ export function ContextProvider({ children }) {
       value={{
         allQuiz,
         setAllQuiz,
+        practiceQuiz,
+        setPracticeQuiz,
         email,
         setEmail,
         username,

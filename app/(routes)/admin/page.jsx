@@ -12,8 +12,8 @@ function Page() {
   };
   return (
     <div>
-      <Navbar/>
-      <DashboardStats stats={stats} />
+      {/* <Navbar/> */}
+      {/* <DashboardStats stats={stats} /> */}
       <QuizAdminDashboard/>
     </div>
   )

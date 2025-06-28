@@ -10,7 +10,8 @@ export async function POST(req) {
    
     
     const quiz = await Quiz.findById(quizId);
- 
+    console.log(quiz);
+    
     
     if (!quiz) return new Response("Quiz not found", { status: 404 });
   

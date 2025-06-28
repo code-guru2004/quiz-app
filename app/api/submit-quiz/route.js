@@ -8,8 +8,8 @@ export async function POST(request) {
   await dbConnect();
 
   try {
-    const { quizId, email, score } = await request.json();
-    console.log(quizId,email);
+    const { quizId, email, score,perQuestionTimes,totaltime } = await request.json();
+    console.log(quizId,email,totaltime);
     
     if (!quizId || !email || typeof score !== "number") {
       return NextResponse.json(
@@ -46,20 +46,29 @@ export async function POST(request) {
         { status: 200 }
       );
     } else {
+      const minimumTime = Math.min(quiz.minimumTime,totaltime);
+      // console.log("totaltime",totaltime);
+      
       // Add new submission
       quiz.userSubmissions.push({
         email,
         username:user?.username,
         score,
         submittedAt: new Date(),
+        perQuestionTimes,
       });
+      quiz.minimumTime=minimumTime;
+
       user.submitQuiz.push({
         quizId:quiz._id,
         quizTitle: quiz.quizTitle,
         quizIcon:quiz.quizIcon || 0,
         quizScore:score,
         quizTotalQuestions:quiz.quizQuestions?.length,
-        rank: null
+        rank: null,
+        time: totaltime,
+        quizCategory:quiz.quizCategory,
+        quizMode: quiz.quizMode,
       })
     }
 

@@ -88,8 +88,12 @@ export default function ProfilePage() {
     const badges = [];
     if(submittedQuiz.length===0) badges.push("🌱🚀 Ice Breaker")
     if (submittedQuiz.length >= 10) badges.push("🧠 Quiz Whiz");
+    if (submittedQuiz.length >= 15) badges.push("🦾 Pro Player");
     if (maxScore >= 90) badges.push("🏆 High Scorer");
     if (accuracy > 80) badges.push("🎯 Accuracy Master");
+    else{
+      badges.push("📈Rising Star")
+    }
     return badges;
   };
   

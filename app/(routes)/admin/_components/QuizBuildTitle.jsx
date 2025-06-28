@@ -5,21 +5,7 @@ import { ChevronDown } from 'lucide-react';
 import { twMerge } from 'tailwind-merge';
 import { ICONS } from '@/app/Icon';
 
-// const ICONS = [
-//   { name: 'Quiz', icon: <MdQuiz  className="text-cyan-700 text-xl" /> },
-//   { name: 'Java', icon: <FaJava className="text-orange-700 text-xl" /> },
-//   { name: 'Python', icon: <FaPython className="text-blue-600 text-xl" /> },
-//   { name: 'HTML', icon: <FaHtml5 className="text-orange-500 text-xl" /> },
-//   { name: 'JavaScript', icon: <IoLogoJavascript className="text-yellow-500 text-xl" /> },
-//   { name: 'C++', icon: <TbBrandCpp className="text-indigo-600 text-xl" /> },
-//   { name: 'React', icon: <FaReact className="text-cyan-500 text-xl" /> },
-//   { name: 'CSS', icon: <FaCss3  className="text-purple-500 text-xl" /> },
-//   { name: 'Nextjs', icon: <RiNextjsFill  className="text-gray-900 text-xl" /> },
-//   { name: 'Typescript ', icon: <SiTypescript  className="text-blue-500 text-xl" /> },
-//   { name: 'SQL ', icon: <SiMysql className="text-blue-500 text-xl" /> },
-//   { name: 'Mongodb  ', icon: <SiMongodb  className="text-green-600 text-xl" /> },
-//   { name: 'Aptitude ', icon: <PiMathOperationsFill  className="text-gray-700 text-xl" /> },
-// ];
+
 
 function QuizBuildTitle({ onQuizTitleChange,onQuizIconChange }) {
   const [quizTitle, setQuizTitle] = useState('');

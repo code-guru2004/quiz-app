@@ -20,7 +20,13 @@ function QuizStartQuestions({ timeLeft, setTimeLeft }) {
   const [score, setScore] = useState(0);
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false); // For mobile
-
+  const [timeSpent, setTimeSpent] = useState(0);
+  const [questionTimes, setQuestionTimes] = useState([]);
+  const [totaltime, setTotaltime] = useState(0)
+  const [selectedOptions, setSelectedOptions] = useState(Array(quizQuestions.length).fill(null));
+  const [submittedQuestions, setSubmittedQuestions] = useState([]);
+  const [reviewQues, setReviewQues] = useState([]);
+  const [isCurrQuizMarked, setIsCurrQuizMarked] = useState(false)
   useEffect(() => {
     if (timeLeft > 0 && !quizCompleted) {
       const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
@@ -32,26 +38,51 @@ function QuizStartQuestions({ timeLeft, setTimeLeft }) {
     }
   }, [timeLeft, quizCompleted]);
 
+  useEffect(() => {
+    const isMarked = reviewQues.includes(currQuizIndex);
+    setIsCurrQuizMarked(isMarked);
+
+    setTimeSpent(0);
+    const interval = setInterval(() => {
+      setTimeSpent((prev) => prev + 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [currQuizIndex, reviewQues]);
+
+
   const handleSubmit = async () => {
+    const selectedOption = selectedOptions[currQuizIndex];
     const isCorrect =
       prefixes[selectedOption] === quizQuestions[currQuizIndex]?.correctAnswer;
 
-    const updatedScore = score + (isCorrect ? 1 : 0);
     const isLastQuestion = currQuizIndex === quizQuestions.length - 1;
 
-    if (!isLastQuestion) {
-      if (isCorrect) setScore(updatedScore);
+    // Prevent resubmitting the same question
+    if (!submittedQuestions.includes(currQuizIndex)) {
+      if (isCorrect) setScore(prev => prev + 1);
+
+      setSubmittedQuestions(prev => [...prev, currQuizIndex]);
+      setQuestionTimes([...questionTimes, timeSpent]);
+    }
+
+    if (!isLastQuestion && timeLeft > 0) {
       setCurrQuizIndex((prev) => prev + 1);
-      setSelectedOption(null);
     } else {
       setQuizCompleted(true);
-      setScore(updatedScore);
+
+      const finalTimes = [...questionTimes];
+      finalTimes[currQuizIndex] = timeSpent;
+
+      const total = finalTimes.reduce((acc, val) => acc + val, 0);
+      setTotaltime(total);
 
       try {
         const resp = await axios.post("/api/submit-quiz", {
           quizId: quizToStartObject.selectQuizToStart._id,
           email: email,
-          score: updatedScore,
+          score: score + (submittedQuestions.includes(currQuizIndex) ? 0 : isCorrect ? 1 : 0),
+          perQuestionTimes: finalTimes,
+          totaltime: total,
         });
 
         if (resp?.data.success) {
@@ -66,9 +97,35 @@ function QuizStartQuestions({ timeLeft, setTimeLeft }) {
     }
   };
 
+  function handleAddMarkForReview() {
+    if (!reviewQues.includes(currQuizIndex)) {
+      setReviewQues([...reviewQues, currQuizIndex]);
+      setIsCurrQuizMarked(true);
+      toast.success(`Question ${currQuizIndex + 1} is marked for review`)
+    }
+
+  }
+
+  function handleRemoveMarkForReview() {
+    const filtered = reviewQues.filter((q) => q !== currQuizIndex);
+    setReviewQues(filtered);
+    setIsCurrQuizMarked(false);
+  }
+
+  function handlePreviousQuestion() {
+    if (currQuizIndex > 0) {
+      setCurrQuizIndex(prev => prev - 1)
+    } else {
+      toast.error("This is the first question")
+    }
+  }
+
   const selectChoiceFunction = (idx) => {
-    setSelectedOption(idx);
+    const updatedSelections = [...selectedOptions];
+    updatedSelections[currQuizIndex] = idx;
+    setSelectedOptions(updatedSelections);
   };
+
 
   function emojiIconScore() {
     const emojis = [
@@ -83,14 +140,14 @@ function QuizStartQuestions({ timeLeft, setTimeLeft }) {
   }
 
   return (
-    <div className="w-full my-10 flex items-start justify-center md:flex-row flex-col ">
+    <div className="w-full my-10 flex items-start justify-center md:flex-row flex-col body ">
 
       {/* Sidebar for question bookmarks */}
       {!quizCompleted && (
         <>
           {/* Sidebar container */}
           <div
-            className={`md:w-64 w-full md:static md:h-auto md:translate-x-0 bg-green-50 border-r p-4 z-40 overflow-y-auto transition-transform duration-300 ease-in-out
+            className={`md:w-64 w-full md:static md:h-auto md:translate-x-0 bg-green-50 dark:bg-slate-800 body border-r p-4 z-40 overflow-y-auto transition-transform duration-300 ease-in-out
     ${showSidebar ? "fixed top-0 left-0 h-full translate-x-0" : "fixed top-0 left-0 h-full -translate-x-full"} md:relative`}
           >
             {/* Close button for mobile */}
@@ -103,23 +160,36 @@ function QuizStartQuestions({ timeLeft, setTimeLeft }) {
               </button>
             </div>
 
-            <h2 className="text-green-900 font-semibold text-lg mb-2">Questions</h2>
+            <h2 className="text-green-900 dark:text-green-500 font-semibold text-lg mb-2">Questions</h2>
             <div className="grid grid-cols-4 gap-2">
               {quizQuestions.map((_, idx) => (
                 <button
                   key={idx}
                   onClick={() => {
+                    setSelectedOption(null);
                     setCurrQuizIndex(idx);
-                    setShowSidebar(false); // close on mobile
+                    setShowSidebar(false);
                   }}
-                  className={`px-3 py-2  text-sm rounded-md ${currQuizIndex === idx
+                  className={`px-3 py-2 text-sm rounded-md relative 
+                  ${currQuizIndex === idx
                       ? "bg-green-700 text-white"
-                      : "bg-green-100 text-green-800 hover:bg-green-200"
+                      : reviewQues.includes(idx)
+                        ? "bg-yellow-200 text-yellow-900 border border-yellow-500"
+                        : "bg-green-100 text-green-800 hover:bg-green-200"
                     }`}
                 >
                   Q{idx + 1}
+                  {reviewQues.includes(idx) && (
+                    <span className="absolute -top-1 right-0 h-3 w-3 bg-yellow-600 rounded-full" />
+                  )}
                 </button>
+
               ))}
+            </div>
+            <div className="w-full flex items-center">
+              <button className="absolute  bottom-4 w-[90%] bg-green-600 rounded-md p-2 sm:block lg:hidden text-white ">
+                Submit
+              </button>
             </div>
           </div>
 
@@ -147,7 +217,7 @@ function QuizStartQuestions({ timeLeft, setTimeLeft }) {
       <div className="flex-grow flex justify-center items-center px-4 ">
         <div className="w-full max-w-2xl ">
           {quizCompleted ? (
-            <div className="mt-3 flex flex-col items-center justify-center gap-8 text-center">
+            <div className="mt-3 flex flex-col items-center justify-center gap-8 text-center w-full">
               <Image
                 src={`/${emojiIconScore()}`}
                 alt="emoji"
@@ -190,21 +260,22 @@ function QuizStartQuestions({ timeLeft, setTimeLeft }) {
           ) : (
             <>
               {/* make it at center */}
-              <div className="mb-4 text-sm md:text-lg font-semibold text-green-900 whitespace-pre-line break-words w-full">
+              <div className="mb-4 text-sm md:text-lg font-semibold text-green-900 dark:text-green-500 whitespace-pre-line break-words w-full ">
                 {currQuizIndex + 1}.{" "}
                 {quizQuestions[currQuizIndex]?.mainQuestion}
               </div>
 
 
-              <div className="space-y-3 px-4 flex flex-col items-center justify-center">
+              <div className="space-y-3  flex flex-col items-center justify-center">
                 {quizQuestions[currQuizIndex]?.choices.map((choice, idx) => (
                   <div
                     key={idx}
                     onClick={() => selectChoiceFunction(idx)}
                     className={`p-4 w-screen lg:w-full border rounded-lg cursor-pointer transition-all flex
-      ${selectedOption === idx
-                        ? "bg-green-600 text-white border-green-700"
-                        : "bg-white border-green-300 hover:bg-green-100"
+      ${selectedOptions[currQuizIndex] === idx
+
+                        ? "bg-green-600 dark:bg-green-600 text-white border-green-700"
+                        : "bg-white dark:bg-slate-600 border-green-300 hover:bg-green-200 dark:hover:bg-slate-500"
                       }`}
                   >
                     <span className="font-bold mr-2">{prefixes[idx]}.</span>
@@ -216,16 +287,41 @@ function QuizStartQuestions({ timeLeft, setTimeLeft }) {
 
               </div>
 
-              <div className="mt-6 flex justify-end">
-                <button
-                  onClick={handleSubmit}
-                  disabled={quizCompleted}
-                  className="px-6 py-2 bg-green-700 text-white rounded-md hover:bg-green-800 transition-all"
-                >
-                  {currQuizIndex === quizQuestions.length - 1
-                    ? "Submit"
-                    : "Next"}
-                </button>
+              <div className="mt-6 flex justify-between px-5">
+                {isCurrQuizMarked ? (
+                  <button
+                    onClick={handleRemoveMarkForReview}
+                    className="px-6 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 transition-all"
+                  >
+                    Unmark Review
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleAddMarkForReview}
+                    className="px-6 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 transition-all"
+                  >
+                    Mark For Review
+                  </button>
+                )}
+
+                <div className="flex gap-5">
+                  <button
+                    onClick={handlePreviousQuestion}
+                    disabled={quizCompleted}
+                    className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-all"
+                  >
+                    Previous
+                  </button>
+                  <button
+                    onClick={handleSubmit}
+                    disabled={quizCompleted}
+                    className="px-6 py-2 bg-green-700 text-white rounded-md hover:bg-green-800 transition-all"
+                  >
+                    {currQuizIndex === quizQuestions.length - 1
+                      ? "Submit"
+                      : "Next"}
+                  </button>
+                </div>
               </div>
             </>
           )}

@@ -17,10 +17,6 @@ const quizQuestionSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  avgTime:{
-    type: Number, //store the avg time to answer a particular question
-    default: 0,
-  }
 });
 
 const userQuizSchema = new mongoose.Schema({
@@ -39,15 +35,11 @@ const userQuizSchema = new mongoose.Schema({
   submittedAt: {
     type: Date,
     default: Date.now,
-  },
-  perQuestionTimes: {
-    type: [Number], // Array of time spent per question (in seconds)
-    default: [],     // One entry per question
-  },
+  }
 });
 
 
-const quizSchema = new mongoose.Schema({
+const practiceQuizSchema = new mongoose.Schema({
   quizTitle: {
     type: String,
     required: true,
@@ -79,21 +71,8 @@ const quizSchema = new mongoose.Schema({
   quizDislikes: {
     type: [String],
     default: [],
-  },
-  quizMode: {
-    type: String,
-    enum: ['Live Quiz', 'Practice Quiz'],
-    default: 'Live Quiz',
-    required: true, // optional but recommended to enforce it
-  },
-  quizCategory: { // ✅ added field
-    type: String,
-    required: true,
-  },
-  minimumTime: {
-    type: Number, //track the mini time to complete the quiz
   }
 });
 
-const Quiz = mongoose.models.Quiz || mongoose.model('Quiz', quizSchema);
-export default Quiz;
+const PracticeQuiz = mongoose.models.PracticeQuiz || mongoose.model('PracticeQuiz', practiceQuizSchema);
+export default PracticeQuiz;
