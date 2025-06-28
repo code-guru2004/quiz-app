@@ -142,7 +142,7 @@ function DashboardLayout({ children }) {
 
             
             <header className="fixed top-0 left-0 right-0 z-30 bg-white dark:bg-gray-900 shadow mb-12">
-              <div className=" flex h-16 justify-between  items-center px-5">
+              <div className=" flex h-16 justify-between  items-center px-0.5 lg:px-5">
                 {/* Sidebar Toggle Button */}
                 <div className='flex gap-3 items-center'>
                   <div className="flex items-center justify-start w-10 lg:w-0 ">
