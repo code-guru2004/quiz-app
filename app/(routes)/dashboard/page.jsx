@@ -96,9 +96,9 @@ const UserDashboard = () => {
     const quizzesSet = new Set();
     let totalScore = 0, highestScore = 0, totalQues = 0;
     const categoryScores = {};
-    const modeScores= {};
-    const timeList= [],
-     rankList= [];
+    const modeScores = {};
+    const timeList = [],
+      rankList = [];
 
     submittedQuiz.forEach(sub => {
       quizzesSet.add(sub.quizId);
@@ -145,7 +145,9 @@ const UserDashboard = () => {
   if (!userStats) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center text-center px-4">
-        <h1 className="text-3xl font-bold mb-2">Welcome!</h1>
+        <h1 className="text-3xl font-bold mb-2 mr-2">Welcome! <span className="relative inline-block before:absolute before:-inset-1 before:block before:-skew-y-3 before:bg-green-500">
+          <span className="relative text-white dark:text-gray-950">{username || email}</span>
+        </span></h1>
         <p className="text-lg text-gray-600 dark:text-gray-400">No quiz activity found. Start a quiz to see your stats!</p>
       </div>
     );
@@ -154,9 +156,9 @@ const UserDashboard = () => {
   return (
     <div className="min-h-screen p-4 sm:p-6 lg:p-8 bg-gray-100 dark:bg-gray-950 text-gray-900 dark:text-gray-100">
       <h1 className="text-4xl font-bold text-blue-600 dark:text-blue-400 mb-2 text-center" >My Quiz Dashboard</h1>
-        <p className="text-lg text-gray-600 dark:text-gray-400 text-center mb-8">
-          Welcome, <span className="font-semibold text-gray-900 dark:text-white">{userData?.username || email}</span>! Here's your performance overview.
-        </p>
+      <p className="text-lg text-gray-600 dark:text-gray-400 text-center mb-8">
+        Welcome, <span className="font-semibold text-gray-900 dark:text-white">{username || email}</span>! Here's your performance overview.
+      </p>
 
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
         <DashboardCard title="Quizzes Attempted" value={userStats.totalQuizzesAttempted} icon="✅" isDarkMode={isDarkMode} />
