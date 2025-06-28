@@ -134,11 +134,7 @@ function QuizAnswer() {
         );
     }
 
-
-
-
     return (
-
         <div className="max-w-2xl mx-auto px-3 py-20 lg:py-24 relative overflow-hidden z-10">
             <div className='absolute top-4 left-2 lg:left-0 z-20'>
                 <Link href={'/dashboard'}>
