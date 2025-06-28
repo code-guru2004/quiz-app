@@ -9,6 +9,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ICONS } from '@/app/Icon';
 import ThemeToggle from '@/components/shared/ModeToggle';
 import Link from 'next/link';
+import { TbArrowLeftFromArc } from 'react-icons/tb';
+import { CircleArrowLeft, CircleChevronLeft, MoveLeft } from 'lucide-react';
 
 function QuizAnswer() {
     const params = useParams();
@@ -138,6 +140,11 @@ function QuizAnswer() {
     return (
 
         <div className="max-w-2xl mx-auto px-3 py-20 lg:py-24 relative overflow-hidden z-10">
+            <div className='absolute top-4 left-2 lg:left-0 z-20'>
+                <Link href={'/dashboard'}>
+                    <CircleChevronLeft className='size-9 rounded-full  bg-blue-400 text-white dark:text-black dark:bg-white'/>
+                </Link>
+            </div>
             <div className='absolute top-4 right-2 lg:right-0 z-20'>
                 <ThemeToggle />
             </div>
