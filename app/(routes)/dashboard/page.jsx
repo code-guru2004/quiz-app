@@ -123,10 +123,15 @@ const UserDashboard = () => {
     setTimes(timeList);
     setRanks(rankList);
 
+    const recentActivitiesSorted = [...submittedQuiz].sort(
+      (a, b) => new Date(b.submittedAt) - new Date(a.submittedAt)
+    );
+
     const stats = {
       totalQuizzesAttempted: quizzesSet.size,
       averageScore: parseFloat((totalScore / submittedQuiz.length).toFixed(2)),
       highestScore: (highestScore / totalQues) * 100,
+      recentActivities: recentActivitiesSorted,
       performanceByCategory: Object.keys(categoryScores).map(cat => ({
         name: cat,
         averageScore: ((categoryScores[cat].total / categoryScores[cat].count) * 100).toFixed(2),
@@ -296,6 +301,43 @@ const UserDashboard = () => {
             <p className="text-gray-600 dark:text-gray-400">No data for quiz rank yet.</p>
           )}
         </div>
+      </section>
+
+      <section className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
+        <h2 className="text-2xl font-semibold text-blue-600 dark:text-blue-300 mb-4">Recent Activities</h2>
+        {userStats.recentActivities.length > 0 ? (
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-left text-gray-700 dark:text-gray-300">
+              <thead>
+                <tr className="text-blue-500 dark:text-blue-200 border-b border-gray-300 dark:border-gray-700">
+                  <th className="py-2 px-4">Title</th>
+                  <th className="py-2 px-4">Mode</th>
+                  <th className="py-2 px-4">Category</th>
+                  <th className="py-2 px-4">Score</th>
+                  <th className="py-2 px-4">Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                {userStats.recentActivities.slice(0, 5).map((quiz, index) => (
+                  <tr key={index} className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700/30">
+                    <td className="py-2 px-4">{quiz.quizTitle || 'Untitled'}</td>
+                    <td className="py-2 px-4">{quiz.quizMode}</td>
+                    <td className="py-2 px-4">{quiz.quizCategory}</td>
+                    <td className="py-2 px-4 font-bold text-gray-900 dark:text-white">{quiz.quizScore}</td>
+                    <td className="py-2 px-4 text-sm text-gray-500 dark:text-gray-400">
+                      {new Date(quiz.submittedAt).toLocaleString(undefined, {
+                        dateStyle: 'medium',
+                        timeStyle: 'short',
+                      })}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <p className="text-gray-600 dark:text-gray-400">No recent activities to display.</p>
+        )}
       </section>
     </div>
   );

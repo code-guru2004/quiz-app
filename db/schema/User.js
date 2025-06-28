@@ -39,6 +39,13 @@ const quizSubmitSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  selectedAnswers: {
+    type: [{
+      questionId: String, // matches quizQuestionSchema.id
+      selectedOption: String,
+    }],
+    default: [],
+  },
 })
 const UserSchema = new mongoose.Schema({
   username:{

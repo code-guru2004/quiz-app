@@ -75,16 +75,16 @@ const ResultPage = () => {
 
       <div className="mt-6 text-center flex justify-center items-center gap-6">
         <button
-          onClick={() => window.location.href = '/dashboard'} // or any route
+          onClick={() => window.location.href = `/quiz-start/${_id}/quiz-answers`} // or any route
           className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
         >
-          Go to Dashboard 🏠
+          Answers 🎯
         </button>
         <button
           onClick={() => window.location.href = `/quiz-start/${_id}/leaderboard`} // or any route
           className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
         >
-          Go to Leaderboard 🎓
+          Leaderboard 📶
         </button>
       </div>
     </div>

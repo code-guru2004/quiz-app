@@ -26,7 +26,9 @@ function QuizStartQuestions({ timeLeft, setTimeLeft }) {
   const [selectedOptions, setSelectedOptions] = useState(Array(quizQuestions.length).fill(null));
   const [submittedQuestions, setSubmittedQuestions] = useState([]);
   const [reviewQues, setReviewQues] = useState([]);
-  const [isCurrQuizMarked, setIsCurrQuizMarked] = useState(false)
+  const [isCurrQuizMarked, setIsCurrQuizMarked] = useState(false);
+  const [allUserAnswers, setAllUserAnswers] = useState([])
+
   useEffect(() => {
     if (timeLeft > 0 && !quizCompleted) {
       const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
@@ -83,6 +85,7 @@ function QuizStartQuestions({ timeLeft, setTimeLeft }) {
           score: score + (submittedQuestions.includes(currQuizIndex) ? 0 : isCorrect ? 1 : 0),
           perQuestionTimes: finalTimes,
           totaltime: total,
+          selectedAnswers: allUserAnswers, 
         });
 
         if (resp?.data.success) {
@@ -96,6 +99,7 @@ function QuizStartQuestions({ timeLeft, setTimeLeft }) {
       }
     }
   };
+
 
   function handleAddMarkForReview() {
     if (!reviewQues.includes(currQuizIndex)) {
@@ -124,7 +128,31 @@ function QuizStartQuestions({ timeLeft, setTimeLeft }) {
     const updatedSelections = [...selectedOptions];
     updatedSelections[currQuizIndex] = idx;
     setSelectedOptions(updatedSelections);
+  
+    const selectedAns = {
+      questionId: quizQuestions[currQuizIndex]?._id, // assuming each question has a unique `_id`
+      selectedOption: prefixes[idx], // e.g., "A", "B", etc.
+    };
+  
+    // Update allUserAnswers
+    const updatedAnswers = [...allUserAnswers];
+    const existingIndex = updatedAnswers.findIndex(
+      (ans) => ans.questionId === selectedAns.questionId
+    );
+  
+    if (existingIndex !== -1) {
+      updatedAnswers[existingIndex] = selectedAns;
+    } else {
+      updatedAnswers.push(selectedAns);
+    }
+  
+    setAllUserAnswers(updatedAnswers);
   };
+  
+  useEffect(()=>{
+    console.log(allUserAnswers);
+    
+  },[allUserAnswers])
 
 
   function emojiIconScore() {

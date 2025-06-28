@@ -8,8 +8,8 @@ export async function POST(request) {
   await dbConnect();
 
   try {
-    const { quizId, email, score,perQuestionTimes,totaltime } = await request.json();
-    console.log(quizId,email,totaltime);
+    const { quizId, email, score,perQuestionTimes,totaltime, selectedAnswers } = await request.json();
+    console.log([...selectedAnswers]);
     
     if (!quizId || !email || typeof score !== "number") {
       return NextResponse.json(
@@ -56,6 +56,7 @@ export async function POST(request) {
         score,
         submittedAt: new Date(),
         perQuestionTimes,
+        selectedAnswers:[...selectedAnswers]
       });
       quiz.minimumTime=minimumTime;
 
@@ -80,7 +81,7 @@ export async function POST(request) {
       { status: 200 }
     );
   } catch (error) {
-    //console.error("Error submitting quiz:", error);
+    console.error("Error submitting quiz:", error);
     return NextResponse.json(
       { success: false, message: "Server error submitting quiz" },
       { status: 500 }

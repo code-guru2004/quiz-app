@@ -44,6 +44,13 @@ const userQuizSchema = new mongoose.Schema({
     type: [Number], // Array of time spent per question (in seconds)
     default: [],     // One entry per question
   },
+  selectedAnswers: {
+    type: [{
+      questionId: String, // matches quizQuestionSchema.id
+      selectedOption: String,
+    }],
+    default: [],
+  },
 });
 
 
