@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import { Menu as MenuIcon, X as XIcon, LayoutDashboard, ListChecks, BookOpenCheck, Settings, LogOut, Menu, User, BellIcon } from 'lucide-react'
+import { Menu as MenuIcon, X as XIcon, LayoutDashboard, ListChecks, BookOpenCheck, Settings, LogOut, Menu, User, BellIcon, Brain } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import Loader from '@/components/shared/Loader'
@@ -34,6 +34,7 @@ function DashboardLayout({ children }) {
     { label: 'Dashboard', href: '/dashboard', icon: <LayoutDashboard className="size-5" /> },
     { label: 'Live Quizzes', href: '/dashboard/live-quizzes', icon: <ListChecks className="size-5" /> },
     { label: 'Practice Quiz', href: '/dashboard/practice-quizzes', icon: <BookOpenCheck className="size-5" /> },
+    { label: 'AI Quiz', href: '/dashboard/ai-quiz', icon: <Brain className="size-5" /> },
   ]
 
   return (
@@ -70,7 +71,7 @@ function DashboardLayout({ children }) {
                     <XIcon className="text-red-800 size-5" />
                   </Button> */}
                 </div>
-                <nav className="flex-1 p-4 space-y-2">
+                <nav className="flex-1 p-4 space-y-4">
                   {navLinks.map(({ label, href, icon }, idx) => (
                     <Link
                       key={label}
@@ -113,7 +114,7 @@ function DashboardLayout({ children }) {
               </Button>
             </div>
             <div className='flex flex-col justify-between h-[90%]'>
-              <nav className="p-4 space-y-2">
+              <nav className="p-4 space-y-4">
                 {navLinks.map(({ label, href, icon }) => (
                   <Link key={label} href={href} className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-800 text-white transition" onClick={() => setSidebarDrawerOpen(false)}>
                     {icon}

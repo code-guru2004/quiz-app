@@ -303,9 +303,8 @@ const UserDashboard = () => {
         </div>
       </section>
 
-      <section className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 my-6">
+      <section className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 my-6 overflow-x-scroll">
         <h2 className="text-xl sm:text-2xl font-semibold text-blue-600 dark:text-blue-300 mb-4">Recent Activities</h2>
-
         {userStats.recentActivities.length > 0 ? (
           <div className="overflow-x-auto w-full">
             <table className="min-w-full text-left text-sm sm:text-base text-gray-700 dark:text-gray-300">

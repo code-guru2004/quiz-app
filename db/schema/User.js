@@ -46,7 +46,40 @@ const quizSubmitSchema = new mongoose.Schema({
     }],
     default: [],
   },
-})
+});
+
+// ✅ New AI Quiz Schema
+const aiQuizSchema = new mongoose.Schema({
+  quizId: {
+    type: String,
+    required: true,
+  },
+  category: {
+    type: String,
+    required: true,
+  },
+  level: {
+    type: String,
+    enum: ['easy', 'medium', 'hard'],
+    required: true,
+  },
+  totalQuestions: {
+    type: Number,
+    required: true,
+  },
+  totalTime: {
+    type: Number,
+    required: true,
+  },
+  score:{
+    type:Number,
+    required:true
+  },
+  createdAt: {
+    type: Date,
+    default: new Date(),
+  },
+});
 const UserSchema = new mongoose.Schema({
   username:{
     type: String,
@@ -58,7 +91,11 @@ const UserSchema = new mongoose.Schema({
   submitQuiz: {
     type: [quizSubmitSchema],
     default:[]
-  }
+  },
+  aiQuizzes: {
+    type: [aiQuizSchema],
+    default: [],
+  },
 });
 
 export default mongoose.models.User || mongoose.model('User', UserSchema);
