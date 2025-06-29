@@ -61,6 +61,7 @@ export default function AIQuizDashboard() {
 
     if (category === "" || difficulty === "") {
       toast.error("Fill all options.");
+      setIsLoading(false)
       return;
     }
     try {
@@ -90,7 +91,7 @@ export default function AIQuizDashboard() {
         <h1 className="text-3xl font-bold text-blue-600 dark:text-blue-300">🎓 AI Quiz Dashboard</h1>
         <Dialog>
           <DialogTrigger asChild>
-            <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-xl shadow-md transition flex justify-center items-center gap-1 text-base">
+            <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-xl shadow-md transition flex justify-center items-center gap-1 text-xs md:text-base">
               <LuCircleFadingPlus className='text-white size-6 font-bold'/> New AI Quiz
             </button>
           </DialogTrigger>

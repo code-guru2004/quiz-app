@@ -6,6 +6,7 @@ import useGlobalContextProvider from '@/app/_context/ContextApi';
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import toast from 'react-hot-toast';
+import ThemeToggle from '@/components/shared/ModeToggle';
 
 export default function AIAttendPage() {
     const { aiQuiz,email } = useGlobalContextProvider();
@@ -124,8 +125,11 @@ export default function AIAttendPage() {
     };
 
     return (
-        <div className="min-h-screen bg-white dark:bg-[#0f172a] text-gray-900 dark:text-gray-100">
-            <div className="max-w-7xl mx-auto flex flex-col lg:flex-row px-4 py-10 gap-8">
+        <div className="min-h-screen bg-white dark:bg-[#0f172a] text-gray-900 dark:text-gray-100 relative">
+            <div className='absolute top-2 left-2 lg:left-11 mb-4'>
+                <ThemeToggle/>
+            </div>
+            <div className="max-w-7xl mx-auto flex flex-col lg:flex-row px-4 py-14 gap-8">
                 {/* Sidebar Navigation */}
                 <div className="lg:w-1/5">
                     <h2 className="text-lg font-bold mb-4">Questions</h2>
@@ -213,8 +217,21 @@ export default function AIAttendPage() {
                             </div>
 
                             {/* Navigation Buttons */}
-                            <div className="flex justify-between items-center flex-wrap gap-2">
-                                <div className="flex gap-3">
+                            <div className="flex justify-between items-center flex-col lg:flex-row flex-wrap gap-2">
+                            <button
+                                    onClick={() =>
+                                        markForReview.includes(currentIndex)
+                                            ? handleRemoveMarkForReview()
+                                            : handleAddMarkForReview()
+                                    }
+                                    className={`px-4 py-2 rounded-xl shadow font-medium ${markForReview.includes(currentIndex)
+                                            ? 'bg-yellow-500 hover:bg-yellow-600 text-white'
+                                            : 'bg-yellow-100 hover:bg-yellow-200 text-yellow-900 dark:bg-yellow-700 dark:text-white'
+                                        } transition-all`}
+                                >
+                                    {markForReview.includes(currentIndex) ? '🚫Remove Mark' : '✔️Mark for Review'}
+                                </button>
+                                <div className="flex gap-3 flex-col lg:flex-row">
                                     <button
                                         onClick={handlePrevious}
                                         disabled={currentIndex === 0}
@@ -223,27 +240,16 @@ export default function AIAttendPage() {
                                         ⬅️ Previous
                                     </button>
                                     <button
-                                        onClick={() =>
-                                            markForReview.includes(currentIndex)
-                                                ? handleRemoveMarkForReview()
-                                                : handleAddMarkForReview()
-                                        }
-                                        className={`px-4 py-2 rounded-xl shadow font-medium ${markForReview.includes(currentIndex)
-                                                ? 'bg-yellow-500 hover:bg-yellow-600 text-white'
-                                                : 'bg-yellow-100 hover:bg-yellow-200 text-yellow-900 dark:bg-yellow-700 dark:text-white'
-                                            } transition-all`}
-                                    >
-                                        {markForReview.includes(currentIndex) ? '🚫Remove Mark' : '✔️Mark for Review'}
-                                    </button>
-                                </div>
-
-                                <button
                                     onClick={handleNext}
                                     disabled={userAnswers[currentIndex] === undefined}
-                                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl shadow disabled:opacity-50 transition-all w-full text-center"
+                                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl shadow disabled:opacity-50 transition-all  text-center"
                                 >
                                     {currentIndex === total - 1 ? '✅ Submit Quiz' : 'Next ➡️'}
                                 </button>
+                                </div>
+                                
+
+                               
                             </div>
                         </>
                     )}
