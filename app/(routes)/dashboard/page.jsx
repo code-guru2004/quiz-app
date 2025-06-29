@@ -167,7 +167,7 @@ const UserDashboard = () => {
         </span>! Here's your performance overview.
       </p>
 
-      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+      <section className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-3 gap-4 mb-8">
         <DashboardCard title="Quizzes Attempted" value={userStats.totalQuizzesAttempted} icon="✅" isDarkMode={isDarkMode} />
         <DashboardCard title="Your Avg. Score" value={userStats.averageScore} icon="📈" isDarkMode={isDarkMode} />
         <DashboardCard title="Highest (%)" value={userStats.highestScore.toFixed(2)} icon="🏆" isDarkMode={isDarkMode} />
