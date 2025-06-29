@@ -179,55 +179,99 @@ export default function AIQuizDashboard() {
               </button>
 
             </form>
+            <div>
+              <p className='text-xs text-center text-gray-400'>⚠️ All questions are generated based on your given information.</p>
+            </div>
           </DialogContent>
         </Dialog>
       </div>
 
       {/* Previously Attended Quizzes */}
-      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow rounded-xl p-6">
-        <h2 className="text-xl font-semibold text-blue-700 dark:text-blue-300 mb-4">📄 Previous AI Quizzes</h2>
-        {previousQuizzes?.length > 0 ? (
+      
+      <PaginatedQuizzes previousQuizzes={previousQuizzes}/>
+    </div>
+  );
+}
+
+
+const PaginatedQuizzes = ({ previousQuizzes = [] }) => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const quizzesPerPage = 5;
+
+  const totalPages = Math.ceil(previousQuizzes.length / quizzesPerPage);
+  const startIdx = (currentPage - 1) * quizzesPerPage;
+  const currentQuizzes = previousQuizzes.slice(startIdx, startIdx + quizzesPerPage);
+
+  const handlePrev = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
+  const handleNext = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+
+  return (
+    <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow rounded-xl p-6">
+      <h2 className="text-xl font-semibold text-blue-700 dark:text-blue-300 mb-4">📄 Previous AI Quizzes</h2>
+
+      {previousQuizzes.length > 0 ? (
+        <>
           <div className="space-y-4">
-            {previousQuizzes?.map((quiz, idx) => (
+            {currentQuizzes.map((quiz, idx) => (
               <div
                 key={idx}
                 className="flex justify-between items-center bg-gray-100 dark:bg-gray-800 px-4 py-3 rounded-lg hover:shadow transition"
               >
-                <div className='flex gap-5 justify-center items-center'>
+                <div className="flex gap-5 justify-center items-center">
                   <h3 className="font-semibold text-gray-800 dark:text-gray-100">{quiz.category}</h3>
                   <p
                     className={`text-xs font-semibold px-2 py-1 rounded-xl capitalize
-    ${quiz.level === 'hard'
+                      ${quiz.level === 'hard'
                         ? 'bg-red-700 text-white'
                         : quiz.level === 'medium'
-                          ? 'bg-yellow-600 text-gray-100'
-                          : 'bg-green-500 text-white'
+                        ? 'bg-yellow-600 text-gray-100'
+                        : 'bg-green-500 text-white'
                       }`}
                   >
                     {quiz.level}
                   </p>
-
                 </div>
                 <div className="text-right space-y-2">
                   <p className="text-blue-600 font-bold">
                     Score: {quiz.score}/{quiz.totalQuestions}
                   </p>
-                  <p className='text-xs'>
-                    {
-                      new Date(quiz.createdAt).toLocaleString(undefined, {
-                                dateStyle: 'medium',
-                                timeStyle: 'short',
-                            })
-                    }
+                  <p className="text-xs">
+                    {new Date(quiz.createdAt).toLocaleString(undefined, {
+                      dateStyle: 'medium',
+                      timeStyle: 'short',
+                    })}
                   </p>
                 </div>
               </div>
             ))}
           </div>
-        ) : (
-          <p className="text-gray-600 dark:text-gray-400">You haven’t taken any AI quiz yet.</p>
-        )}
-      </div>
+
+          {/* Pagination Controls */}
+          <div className="flex justify-center items-center gap-4 mt-6">
+            <button
+              onClick={handlePrev}
+              disabled={currentPage === 1}
+              className="px-3 py-1 rounded bg-gray-300 dark:bg-gray-700 text-sm dark:text-white disabled:opacity-50"
+            >
+              Previous
+            </button>
+            <span className="text-sm text-gray-700 dark:text-gray-300">
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              onClick={handleNext}
+              disabled={currentPage === totalPages}
+              className="px-3 py-1 rounded bg-gray-300 dark:bg-gray-700 text-sm dark:text-white disabled:opacity-50"
+            >
+              Next
+            </button>
+          </div>
+        </>
+      ) : (
+        <p className="text-gray-600 dark:text-gray-400">You haven’t taken any AI quiz yet.</p>
+      )}
     </div>
   );
-}
+};
+
+
