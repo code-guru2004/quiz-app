@@ -6,7 +6,7 @@ export async function POST(req) {
   const totalTime = totalQuestions * timePerQuestion;
 
   const prompt = `
-You are an intelligent quiz generator bot. Based on the following input parameters, generate a complete quiz with multiple-choice questions.
+You are an intelligent quiz generator bot. Based on the following input parameters, generate a complete quiz with multiple-choice questions.Always give different different questions.
 
 ### Input Parameters:
 - Category: ${category}

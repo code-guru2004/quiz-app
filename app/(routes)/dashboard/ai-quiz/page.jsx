@@ -73,6 +73,8 @@ export default function AIQuizDashboard() {
       });
 
       if (resp?.data?.quiz) {
+        console.log(resp.data.quiz);
+        
         setAiQuiz(resp.data.quiz);
         router.push('/ai-quiz-attend');
       }
@@ -80,9 +82,6 @@ export default function AIQuizDashboard() {
       console.error('AI quiz generation failed:', error);
     }
   }
-
-
-
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-10 space-y-8">
