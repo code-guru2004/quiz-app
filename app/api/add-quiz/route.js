@@ -1,5 +1,6 @@
 import { dbConnect } from "@/db/dbConnect";
 import Quiz from "@/db/schema/quizSchema";
+import { notifyAllUsersAboutNewQuiz } from "@/lib/notifyAllUsersAboutNewQuiz";
 import { NextResponse } from "next/server";
 
 export async function POST(request) {
@@ -19,8 +20,11 @@ export async function POST(request) {
         { status: 422 }
       );
     }
+    const newQuiz = new Quiz({ quizTitle, quizIcon, quizQuestions,quizDescription,quizTime,quizMode,quizCategory,minimumTime:(quizTime*60) });
 
-    await Quiz.create({ quizTitle, quizIcon, quizQuestions,quizDescription,quizTime,quizMode,quizCategory,minimumTime:(quizTime*60) });
+    await newQuiz.save();
+    //await Quiz.create({ quizTitle, quizIcon, quizQuestions,quizDescription,quizTime,quizMode,quizCategory,minimumTime:(quizTime*60) });
+    await notifyAllUsersAboutNewQuiz(quizTitle, quizMode);
 
     return NextResponse.json(
       {

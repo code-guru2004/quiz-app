@@ -19,11 +19,6 @@ export default function AIQuizDashboard() {
   const [isLoading, setIsLoading] = useState(false)
   const [previousQuizzes, setPreviousQuizzes] = useState([]);
 
-  // Mock previous quizzes (replace with your real data from DB)
-  // const previousQuizzes = [
-  //   { title: 'JavaScript Basics', score: 8, total: 10, date: '2025-06-28' },
-  //   { title: 'React Hooks', score: 7, total: 10, date: '2025-06-25' },
-  //   { title: 'Cybersecurity', score: 9, total: 10, date: '2025-06-22' },
   const fetchUserData = async (username) => {
     try {
       const res = await fetch(`/api/get-user?username=${username}`);

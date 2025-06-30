@@ -10,6 +10,7 @@ import Footer from './_component/Footer'
 import Header from './_component/Header'
 import clsx from 'clsx';
 import ThemeToggle, { ModeToggle } from '@/components/shared/ModeToggle'
+import NotificationDropdown from '@/components/shared/NotificationDropdown'
 
 function DashboardLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(true)
@@ -142,7 +143,7 @@ function DashboardLayout({ children }) {
             {/* Header */}
 
             
-            <header className="fixed top-0 left-0 right-0 z-30 bg-white dark:bg-gray-900 shadow mb-12">
+            <header className="fixed top-0 left-0 right-0 z-30 bg-gray-50 dark:bg-gray-900 shadow mb-12">
               <div className=" flex h-16 justify-between  items-center px-0.5 lg:px-5">
                 {/* Sidebar Toggle Button */}
                 <div className='flex gap-3 items-center'>
@@ -180,10 +181,7 @@ function DashboardLayout({ children }) {
 
                 <div className="ml-1 flex relative items-center gap-4">
                   <ThemeToggle />
-                  <button className=" p-2 rounded hover:bg-gray-100 dark:hover:bg-slate-800 right-4">
-                    <BellIcon className="h-6 w-6 text-gray-700 dark:text-gray-400" />
-                    <span className="absolute top-0 right-0 inline-block w-2 h-2 bg-red-500 rounded-full"></span>
-                  </button>
+                  <NotificationDropdown />
                 </div>
 
               </div>

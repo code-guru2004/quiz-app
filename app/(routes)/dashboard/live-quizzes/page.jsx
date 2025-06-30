@@ -62,7 +62,7 @@ function LiveQuiz() {
   // };
 
   return (
-    <section className="min-h-screen px-4 md:px-8 body mb-12">
+    <section className="min-h-screen mt-5 px-4 md:px-8 body mb-12">
       <h1 className="flex items-center justify-center gap-3 text-4xl font-bold text-center text-indigo-600 mb-10">
         🔴Live Quizzes
       </h1>

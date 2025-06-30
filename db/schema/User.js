@@ -80,6 +80,34 @@ const aiQuizSchema = new mongoose.Schema({
     default: new Date(),
   },
 });
+
+// ⚠️ Notification Schema
+const notificationSchema = new mongoose.Schema({
+  id: {
+    type: String,
+    required: true, // UUID (generate on creation)
+  },
+  title: {
+    type: String,
+    required: true,
+  },
+  message: {
+    type: String,
+    required: true,
+  },
+  link: {
+    type: String, // optional, e.g. /quiz/123
+  },
+  read: {
+    type: Boolean,
+    default: false,
+  },
+  createdAt: {
+    type: Date,
+    default: () => new Date(),
+  },
+});
+
 const UserSchema = new mongoose.Schema({
   username:{
     type: String,
@@ -96,6 +124,10 @@ const UserSchema = new mongoose.Schema({
     type: [aiQuizSchema],
     default: [],
   },
+  notifications: {
+    type: [notificationSchema],
+    default: []
+  }
 });
 
 export default mongoose.models.User || mongoose.model('User', UserSchema);
