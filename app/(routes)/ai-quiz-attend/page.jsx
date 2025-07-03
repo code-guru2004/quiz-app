@@ -98,6 +98,20 @@ export default function AIAttendPage() {
                 score: correct,
                 email
             });
+            // const resp = await fetch("/api/submit-ai-quiz", {
+            //     method: "POST",
+            //     headers: { "Content-Type": "application/json" },
+            //     body: JSON.stringify({
+            //         quizId: uuidv4(),
+            //         category: aiQuiz.category,
+            //         level: aiQuiz.level,
+            //         totalQuestions: aiQuiz.totalQuestions,
+            //         totalTime: aiQuiz.totalTime,
+            //         score: correct,
+            //         email
+            //     }),
+            //   });
+              
             if (resp) {
                 toast.success("Quiz Submitted")
             }
