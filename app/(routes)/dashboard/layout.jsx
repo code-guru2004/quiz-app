@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import { Menu as MenuIcon, X as XIcon, LayoutDashboard, ListChecks, BookOpenCheck, Settings, LogOut, Menu, User, BellIcon, Brain } from 'lucide-react'
+import { Menu as MenuIcon, X as XIcon, LayoutDashboard, ListChecks, BookOpenCheck, Settings, LogOut, Menu, User, BellIcon, Brain, Swords } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import Loader from '@/components/shared/Loader'
@@ -36,6 +36,7 @@ function DashboardLayout({ children }) {
     { label: 'Live Quizzes', href: '/dashboard/live-quizzes', icon: <ListChecks className="size-5" /> },
     { label: 'Practice Quiz', href: '/dashboard/practice-quizzes', icon: <BookOpenCheck className="size-5" /> },
     { label: 'AI Quiz', href: '/dashboard/ai-quiz', icon: <Brain className="size-5" /> },
+    { label: '1 vs 1 Challange', href: '/dashboard/1vs1-quiz', icon: <Swords className="size-5" /> },
   ]
 
   return (

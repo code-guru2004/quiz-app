@@ -1,0 +1,28 @@
+import { dbConnect } from "@/db/dbConnect";
+import Challenge from "@/db/schema/Challenge";
+
+
+export async function POST(req, { params }) {
+  await dbConnect();
+  const challengeId = params.id;
+  const body = await req.json();
+  const { user, selectedAnswers, score, timeTaken } = body;
+
+  const challenge = await Challenge.findOne({ challengeId });
+
+  if (!challenge) {
+    return new Response(JSON.stringify({ success: false, message: 'Challenge not found' }), { status: 404 });
+  }
+
+  challenge.responses.push({
+    user,
+    selectedAnswers,
+    score,
+    timeTaken,
+    submittedAt: new Date(),
+  });
+
+  await challenge.save();
+
+  return new Response(JSON.stringify({ success: true, message: 'Response recorded' }), { status: 200 });
+}

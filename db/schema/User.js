@@ -107,7 +107,16 @@ const notificationSchema = new mongoose.Schema({
     default: () => new Date(),
   },
 });
-
+const FriendSchema = new mongoose.Schema({
+  username:{
+    type:String,
+    required: true
+  },
+  email:{
+    type:String,
+    required: true
+  }
+}) 
 const UserSchema = new mongoose.Schema({
   username:{
     type: String,
@@ -126,6 +135,10 @@ const UserSchema = new mongoose.Schema({
   },
   notifications: {
     type: [notificationSchema],
+    default: []
+  },
+  friendList:{
+    type: [FriendSchema],
     default: []
   }
 });
