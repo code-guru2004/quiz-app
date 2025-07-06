@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Home, Plus, MailQuestion } from 'lucide-react';
+import { Home, Plus, MailQuestion, BookOpenText } from 'lucide-react';
 import ThemeToggle from '@/components/shared/ModeToggle';
 
 const Sidebar = () => {
@@ -12,7 +12,7 @@ const Sidebar = () => {
       <nav className="mt-4 flex flex-col space-y-1 px-4">
         <SidebarLink href="/admin" icon={<Home size={18} />} label="Dashboard" />
         <SidebarLink href="/admin/quiz-build" icon={<Plus size={18} />} label="Create Quiz" />
-        <SidebarLink href="/admin/all-quizes" icon={<MailQuestion size={18} />} label="All Quizes" />
+        <SidebarLink href="/admin/preparation" icon={<BookOpenText size={18} />} label="Preparation" />
       </nav>
     </div>
   );
