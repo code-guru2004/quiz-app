@@ -181,7 +181,7 @@ function ChallengePage() {
 
         {/* CHALLENGE TAB */}
         <TabsContent value="challenge">
-          {friendList.length === 0 ? (
+          {attendedChallenges.length === 0 ? (
             <p className="text-center text-gray-500">No challenge found😕</p>
           ) : (
             <div className="space-y-6">
@@ -286,6 +286,7 @@ function ChallengePage() {
                 </ul>
               </div>
               {/* Attended Challenges List */}
+              
               {attendedChallenges.map((ch) => {
                 const opponent = ch.fromUser === username ? ch.toUser : ch.fromUser;
                 const yourResponse = ch.responses.find((r) => r.user === username);
