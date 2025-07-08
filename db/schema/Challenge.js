@@ -1,23 +1,43 @@
 import mongoose from "mongoose";
 
-// Define a sub-schema for each question
-const questionSchema = new mongoose.Schema({
-  questionId: { type: String, required: true },
-  question: { type: String, required: true },
-  options: {
-    A: { type: String, required: true },
-    B: { type: String, required: true },
-    C: { type: String, required: true },
-    D: { type: String, required: true },
-  },
-  correctOption: {
+// Match your quizQuestionSchema exactly
+const challengeQuestionSchema = new mongoose.Schema({
+  id: {
     type: String,
-    enum: ['A', 'B', 'C', 'D'],
     required: true,
+  },
+  mainQuestion: {
+    type: String,
+    required: true,
+  },
+  choices: {
+    type: [String],
+    required: true,
+  },
+  correctAnswer: {
+    type: String,
+    required: true,
+  },
+  avgTime: {
+    type: Number,
+    default: 0,
   },
 }, { _id: false });
 
-// Define the main challenge schema
+const responseSchema = new mongoose.Schema({
+  user: { type: String, required: true }, // fromUser or toUser
+  selectedAnswers: {
+    type: [{
+      questionId: String,
+      selectedOption: String,
+    }],
+    default: [],
+  },
+  score: Number,
+  timeTaken: Number,
+  submittedAt: Date,
+}, { _id: false });
+
 const challengeSchema = new mongoose.Schema({
   challengeId: {
     type: String,
@@ -38,24 +58,11 @@ const challengeSchema = new mongoose.Schema({
     default: 'pending',
   },
   questions: {
-    type: [questionSchema],
+    type: [challengeQuestionSchema],
     required: true,
   },
   responses: {
-    type: [
-      {
-        user: String, // fromUser or toUser
-        selectedAnswers: [
-          {
-            questionId: String,
-            selectedOption: String,
-          },
-        ],
-        score: Number,
-        timeTaken: Number,
-        submittedAt: Date,
-      },
-    ],
+    type: [responseSchema],
     default: [],
   },
   createdAt: {

@@ -6,7 +6,7 @@ export async function POST(req, { params }) {
   await dbConnect();
   const challengeId = params.id;
   const body = await req.json();
-  const { user, selectedAnswers, score, timeTaken } = body;
+  const { username, answers, score, timeTaken } = body;
 
   const challenge = await Challenge.findOne({ challengeId });
 
@@ -15,8 +15,8 @@ export async function POST(req, { params }) {
   }
 
   challenge.responses.push({
-    user,
-    selectedAnswers,
+    user:username,
+    selectedAnswers:answers,
     score,
     timeTaken,
     submittedAt: new Date(),

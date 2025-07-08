@@ -37,7 +37,7 @@ function DashboardLayout({ children }) {
     { label: 'Practice Quiz', href: '/dashboard/practice-quizzes', icon: <BookOpenCheck className="size-5" /> },
     { label: 'AI Quiz', href: '/dashboard/ai-quiz', icon: <Brain className="size-5" /> },
     { label: 'Preparation', href: '/dashboard/preparation', icon: <BookOpenText className="size-5" /> },
-    { label: '1 vs 1 Challange', href: '/dashboard/1vs1-quiz', icon: <Swords className="size-5" /> },
+    { label: '1vs1 Challange', href: '/dashboard/1vs1-quiz', icon: <Swords className="size-5" /> },
   ]
 
   return (
