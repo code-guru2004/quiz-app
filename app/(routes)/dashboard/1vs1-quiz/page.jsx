@@ -69,7 +69,7 @@ function ChallengePage() {
       //const challengeData = await challengeRes.json();
       console.log("Challenge API response:", challengeRes.data.challengeId);
       if (challengeRes.data.success) {
-        const resp = handleChallenge(selectedFriend.username, challengeRes.data.challengeId);
+        const resp = await handleNotify(selectedFriend.username, challengeRes.data.challengeId);
         if (resp) {
           toast.success(`Challenge sent to ${selectedFriend.username} for ${selectedQuiz.quizTitle}`);
           setSelectedFriend(null);
@@ -87,7 +87,7 @@ function ChallengePage() {
 
 
 
-  const handleChallenge = async (opponentUsername, challengeId) => {
+  const handleNotify = async (opponentUsername, challengeId) => {
     try {
       const res = await fetch('/api/notify-opponent', {
         method: 'POST',
@@ -182,7 +182,7 @@ function ChallengePage() {
         {/* CHALLENGE TAB */}
         <TabsContent value="challenge">
           {friendList.length === 0 ? (
-            <p className="text-center text-gray-500">No hallenge found😕</p>
+            <p className="text-center text-gray-500">No challenge found😕</p>
           ) : (
             <div className="space-y-6">
               {/* Challenge Drawer */}
@@ -325,7 +325,7 @@ function ChallengePage() {
 
                     <div className="flex justify-end">
                       <button
-                        className={`px-4 py-2 rounded-lg text-white font-medium transition ${isAccepted
+                        className={`px-4 py-1.5 rounded-lg text-white font-medium transition ${isAccepted
                           ? "bg-blue-600 hover:bg-blue-700"
                           : "bg-gray-400 cursor-not-allowed"
                           }`}
@@ -338,6 +338,15 @@ function ChallengePage() {
                       >
                         Attend Quiz
                       </button>
+                      {ch.status === "pending" && ch.toUser === username && (
+                        <Button
+                          className="bg-green-600 hover:bg-green-700 text-white ml-2"
+                          onClick={()=>router.push(`/dashboard/Challenge/${ch?.challengeId}`)}
+                        >
+                          Accept Challenge
+                        </Button>
+                      )}
+
                     </div>
                   </div>
                 );

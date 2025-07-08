@@ -11,6 +11,7 @@ export async function POST(req) {
     await dbConnect();
 
     const { sender, opponent,challengeId } = await req.json();
+console.log(sender, opponent,challengeId);
 
 
     if (!sender || !opponent) {
@@ -28,7 +29,7 @@ export async function POST(req) {
     // Prepare new notification
     const newNotification = {
       id: uuidv4(),
-      title: `New 1 v/s 1 Challenge!`,
+      title: "New 1 v/s 1 Challenge!",
       message: `${sender} has challenged you to a quiz duel!`,
       link: `/dashboard/Challenge/${challengeId}`, // page to accept and play challenge
       read: false,
