@@ -215,3 +215,10 @@ html {
 .dark .para{
   @apply text-slate-100
 }
+/* for no selection */
+.no-select {
+  user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  -moz-user-select: none;
+}
