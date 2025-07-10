@@ -10,6 +10,7 @@ import useGlobalContextProvider from '@/app/_context/ContextApi';
 import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import Lottie from 'lottie-react';
 
 function ChallengePage() {
   const router = useRouter();
@@ -29,7 +30,17 @@ function ChallengePage() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
+  const [animationData, setAnimationData] = useState(null);
 
+  useEffect(() => {
+    const loadAnimation = async () => {
+      const res = await fetch('/assets/game-loading.json');
+      const data = await res.json();
+      setAnimationData(data);
+    };
+
+    loadAnimation();
+  }, []);
 
   useEffect(() => {
     const fetchUserData = async (username) => {
@@ -162,7 +173,7 @@ function ChallengePage() {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-[60vh] text-xl font-semibold">
-        Loading Battleground...
+        <Lottie animationData={animationData} loop autoplay className="w-60 h-60" />
       </div>
     );
   }
