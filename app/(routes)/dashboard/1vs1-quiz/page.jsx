@@ -173,7 +173,7 @@ function ChallengePage() {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-[60vh] text-xl font-semibold">
-        <Lottie animationData={animationData} loop autoplay className="w-60 h-60" />
+        <Lottie animationData={animationData} loop autoplay className="w-96 h-96" />
       </div>
     );
   }
