@@ -99,7 +99,11 @@ const quizSchema = new mongoose.Schema({
   },
   minimumTime: {
     type: Number, //track the mini time to complete the quiz
-  }
+  },
+  createdAt: {
+    type: Date,
+    default: () => new Date(),
+  },
 });
 
 const Quiz = mongoose.models.Quiz || mongoose.model('Quiz', quizSchema);

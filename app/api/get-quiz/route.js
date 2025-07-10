@@ -6,7 +6,7 @@ export async function GET(request) {
     await dbConnect();
 
     try {
-        const quizData = await Quiz.find();
+        const quizData = await Quiz.find().sort({ createdAt: -1 });
         // console.log(quizData);
         if (!quizData) {
             return NextResponse.json(
