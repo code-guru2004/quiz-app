@@ -15,11 +15,27 @@ function LiveQuiz() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchText, setSearchText] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [popularQuiz, setPopularQuiz] = useState(null);
   useEffect(() => {
     setIsLoading(true);
     const liveQuizArray = allQuiz.filter((quiz) => quiz.quizMode === 'Live Quiz');
     setLiveQuizzes(liveQuizArray);
     setFilteredQuizzes(liveQuizArray);
+    console.log(liveQuizArray);
+
+    let maxi = -1;
+    let mostPopularId = null;
+    for (let i = 0; i < liveQuizArray?.length; i++) {
+      const quiz = liveQuizArray[i];
+      if (quiz.userSubmissions.length > 0 && maxi < quiz.userSubmissions.length) {
+        maxi = quiz.userSubmissions.length;
+      mostPopularId = quiz._id;
+      }
+    }
+    if (mostPopularId) {
+      setPopularQuiz(mostPopularId);
+      console.log('Most popular quiz ID:', mostPopularId);
+    }
 
     const timeout = setTimeout(() => {
       setIsLoading(false);
@@ -82,7 +98,7 @@ function LiveQuiz() {
           className="border px-3 py-2 rounded-md shadow-sm w-full max-w-xs
                bg-white text-gray-900 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700"
         >
-        
+
           {categories.map((cat) => (
             <option key={cat} value={cat}>
               {cat}
@@ -109,7 +125,7 @@ function LiveQuiz() {
               </p>
             ) : (
               filteredQuizzes.map((quiz, index) => (
-                <QuizCard key={index} quiz={quiz} />
+                <QuizCard key={index} quiz={quiz} isPopular={popularQuiz === quiz?._id} />
               ))
             )}
           </div>
@@ -150,7 +166,7 @@ function SkeletonCard() {
           <div className="h-3 w-10 bg-gray-300 dark:bg-gray-700 rounded" />
         </div>
         <div className="flex items-center gap-2">
-          <PiSealQuestionDuotone className="w-4 h-4 text-gray-400"/>
+          <PiSealQuestionDuotone className="w-4 h-4 text-gray-400" />
           <div className="h-3 w-10 bg-gray-300 dark:bg-gray-700 rounded" />
         </div>
         <div className="flex items-center gap-2">

@@ -1,19 +1,42 @@
 'use client';
 
-import { FC } from 'react';
-import { Clock, Users, Star, ArrowRight,BadgeQuestionMark  } from 'lucide-react'; // Added ArrowRight for the button icon
+import { FC, useEffect, useState } from 'react';
+import { Clock, Users, Star, ArrowRight, BadgeQuestionMark } from 'lucide-react'; // Added ArrowRight for the button icon
 import Link from 'next/link';
 import { ICONS } from '@/app/Icon'; // Assuming this path is correct for your icons
 import useGlobalContextProvider from '@/app/_context/ContextApi';
 import { PiSealQuestionDuotone } from 'react-icons/pi';
+import Lottie from 'lottie-react';
 
-const QuizCard = ({ quiz, onSelect }) => {
+
+const QuizCard = ({ quiz, isPopular }) => {
   const { quizToStartObject } = useGlobalContextProvider();
-  const { setSelectQuizToStart } = quizToStartObject
+  const { setSelectQuizToStart } = quizToStartObject;
+  const [animationData, setAnimationData] = useState(null);
+
+  useEffect(() => {
+    const loadAnimation = async () => {
+      const res = await fetch('/assets/Fire.json');
+      const data = await res.json();
+      setAnimationData(data);
+    };
+
+    loadAnimation();
+  }, []);
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 p-7 border border-gray-100 dark:border-gray-700 flex flex-col justify-between transform hover:-translate-y-1"
+    <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 p-7 border border-gray-100 dark:border-gray-700 flex flex-col justify-between transform hover:-translate-y-1 relative"
       onClick={() => setSelectQuizToStart(quiz)}
     >
+      {/* popular quiz icon */}
+      {
+        isPopular && (
+          <div className="absolute -top-2 right-8 flex items-center gap-1 px-1.5 py-1 rounded-xl bg-gradient-to-r from-orange-200 to-amber-300 border border-orange-300 text-orange-900 shadow-md z-50">
+            <Lottie animationData={animationData} loop autoplay className="w-5 h-5" />
+            <span className="text-xs font-semibold">Popular</span>
+          </div>
+
+        )
+      }
       {/* Header */}
       <div className="flex items-start justify-between mb-5">
         <div className="text-5xl md:text-6xl text-indigo-600 dark:text-indigo-400">
