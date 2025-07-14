@@ -41,7 +41,7 @@ function QuizStart({ params }) {
         <div className="h-svh flex flex-col gap-2 items-center justify-center">
           <Image src={"/errorIcon.png"} alt="image" width={180} height={180} />
           <h2 className="text-xl font-bold">Please Select Your Quiz</h2>
-          <span className="font-light">You will readirecyt to home page</span>
+          <span className="font-light">You will readirect to home page.</span>
         </div>
       ) : (
         <>

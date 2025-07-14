@@ -1,5 +1,6 @@
 "use client";
 import useGlobalContextProvider from "@/app/_context/ContextApi";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
@@ -28,6 +29,8 @@ function QuizStartQuestions({ timeLeft, setTimeLeft }) {
   const [reviewQues, setReviewQues] = useState([]);
   const [isCurrQuizMarked, setIsCurrQuizMarked] = useState(false);
   const [allUserAnswers, setAllUserAnswers] = useState([])
+  const [wantSubmitted, setWantSubmitted] = useState(false);
+
 
   useEffect(() => {
     if (timeLeft > 0 && !quizCompleted) {
@@ -51,6 +54,9 @@ function QuizStartQuestions({ timeLeft, setTimeLeft }) {
     return () => clearInterval(interval);
   }, [currQuizIndex, reviewQues]);
 
+  const handleConfirmSubmission = () => {
+    setWantSubmitted(true);
+  }
 
   const handleSubmit = async () => {
     const selectedOption = selectedOptions[currQuizIndex];
@@ -349,7 +355,7 @@ function QuizStartQuestions({ timeLeft, setTimeLeft }) {
                     Previous
                   </button>
                   <button
-                    onClick={handleSubmit}
+                    onClick={handleConfirmSubmission}
                     disabled={quizCompleted}
                     className="px-3 lg:px-6 py-2 bg-green-700 text-white rounded-md hover:bg-green-800 transition-all"
                   >
@@ -358,6 +364,60 @@ function QuizStartQuestions({ timeLeft, setTimeLeft }) {
                       : "Next"}
                   </button>
                 </div>
+
+                <Dialog open={wantSubmitted} className="bg-white dark:bg-gray-900">
+                  <DialogContent>
+                    <DialogHeader>
+                      <div className="max-w-xl w-full mx-auto bg-white dark:bg-gray-900 rounded-xl overflow-hidden transition-colors duration-300">
+                        <div className="max-w-md mx-auto pt-12 pb-14 px-5 text-center">
+                          <div className="inline-flex items-center justify-center w-12 h-12 mb-5 rounded-full">
+                            <svg viewBox="0 0 48 48" height={100} width={100} xmlns="http://www.w3.org/2000/svg">
+                              <linearGradient id="SVGID_1__8tZkVc2cOjdg_gr1" x1="37.081" x2="10.918" y1="10.918" y2="37.081" gradientUnits="userSpaceOnUse">
+                                <stop offset="0" stopColor="#60fea4" />
+                                <stop offset=".033" stopColor="#6afeaa" />
+                                <stop offset=".197" stopColor="#97fec4" />
+                                <stop offset=".362" stopColor="#bdffd9" />
+                                <stop offset=".525" stopColor="#daffea" />
+                                <stop offset=".687" stopColor="#eefff5" />
+                                <stop offset=".846" stopColor="#fbfffd" />
+                                <stop offset="1" stopColor="#fff" />
+                              </linearGradient>
+                              <circle cx={24} cy={24} r="18.5" fill="url(#SVGID_1__8tZkVc2cOjdg_gr1)" />
+                              <path d="M35.401,38.773C32.248,41.21,28.293,42.66,24,42.66C13.695,42.66,5.34,34.305,5.34,24	c0-2.648,0.551-5.167,1.546-7.448"
+                                stroke="#10e36c" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                              <path d="M12.077,9.646C15.31,6.957,19.466,5.34,24,5.34c10.305,0,18.66,8.354,18.66,18.66c0,2.309-0.419,4.52-1.186,6.561"
+                                stroke="#10e36c" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                              <polyline points="16.5,23.5 21.5,28.5 32,18"
+                                stroke="#10e36c" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                            </svg>
+                          </div>
+                          <h4 className="text-xl font-semibold mb-5 text-gray-900 dark:text-gray-100">
+                            Are you sure to submit?
+                          </h4>
+                          <p className="text-gray-600 dark:text-gray-300 font-medium">
+                            Check once. You have still some time left.
+                          </p>
+                        </div>
+                        <div className="pt-5 pb-6 px-6 text-right bg-gray-100 dark:bg-gray-800 -mb-2 transition-colors duration-300">
+                          <button
+                            onClick={() => setWantSubmitted(false)}
+                            className="inline-block w-full sm:w-auto py-3 px-5 mb-2 mr-4 text-center font-semibold leading-6 text-gray-800 dark:text-gray-200 bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500 rounded-lg transition duration-200"
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            onClick={handleSubmit}
+                            disabled={quizCompleted}
+                            className="inline-block w-full sm:w-auto py-3 px-5 mb-2 text-center font-semibold leading-6 text-white bg-green-500 hover:bg-green-600 rounded-lg transition duration-200 disabled:opacity-50"
+                          >
+                            Submit
+                          </button>
+                        </div>
+                      </div>
+                    </DialogHeader>
+                  </DialogContent>
+                </Dialog>
+
               </div>
             </>
           )}
