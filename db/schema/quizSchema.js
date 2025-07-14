@@ -7,7 +7,11 @@ const quizQuestionSchema = new mongoose.Schema({
   },
   mainQuestion: {
     type: String,
-    required: true,
+    default: "",
+  },
+  mainQuestionImage: {
+    type: String, // Cloudinary URL or public ID
+    default: "",
   },
   choices: {
     type: [String],
@@ -104,6 +108,18 @@ const quizSchema = new mongoose.Schema({
     type: Date,
     default: () => new Date(),
   },
+  isPublish:{
+    type: Boolean,
+    default: true,
+  }
+});
+
+quizQuestionSchema.pre("validate", function (next) {
+  if (!this.mainQuestion && !this.mainQuestionImage) {
+    next(new Error("Either mainQuestion (text) or mainQuestionImage (image) is required."));
+  } else {
+    next();
+  }
 });
 
 const Quiz = mongoose.models.Quiz || mongoose.model('Quiz', quizSchema);

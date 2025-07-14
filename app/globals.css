@@ -222,3 +222,20 @@ html {
   -ms-user-select: none;
   -moz-user-select: none;
 }
+
+
+@keyframes customSpin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.custom-spinner {
+  border: 4px solid #3b82f6; /* blue-500 */
+  border-top-color: transparent;
+  border-radius: 9999px;
+  animation: customSpin 2s linear infinite;
+}

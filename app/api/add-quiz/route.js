@@ -8,7 +8,7 @@ export async function POST(request) {
 
   try {
     const { quizTitle, quizIcon, quizQuestions,quizDescription,quizTime,quizMode,quizCategory} = await request.json();
-    //console.log(quizTitle, quizIcon, quizQuestions,quizDescription,quizTime);
+    console.log( quizQuestions);
     
     // Optional: Add basic validation
     if (!quizTitle || !Array.isArray(quizQuestions) || quizQuestions.length === 0) {

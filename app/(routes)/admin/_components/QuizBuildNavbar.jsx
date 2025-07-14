@@ -25,24 +25,33 @@ function QuizBuildNavbar({ newQuiz, quizQuestions }) {
   async function addNewQuiz() {
     for (let i = 0; i < quizQuestions.length; i++) {
       const q = quizQuestions[i];
-      const isMainEmpty = q.mainQuestion.trim() === '';
+      const isMainEmpty = !q.mainQuestion?.trim();
+      const isImageEmpty = !q.mainQuestionImage?.trim();
+    
       const hasEmptyChoice = q.choices.some((choice) => {
-        const content = choice.slice(3).trim();
+        const content = choice.slice(3).trim(); // remove bullet like "A) "
         return content.length === 0;
       });
+    
       const isInsufficientChoices = q.choices.length < 3;
-      const isAnswerEmpty = q.correctAnswer.trim() === '';
-
-      if (isMainEmpty || hasEmptyChoice || isInsufficientChoices) {
-        isMainEmpty
-          ? toast.error(`Please complete question ${i + 1}.`)
-          : toast.error(`Please fill all options in question ${i + 1}.`);
+      const isAnswerEmpty = !q.correctAnswer?.trim();
+    
+      // ✅ Check: Either question or image must be present
+      if ((isMainEmpty && isImageEmpty) || hasEmptyChoice || isInsufficientChoices) {
+        if (isMainEmpty && isImageEmpty) {
+          toast.error(`Please add text or image for question ${i + 1}.`);
+        } else if (hasEmptyChoice || isInsufficientChoices) {
+          toast.error(`Please fill all options in question ${i + 1}.`);
+        }
         return;
-      } else if (isAnswerEmpty) {
+      }
+    
+      if (isAnswerEmpty) {
         toast.error('Write the answer of question ' + (i + 1));
         return;
       }
     }
+    
 
     if (newQuiz.quizCategory === '') {
       toast.error('Select the quiz category.');

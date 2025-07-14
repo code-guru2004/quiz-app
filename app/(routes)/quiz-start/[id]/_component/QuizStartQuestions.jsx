@@ -85,7 +85,7 @@ function QuizStartQuestions({ timeLeft, setTimeLeft }) {
           score: score + (submittedQuestions.includes(currQuizIndex) ? 0 : isCorrect ? 1 : 0),
           perQuestionTimes: finalTimes,
           totaltime: total,
-          selectedAnswers: allUserAnswers, 
+          selectedAnswers: allUserAnswers,
         });
 
         if (resp?.data.success) {
@@ -128,31 +128,31 @@ function QuizStartQuestions({ timeLeft, setTimeLeft }) {
     const updatedSelections = [...selectedOptions];
     updatedSelections[currQuizIndex] = idx;
     setSelectedOptions(updatedSelections);
-  
+
     const selectedAns = {
       questionId: quizQuestions[currQuizIndex]?._id, // assuming each question has a unique `_id`
       selectedOption: prefixes[idx], // e.g., "A", "B", etc.
     };
-  
+
     // Update allUserAnswers
     const updatedAnswers = [...allUserAnswers];
     const existingIndex = updatedAnswers.findIndex(
       (ans) => ans.questionId === selectedAns.questionId
     );
-  
+
     if (existingIndex !== -1) {
       updatedAnswers[existingIndex] = selectedAns;
     } else {
       updatedAnswers.push(selectedAns);
     }
-  
+
     setAllUserAnswers(updatedAnswers);
   };
-  
-  useEffect(()=>{
+
+  useEffect(() => {
     console.log(allUserAnswers);
-    
-  },[allUserAnswers])
+
+  }, [allUserAnswers])
 
 
   function emojiIconScore() {
@@ -288,11 +288,19 @@ function QuizStartQuestions({ timeLeft, setTimeLeft }) {
           ) : (
             <>
               {/* make it at center */}
-              <div className="mb-4 text-sm md:text-lg font-semibold text-green-900 dark:text-green-500 whitespace-pre-line break-words w-full ">
+              <div className="mb-4 text-sm md:text-lg font-semibold text-green-900 dark:text-green-500 whitespace-pre-line break-words w-full">
                 {currQuizIndex + 1}.{" "}
                 {quizQuestions[currQuizIndex]?.mainQuestion}
               </div>
-
+              {quizQuestions[currQuizIndex]?.mainQuestionImage && (
+                <div className="mt-4 mb-4 w-full">
+                  <img
+                    src={quizQuestions[currQuizIndex].mainQuestionImage}
+                    alt="Question Illustration"
+                    className="rounded-lg object-contain max-h-[300px] flex items-center justify-center"
+                  />
+                </div>
+              )}
 
               <div className="space-y-3  flex flex-col items-center justify-center">
                 {quizQuestions[currQuizIndex]?.choices.map((choice, idx) => (

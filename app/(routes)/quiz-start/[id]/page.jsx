@@ -26,6 +26,7 @@ function QuizStart({ params }) {
   }, [timeLeft, quizCompleted]);
 
   useEffect(() => {
+
     if (selectQuizToStart === null) {
       route.push("/dashboard");
     }

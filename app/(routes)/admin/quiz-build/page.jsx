@@ -10,7 +10,7 @@ import QuizDescription from '../_components/QuizDescription'
 function QuizBuild() {
   const prefixes = ["A", "B", "C", "D", "E"];
     const [quizQuestions, setQuizQuestions] = useState([
-      { id: uuidv4(), mainQuestion: "", choices: ["A.", "B.", "C."], correctAnswer: "" },
+      { id: uuidv4(), mainQuestion: "",mainQuestionImage:"", choices: ["A.", "B.", "C."], correctAnswer: "" },
     ]);
     const [newQuiz, setNewQuiz] = useState({
       id : uuidv4(),
