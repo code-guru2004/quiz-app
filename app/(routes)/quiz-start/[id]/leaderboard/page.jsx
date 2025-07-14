@@ -60,7 +60,7 @@ const LeaderboardPage = () => {
   return (
     <div className="max-w-3xl mx-auto mt-2 p-4">
       <div className="relative">
-        <Link href={"/dashboard"} className="absolute -left-3 p-2 bg-green-200 dark:bg-green-700 rounded-full hover:bg-green-300 dark:hover:bg-green-600 transition-all">
+        <Link href={"/dashboard"} className="absolute -left-3 p-1 md:p-2 bg-green-200 dark:bg-green-700 rounded-full hover:bg-green-300 dark:hover:bg-green-600 transition-all">
           <ArrowLeft />
         </Link>
         <h1 className="text-3xl font-bold text-center text-blue-600 dark:text-blue-300 mb-8">

@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -30,7 +30,7 @@ function QuizStartQuestions({ timeLeft, setTimeLeft }) {
   const [isCurrQuizMarked, setIsCurrQuizMarked] = useState(false);
   const [allUserAnswers, setAllUserAnswers] = useState([])
   const [wantSubmitted, setWantSubmitted] = useState(false);
-
+  const router = useRouter();
 
   useEffect(() => {
     if (timeLeft > 0 && !quizCompleted) {
@@ -96,6 +96,9 @@ function QuizStartQuestions({ timeLeft, setTimeLeft }) {
 
         if (resp?.data.success) {
           toast.success(resp?.data.message, { icon: "👏" });
+          setTimeout(() => {
+            router.push(`/${quizId}/leaderboard`)
+          }, 1000);
         } else {
           toast.error(resp?.data.message, { icon: "😕" });
         }

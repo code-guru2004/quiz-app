@@ -18,10 +18,12 @@ const ResultPage = () => {
   if (!selectQuizToStart || !selectQuizToStart.quizTitle) {
     //route.replace("/dashboard")
     return (
-      <div className="text-center text-gray-500 mt-10">
-        No quiz result found. Please attempt a quiz.
-        <br />
-        <Link href={'/dashboard'} className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mt-14">Go To Dashboard</Link>
+      <div className="text-center text-gray-500 mt-10 min-h-screen w-full flex flex-col items-center justify-center gap-3">
+        <p>
+          No quiz result found. Please attempt a quiz.
+        </p>
+        
+        <Link href={'/dashboard/live-quizzes'} className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 ">Go To Dashboard</Link>
       </div>
     );
   }
