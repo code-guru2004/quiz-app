@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { redirect, useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -104,7 +104,7 @@ function QuizStartQuestions({ timeLeft, setTimeLeft }) {
         if (resp?.data.success) {
           toast.success(resp?.data.message, { icon: "👏" });
           setTimeout(() => {
-            router.replace(`quiz-start/${quizId}/leaderboard`)
+            redirect(`quiz-start/${quizId}/leaderboard`)
           }, 1000);
         } else {
           toast.error(resp?.data.message, { icon: "😕" });

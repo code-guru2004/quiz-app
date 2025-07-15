@@ -25,7 +25,7 @@ function ChallengePage() {
   const [totalQuestions, setTotalQuestions] = useState(5);
   const [timePerQuestion, setTimePerQuestion] = useState(1);
   const LIMIT = 5; // Items per page
-
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [attendedChallenges, setAttendedChallenges] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -193,11 +193,16 @@ function ChallengePage() {
         {/* CHALLENGE TAB */}
         <TabsContent value="challenge">
           {attendedChallenges.length === 0 ? (
+            <>
             <p className="text-center text-gray-500">No challenge found😕</p>
+            <Button onClick={()=>setIsDrawerOpen(true)}>
+              Create Challenge
+            </Button>
+            </>
           ) : (
             <div className="space-y-6">
               {/* Challenge Drawer */}
-              <Drawer>
+              <Drawer open={isDrawerOpen} onOpenChange={()=>setIsDrawerOpen(prev=>!prev)}>
                 <DrawerTrigger asChild>
                   <Button className="bg-purple-600 hover:bg-purple-700 text-white">Challenge Quiz</Button>
                 </DrawerTrigger>
@@ -297,7 +302,7 @@ function ChallengePage() {
                 </ul>
               </div>
               {/* Attended Challenges List */}
-              
+
               {attendedChallenges.map((ch) => {
                 const opponent = ch.fromUser === username ? ch.toUser : ch.fromUser;
                 const yourResponse = ch.responses.find((r) => r.user === username);
@@ -353,7 +358,7 @@ function ChallengePage() {
                       {ch.status === "pending" && ch.toUser === username && (
                         <Button
                           className="bg-green-600 hover:bg-green-700 text-white ml-2"
-                          onClick={()=>router.push(`/dashboard/Challenge/${ch?.challengeId}`)}
+                          onClick={() => router.push(`/dashboard/Challenge/${ch?.challengeId}`)}
                         >
                           Accept Challenge
                         </Button>
