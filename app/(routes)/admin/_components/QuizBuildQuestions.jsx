@@ -385,7 +385,7 @@ const SingleQuestion = forwardRef(function SingleQuestion(
                             setIsImageChanged(false);
                             setIsDrawerOpen(false);
                           }}
-                          className="w-full h-28 rounded-s-md opacity-90 cursor-pointer rounded border-4 hover:border-blue-500 hover:opacity-100"
+                          className="w-full h-auto rounded-s-md opacity-90 cursor-pointer rounded border-4 hover:border-blue-500 hover:opacity-100"
                         />
                       ))
                     ) : (
