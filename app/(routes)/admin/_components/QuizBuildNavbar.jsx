@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
+import { IoSave } from "react-icons/io5";
 
 function QuizBuildNavbar({ newQuiz, quizQuestions }) {
   const route = useRouter();
@@ -74,7 +75,7 @@ function QuizBuildNavbar({ newQuiz, quizQuestions }) {
   }
 
   return (
-    <nav className="bg-white dark:bg-gray-800 shadow-md py-3 rounded-md sticky top-0 z-50 transition-colors">
+    <nav className="bg-gray-200  dark:bg-gray-800 shadow-md py-3 rounded-md sticky top-0 z-50 transition-colors">
       <div className="container mx-auto px-4 flex justify-between items-center">
         {/* Logo Section */}
         <div className="flex gap-3 items-center">
@@ -134,9 +135,9 @@ function QuizBuildNavbar({ newQuiz, quizQuestions }) {
           <ThemeToggle/>
           <button
             onClick={addNewQuiz}
-            className="bg-green-700 hover:bg-green-800 transition-colors text-white px-4 py-2 rounded-md text-sm mt-5 md:mt-0"
+            className="bg-green-700 hover:bg-green-800 flex gap-2 items-center justify-center transition-colors text-white px-4 py-4 rounded-md text-sm mt-5 md:mt-0"
           >
-            Save
+            Save <IoSave className='size-5'/>
           </button>
         </div>
       </div>

@@ -9,7 +9,7 @@ export async function POST(request) {
 
   try {
     const { quizId, email, score,perQuestionTimes,totaltime, selectedAnswers } = await request.json();
-    console.log([...selectedAnswers]);
+    console.log(quizId, email, score,{...perQuestionTimes},totaltime, {...selectedAnswers});
     
     if (!quizId || !email || typeof score !== "number") {
       return NextResponse.json(
@@ -20,6 +20,12 @@ export async function POST(request) {
 
     const quiz = await Quiz.findById(quizId);
     const user = await User.findOne({email});
+    // console.log(quiz);
+    console.log(email);
+    
+    console.log("user",user);
+    
+    
     if (!user) {
       return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
     }

@@ -55,7 +55,14 @@ function QuizStartQuestions({ timeLeft, setTimeLeft }) {
   }, [currQuizIndex, reviewQues]);
 
   const handleConfirmSubmission = () => {
+
     setWantSubmitted(true);
+  }
+  const handleNext = () => {
+    const isLastQuestion = currQuizIndex === quizQuestions.length - 1;
+    if (!isLastQuestion && timeLeft > 0) {
+      setCurrQuizIndex((prev) => prev + 1);
+    }
   }
 
   const handleSubmit = async () => {
@@ -97,7 +104,7 @@ function QuizStartQuestions({ timeLeft, setTimeLeft }) {
         if (resp?.data.success) {
           toast.success(resp?.data.message, { icon: "👏" });
           setTimeout(() => {
-            router.push(`/${quizId}/leaderboard`)
+            router.replace(`quiz-start/${quizId}/leaderboard`)
           }, 1000);
         } else {
           toast.error(resp?.data.message, { icon: "😕" });
@@ -357,18 +364,32 @@ function QuizStartQuestions({ timeLeft, setTimeLeft }) {
                   >
                     Previous
                   </button>
-                  <button
-                    onClick={handleConfirmSubmission}
-                    disabled={quizCompleted}
-                    className="px-3 lg:px-6 py-2 bg-green-700 text-white rounded-md hover:bg-green-800 transition-all"
-                  >
-                    {currQuizIndex === quizQuestions.length - 1
-                      ? "Submit"
-                      : "Next"}
-                  </button>
+                  {
+                    currQuizIndex < quizQuestions.length - 1 && (
+                      <button
+                        onClick={handleNext}
+
+                        className="px-3 lg:px-6 py-2 bg-green-700 text-white rounded-md hover:bg-green-800 transition-all"
+                      >
+                        Next
+                      </button>
+                    )
+                  }
+                  {
+                    currQuizIndex === quizQuestions.length - 1 && (
+                      <button
+                        onClick={handleConfirmSubmission}
+                        disabled={quizCompleted}
+                        className="px-3 lg:px-6 py-2 bg-green-700 text-white rounded-md hover:bg-green-800 transition-all"
+                      >
+                        Submit
+                      </button>
+                    )
+                  }
+
                 </div>
 
-                <Dialog open={wantSubmitted} className="bg-white dark:bg-gray-900">
+                <Dialog open={wantSubmitted} onOpenChange={()=>setWantSubmitted(prev=> !prev)} className="bg-white dark:bg-gray-900">
                   <DialogContent>
                     <DialogHeader>
                       <div className="max-w-xl w-full mx-auto bg-white dark:bg-gray-900 rounded-xl overflow-hidden transition-colors duration-300">

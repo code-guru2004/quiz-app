@@ -310,7 +310,7 @@ const SingleQuestion = forwardRef(function SingleQuestion(
                     loop
                     autoplay
                     // Responsive sizing for Lottie animation
-                    className="w-20 h-20  drop-shadow-2xl"
+                    className="w-20 h-20 drop-shadow-2xl"
                   />
                 </div>
               )}

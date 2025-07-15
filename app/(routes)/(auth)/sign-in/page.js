@@ -28,8 +28,10 @@ export default function LoginPage() {
       localStorage.setItem('token', data.token);
       setEmail(userEmail);
       router.push('/dashboard');
+      setIsLoading(false)
     } else {
       setError(data.message || 'Login failed');
+      setIsLoading(false)
     }
   };
 

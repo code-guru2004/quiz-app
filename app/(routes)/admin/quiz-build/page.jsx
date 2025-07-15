@@ -77,7 +77,7 @@ function QuizBuild() {
     //   console.log(newQuiz);
     // },[newQuiz])
   return (
-    <div>
+    <div className='px-3'>
         <QuizBuildNavbar {...quizNavbarProps}/>
         <div className=''>
           <QuizBuildTitle  onQuizTitleChange={(title)=>handleQuizTitleChange(title)} onQuizIconChange={(iconIndex)=>handleQuizIconChange(iconIndex)}/>

@@ -173,7 +173,7 @@ const Dashboard = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-950 text-gray-100 p-4 sm:p-8 font-inter">
+        <div className="min-h-screen bg-gray-950 text-gray-100 p-4 font-inter">
             <header className="mb-8 text-center">
                 <h1 className="text-4xl font-bold text-blue-400 mb-2">Quiz Dashboard</h1>
                 <p className="text-lg text-gray-400">Insights into your quiz application's performance.</p>
@@ -182,7 +182,7 @@ const Dashboard = () => {
                 )}
             </header>
 
-            <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+            <section className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
                 <DashboardCard title="Total Quizzes" value={dashboardStats.totalQuizzes} icon="📚" />
                 <DashboardCard title="Total Submissions" value={dashboardStats.totalSubmissions} icon="📝" />
                 <DashboardCard title="Unique Participants" value={dashboardStats.uniqueUsers} icon="👥" />
