@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { Trash } from "lucide-react";
 import React, {
   createRef,
@@ -18,6 +17,10 @@ import { GrView } from "react-icons/gr";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import Image from "next/image";
 import { FiLoader } from "react-icons/fi";
+import { Drawer, DrawerTrigger, DrawerContent, DrawerTitle, DrawerHeader, DrawerDescription } from '@/components/ui/drawer';
+import { BiSolidPhotoAlbum } from "react-icons/bi";
+import { Button } from '@/components/ui/button';
+import axios from "axios";
 
 function QuizBuildQuestions({ quizQuestions, setQuizQuestions }) {
   const prefixes = ["A", "B", "C", "D", "E"];
@@ -30,7 +33,7 @@ function QuizBuildQuestions({ quizQuestions, setQuizQuestions }) {
   const addNewQuestion = () => {
     for (let i = 0; i < quizQuestions.length; i++) {
       const q = quizQuestions[i];
-      const isMainEmpty = q.mainQuestion.trim() === "" && q.mainQuestionImage.trim()==="";
+      const isMainEmpty = q.mainQuestion.trim() === "" && q.mainQuestionImage.trim() === "";
       const hasEmptyChoice = q.choices.some((choice) => {
         const content = choice.slice(3).trim();
         return content.length === 0;
@@ -202,6 +205,9 @@ const SingleQuestion = forwardRef(function SingleQuestion(
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isImageChanged, setIsImageChanged] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [cloudImages, setCloudImages] = useState([]);
+
   useEffect(() => {
     const loadAnimation = async () => {
       try {
@@ -242,7 +248,24 @@ const SingleQuestion = forwardRef(function SingleQuestion(
       setIsLoading(false)
     }
   };
-
+  useEffect(() => {
+    const fetchImg = async()=>{
+      try {
+        if (isDrawerOpen && cloudImages.length === 0) {
+          setIsLoading(true);
+          const resp = await axios.get("/api/cloudinary/images")
+          setCloudImages(resp.data.resources);
+          
+        }
+      } catch (error) {
+        toast.error("Failed to get images")
+      }finally{
+        setIsLoading(false)
+      }
+    }
+    fetchImg();
+  }, [isDrawerOpen]);
+  
 
   return (
     <div className="w-full space-y-4">
@@ -295,34 +318,87 @@ const SingleQuestion = forwardRef(function SingleQuestion(
 
             {/* Upload Button */}
             {/* Upload Button */}
-            {image && isImageChanged && (
-              <Button
-                type="button"
-                className="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1 rounded-md text-xs"
-                onClick={handleUpload}
-              >
-                {
-                  isLoading?(
-                      <FiLoader className="size-6 custom-spinner" />
-                  ):(
-                    <IoCloudUploadOutline className="size-4" />
-                  )
-                }
-              </Button>
-            )}
+           
 
             {/* View Button */}
-            {!isImageChanged && (uploadedUrl || imageUrl) && (
+            <div className="flex flex-col items-center gap-1">
+              <div>
+                  {image && isImageChanged && (
+                  <Button
+                    type="button"
+                    className="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1 rounded-md text-xs"
+                    onClick={handleUpload}
+                  >
+                    {
+                      isLoading ? (
+                        <FiLoader className="size-6 custom-spinner" />
+                      ) : (
+                        <IoCloudUploadOutline className="size-4" />
+                      )
+                    }
+                  </Button>
+                )}
+                {!isImageChanged && (uploadedUrl || imageUrl) && (
+                  <Button
+                    type="button"
+                    onClick={() => setIsDialogOpen(true)}
+                    className="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded-md text-xs"
+                  >
+                    View
+                  </Button>
+                )}
+              </div>
               <Button
                 type="button"
-                onClick={() => setIsDialogOpen(true)}
-                className="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded-md text-xs"
+                className="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded-md text-xs"
+                onClick={() => setIsDrawerOpen(true)}
               >
-                View
+                <BiSolidPhotoAlbum title="Gallery" className="size-6"/>
               </Button>
-            )}
+            </div>
+
+            {/* show the already existing imgs */}
+            <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+              <DrawerContent>
+                <DrawerHeader>
+                  <DrawerTitle>Select an Image</DrawerTitle>
+                  <DrawerDescription>Pick one from existing uploads</DrawerDescription>
+                </DrawerHeader>
+                {
+                  isLoading?(
+                    <div className="w-full text-center h-16 flex justify-center gap-3">
+                      <FiLoader className="size-6 custom-spinner" /> Loading the images...
+                    </div>
+                  ):(
+                  <div className="grid grid-cols-1 gap-4 p-4 max-h-[60vh] overflow-y-auto">
+                    {cloudImages.length > 0 ? (
+                      cloudImages.map((img) => (
+                        <img
+                          key={img.public_id}
+                          src={img.secure_url}
+                          alt="Cloudinary Image"
+                          onClick={() => {
+                            onImageUpload(img.secure_url); // pass to parent
+                            setUploadedUrl(img.secure_url);
+                            setPreviewUrl(null);
+                            setImage(null);
+                            setIsImageChanged(false);
+                            setIsDrawerOpen(false);
+                          }}
+                          className="w-full h-28 rounded-s-md opacity-90 cursor-pointer rounded border-4 hover:border-blue-500 hover:opacity-100"
+                        />
+                      ))
+                    ) : (
+                      <p className="col-span-3 text-sm text-center text-gray-500">No images found</p>
+                    )}
+                  </div>
+                  )
+                }
+              </DrawerContent>
+            </Drawer>
 
 
+            {/* Show the uploaded image */}
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogContent className="sm:max-w-md">
                 {/* Remove DialogHeader if you don't want the X icon */}
