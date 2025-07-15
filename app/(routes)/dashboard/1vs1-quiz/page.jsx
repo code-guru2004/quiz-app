@@ -11,6 +11,7 @@ import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import Lottie from 'lottie-react';
+import { GiBattleGear } from "react-icons/gi";
 
 function ChallengePage() {
   const router = useRouter();
@@ -178,6 +179,8 @@ function ChallengePage() {
     );
   }
 
+  
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-10">
       <h1 className="flex justify-center items-center text-2xl font-bold mb-6">
@@ -190,104 +193,104 @@ function ChallengePage() {
           <TabsTrigger value="friends">👥 Friends</TabsTrigger>
         </TabsList>
 
+        <Drawer open={isDrawerOpen} onOpenChange={() =>{ 
+          setIsDrawerOpen(prev => !prev)
+          setSelectedFriend(null)
+          setSelectedQuiz(null)
+          }}>
+          {/* Friend Selection Drawer */}
+          <DrawerContent className="p-6 space-y-4">
+            <h2 className="text-lg font-semibold">Select a Friend</h2>
+            <div className="space-y-2 max-h-64 overflow-y-auto my-4 py-3">
+              {friendList.map((friend) => (
+                <div
+                  key={friend.email}
+                  className={`cursor-pointer p-3 rounded border transition ${selectedFriend?.email === friend.email
+                    ? 'bg-green-300 border-green-500 text-green-900 font-bold'
+                    : 'hover:bg-green-200 hover:text-black'
+                    }`}
+                  onClick={() => {
+                    setSelectedFriend(friend);
+                    setQuizDrawerOpen(true);
+                  }}
+                >
+                  {friend.username}
+                </div>
+              ))}
+            </div>
+          </DrawerContent>
+
+          {/* Quiz Selection Drawer */}
+          <Drawer open={quizDrawerOpen} onOpenChange={setQuizDrawerOpen}>
+            <DrawerContent className="p-6 space-y-4">
+              <h2 className="text-lg font-semibold">Select a Quiz</h2>
+
+              <Tabs defaultValue="practice-quiz" className="w-full">
+                <TabsList>
+                  <TabsTrigger value="live-quiz">Live Quiz</TabsTrigger>
+                  <TabsTrigger value="practice-quiz">Practice Quiz</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="live-quiz">
+                  <div className="space-y-2">
+                    {allQuiz
+                      .filter((quiz) => quiz.quizMode === "Live Quiz")
+                      .map((quiz, index) => (
+                        <div
+                          key={index}
+                          className={`cursor-pointer p-3 rounded border transition ${selectedQuiz === quiz
+                            ? 'bg-purple-400 border-purple-500'
+                            : 'hover:bg-gray-200 dark:hover:bg-purple-200 hover:text-black '
+                            }`}
+                          onClick={() => setSelectedQuiz(quiz)}
+                        >
+                          {quiz.quizTitle}
+                        </div>
+                      ))}
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="practice-quiz">
+                  <div className="space-y-2">
+                    {allQuiz
+                      .filter((quiz) => quiz.quizMode === "Practice Quiz")
+                      .map((quiz, index) => (
+                        <div
+                          key={index}
+                          className={`cursor-pointer p-3 rounded border transition ${selectedQuiz === quiz
+                            ? 'bg-purple-400 border-purple-500'
+                            : 'hover:bg-gray-200 dark:hover:bg-purple-200 hover:text-black '
+                            }`}
+                          onClick={() => setSelectedQuiz(quiz)}
+                        >
+                          {quiz.quizTitle}
+                        </div>
+                      ))}
+                  </div>
+                </TabsContent>
+              </Tabs>
+              <Button
+                className="w-full bg-green-600 hover:bg-green-700 text-white mt-4"
+                onClick={handleCreateChallenge}
+              >
+                Send Challenge
+              </Button>
+            </DrawerContent>
+          </Drawer>
+        </Drawer>
         {/* CHALLENGE TAB */}
         <TabsContent value="challenge">
           {attendedChallenges.length === 0 ? (
             <>
-            <p className="text-center text-gray-500">No challenge found😕</p>
-            <Button onClick={()=>setIsDrawerOpen(true)}>
-              Create Challenge
-            </Button>
+              <button onClick={() => setIsDrawerOpen(true)} className="bg-emerald-950 text-emerald-400 border border-emerald-400 border-b-4 font-medium overflow-hidden relative px-4 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group">
+                <span className="bg-emerald-400 shadow-emerald-400 absolute -top-[150%] left-0 inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(0,0,0,0.3)]" />
+                Challenge +
+              </button>
+              <p className="text-center text-gray-500 mt-7">No challenge found😕</p>
             </>
           ) : (
             <div className="space-y-6">
               {/* Challenge Drawer */}
-              <Drawer open={isDrawerOpen} onOpenChange={()=>setIsDrawerOpen(prev=>!prev)}>
-                <DrawerTrigger asChild>
-                  <Button className="bg-purple-600 hover:bg-purple-700 text-white">Challenge Quiz</Button>
-                </DrawerTrigger>
-
-                {/* Friend Selection Drawer */}
-                <DrawerContent className="p-6 space-y-4">
-                  <h2 className="text-lg font-semibold">Select a Friend</h2>
-                  <div className="space-y-2 max-h-64 overflow-y-auto my-4 py-3">
-                    {friendList.map((friend) => (
-                      <div
-                        key={friend.email}
-                        className={`cursor-pointer p-3 rounded border transition ${selectedFriend?.email === friend.email
-                          ? 'bg-green-300 border-green-500 text-green-900 font-bold'
-                          : 'hover:bg-green-200 hover:text-black'
-                          }`}
-                        onClick={() => {
-                          setSelectedFriend(friend);
-                          setQuizDrawerOpen(true);
-                        }}
-                      >
-                        {friend.username}
-                      </div>
-                    ))}
-                  </div>
-                </DrawerContent>
-
-                {/* Quiz Selection Drawer */}
-                <Drawer open={quizDrawerOpen} onOpenChange={setQuizDrawerOpen}>
-                  <DrawerContent className="p-6 space-y-4">
-                    <h2 className="text-lg font-semibold">Select a Quiz</h2>
-
-                    <Tabs defaultValue="practice-quiz" className="w-full">
-                      <TabsList>
-                        <TabsTrigger value="live-quiz">Live Quiz</TabsTrigger>
-                        <TabsTrigger value="practice-quiz">Practice Quiz</TabsTrigger>
-                      </TabsList>
-
-                      <TabsContent value="live-quiz">
-                        <div className="space-y-2">
-                          {allQuiz
-                            .filter((quiz) => quiz.quizMode === "Live Quiz")
-                            .map((quiz, index) => (
-                              <div
-                                key={index}
-                                className={`cursor-pointer p-3 rounded border transition ${selectedQuiz === quiz
-                                  ? 'bg-purple-400 border-purple-500'
-                                  : 'hover:bg-gray-200 dark:hover:bg-purple-200 hover:text-black '
-                                  }`}
-                                onClick={() => setSelectedQuiz(quiz)}
-                              >
-                                {quiz.quizTitle}
-                              </div>
-                            ))}
-                        </div>
-                      </TabsContent>
-
-                      <TabsContent value="practice-quiz">
-                        <div className="space-y-2">
-                          {allQuiz
-                            .filter((quiz) => quiz.quizMode === "Practice Quiz")
-                            .map((quiz, index) => (
-                              <div
-                                key={index}
-                                className={`cursor-pointer p-3 rounded border transition ${selectedQuiz === quiz
-                                  ? 'bg-purple-400 border-purple-500'
-                                  : 'hover:bg-gray-200 dark:hover:bg-purple-200 hover:text-black '
-                                  }`}
-                                onClick={() => setSelectedQuiz(quiz)}
-                              >
-                                {quiz.quizTitle}
-                              </div>
-                            ))}
-                        </div>
-                      </TabsContent>
-                    </Tabs>
-
-                    <Button
-                      className="w-full bg-green-600 hover:bg-green-700 text-white mt-4"
-                      onClick={handleCreateChallenge}
-                    >
-                      Send Challenge
-                    </Button>
-                  </DrawerContent>
-                </Drawer>
-              </Drawer>
               <div className="mb-6 p-4 rounded-xl bg-purple-50 dark:bg-gray-900 border border-purple-200 dark:border-gray-700">
                 <h2 className="text-lg font-semibold text-purple-700 dark:text-purple-300 mb-2">
                   💡Challenge Status Guide
