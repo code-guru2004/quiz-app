@@ -30,7 +30,7 @@ function QuizBuildQuestions({ quizQuestions, setQuizQuestions }) {
   const addNewQuestion = () => {
     for (let i = 0; i < quizQuestions.length; i++) {
       const q = quizQuestions[i];
-      const isMainEmpty = q.mainQuestion.trim() === "";
+      const isMainEmpty = q.mainQuestion.trim() === "" && q.mainQuestionImage.trim()==="";
       const hasEmptyChoice = q.choices.some((choice) => {
         const content = choice.slice(3).trim();
         return content.length === 0;
