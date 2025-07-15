@@ -4,7 +4,7 @@ import Challenge from "@/db/schema/Challenge";
 
 export async function POST(req, { params }) {
   await dbConnect();
-  const challengeId = params.id;
+  const challengeId = await params.id;
   const body = await req.json();
   const { username, answers, score, timeTaken } = body;
 

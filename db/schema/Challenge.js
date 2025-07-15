@@ -8,7 +8,11 @@ const challengeQuestionSchema = new mongoose.Schema({
   },
   mainQuestion: {
     type: String,
-    required: true,
+    default: "",
+  },
+  mainQuestionImage: {
+    type: String, // Cloudinary URL or public ID
+    default: "",
   },
   choices: {
     type: [String],
@@ -71,5 +75,11 @@ const challengeSchema = new mongoose.Schema({
   },
   acceptedAt: Date,
 });
-
+challengeQuestionSchema.pre("validate", function (next) {
+  if (!this.mainQuestion && !this.mainQuestionImage) {
+    next(new Error("Either mainQuestion (text) or mainQuestionImage (image) is required."));
+  } else {
+    next();
+  }
+});
 export default mongoose.models.Challenge || mongoose.model('Challenge', challengeSchema);

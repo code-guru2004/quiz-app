@@ -94,6 +94,8 @@ function ChallengePage() {
     } catch (err) {
       console.error("Challenge Error:", err);
       toast.error("Failed to create challenge.");
+    }finally{
+      setIsDrawerOpen(false)
     }
   };
 
@@ -222,10 +224,11 @@ function ChallengePage() {
 
           {/* Quiz Selection Drawer */}
           <Drawer open={quizDrawerOpen} onOpenChange={setQuizDrawerOpen}>
+            
             <DrawerContent className="p-6 space-y-4">
               <h2 className="text-lg font-semibold">Select a Quiz</h2>
 
-              <Tabs defaultValue="practice-quiz" className="w-full">
+              <Tabs defaultValue="practice-quiz" className="w-full h-1/2 overflow-y-auto">
                 <TabsList>
                   <TabsTrigger value="live-quiz">Live Quiz</TabsTrigger>
                   <TabsTrigger value="practice-quiz">Practice Quiz</TabsTrigger>
@@ -290,6 +293,10 @@ function ChallengePage() {
             </>
           ) : (
             <div className="space-y-6">
+              <button onClick={() => setIsDrawerOpen(true)} className="bg-emerald-950 text-emerald-400 border border-emerald-400 border-b-4 font-medium overflow-hidden relative px-4 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group">
+                <span className="bg-emerald-400 shadow-emerald-400 absolute -top-[150%] left-0 inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(0,0,0,0.3)]" />
+                Challenge +
+              </button>
               {/* Challenge Drawer */}
               <div className="mb-6 p-4 rounded-xl bg-purple-50 dark:bg-gray-900 border border-purple-200 dark:border-gray-700">
                 <h2 className="text-lg font-semibold text-purple-700 dark:text-purple-300 mb-2">

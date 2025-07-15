@@ -9,19 +9,28 @@ import useGlobalContextProvider from '@/app/_context/ContextApi';
 export default function ChallengePlayPage() {
   const { challengeId } = useParams();
   const router = useRouter();
-const {username} = useGlobalContextProvider()
+  const { username } = useGlobalContextProvider()
   const [questions, setQuestions] = useState([]);
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState([]);
   const [marked, setMarked] = useState([]);
   const [score, setScore] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [seconds, setSeconds] = useState(0);
 
+  useEffect(() => {
+    const timerId = setInterval(() => {
+      setSeconds((prev) => prev + 1);
+    }, 1000);
+
+    return () => clearInterval(timerId); // cleanup on unmount
+  }, []);
   useEffect(() => {
     const load = async () => {
       try {
         const res = await fetch(`/api/challenge/${challengeId}`);
         const data = await res.json();
+
 
         if (!data?.challenge?.questions || !Array.isArray(data.challenge.questions)) {
           throw new Error('Invalid challenge format');
@@ -29,7 +38,7 @@ const {username} = useGlobalContextProvider()
 
         setQuestions(data.challenge.questions);
         console.log(data.challenge.questions);
-        
+
         setAnswers(new Array(data.challenge.questions.length).fill(null));
       } catch (err) {
         toast.error('Failed to load challenge.');
@@ -61,50 +70,43 @@ const {username} = useGlobalContextProvider()
   };
 
   const submit = async () => {
-    let total = 0;
-  
-    const formattedAnswers = [];
-  
-    for (let i = 0; i < answers.length; i++) {
-      const selected = answers[i]?.selected;
-      const correct = answers[i]?.correct;
-  
-      if (!selected || !correct) continue; // skip if unanswered or malformed
-  
-      const selectedLabel = selected.charAt(0); // "C" from "C. 40%"
-  
-      formattedAnswers.push({
-        questionId: questions[i].id,
-        selectedOption: selectedLabel,
-      });
-  
-      if (selectedLabel === correct) {
-        total += 1;
+    let calculatedScore = 0;
+
+    answers.forEach((item) => {
+      if (item && item.selected && item.correct) {
+        const selectedLetter = item.selected.split('.')[0].trim();
+        if (selectedLetter === item.correct) {
+          calculatedScore++;
+        }
       }
-    }
-  
-    console.log("Final Score:", total);
-    console.log("Submitted Answers:", formattedAnswers);
-  
-    setScore(total);
-    toast.success("Challenge submitted!");
-  
+    });
+
+    const formatedAnswers = questions.map((ques, idx) => ({
+      questionId: ques.id,
+      selectedOption: answers[idx] ? answers[idx].selected[0] : null,
+    }));
+
     try {
       await fetch(`/api/challenge/${challengeId}/submit`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           username,
-          answers: formattedAnswers,
-          score: total,
-          timeTaken: 0,
+          answers: formatedAnswers,
+          score: calculatedScore,
+          timeTaken: seconds,
         }),
       });
+
+      // ✅ Update score in state to show result screen
+      setScore(calculatedScore);
+
     } catch (err) {
       console.error("Submit error:", err);
     }
   };
-  
+
+
 
   const restart = () => {
     setAnswers(new Array(questions.length).fill(null));
@@ -116,6 +118,12 @@ const {username} = useGlobalContextProvider()
 
   if (loading) return <p className="p-10 text-center">Loading challenge...</p>;
   if (!questions.length) return <p className="p-10 text-center">No questions found.</p>;
+
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
 
   const q = questions[current];
 
@@ -138,10 +146,10 @@ const {username} = useGlobalContextProvider()
                   ${current === i
                     ? 'bg-blue-600 text-white'
                     : marked.includes(i)
-                    ? 'bg-yellow-600 text-white'
-                    : answers[i]
-                    ? 'bg-green-500 text-white'
-                    : 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-600'
+                      ? 'bg-yellow-600 text-white'
+                      : answers[i]
+                        ? 'bg-green-500 text-white'
+                        : 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-600'
                   }`}
               >
                 Q{i + 1}
@@ -152,7 +160,10 @@ const {username} = useGlobalContextProvider()
 
         {/* Main Content */}
         <div className="flex-1 space-y-8">
-          <h1 className="text-3xl font-bold text-blue-700 dark:text-blue-400">🎯 Challenge Quiz</h1>
+          <div className='flex items-center justify-between'>
+            <h1 className="text-3xl font-bold text-blue-700 dark:text-blue-400">🎯 Challenge Quiz</h1>
+            <h1> Time Taken: {formatTime(seconds)}</h1>
+          </div>
 
           {score !== null ? (
             <div className="text-center mt-10 space-y-6">
@@ -179,9 +190,12 @@ const {username} = useGlobalContextProvider()
 
               {/* Question Block */}
               <div className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-6 rounded-xl">
-                <h2 className="text-lg font-semibold mb-4">
+                <h2 className="text-lg font-semibold mb-4 no-select">
                   Q{current + 1}. {q.mainQuestion}
                 </h2>
+                <div>
+                  <img src={q?.mainQuestionImage} alt="network error" className='w-full object-cover rounded-sm my-2 no-select' />
+                </div>
                 <div className="grid gap-4">
                   {q.choices && Array.isArray(q.choices) ? (
                     q.choices.map((choice, index) => {
@@ -191,8 +205,8 @@ const {username} = useGlobalContextProvider()
                           key={index}
                           onClick={() => handleAnswer(choice)}
                           className={`w-full text-left px-5 py-3 rounded-lg border font-medium transition-all ${selected
-                              ? 'bg-blue-600 text-white border-blue-600'
-                              : 'bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700'
+                            ? 'bg-blue-600 text-white border-blue-600'
+                            : 'bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700'
                             }`}
                         >
                           <span className="font-bold mr-2">{String.fromCharCode(65 + index)}.</span> {choice}
@@ -210,8 +224,8 @@ const {username} = useGlobalContextProvider()
                 <button
                   onClick={toggleMark}
                   className={`px-4 py-2 rounded-xl shadow font-medium transition-all ${marked.includes(current)
-                      ? 'bg-yellow-500 hover:bg-yellow-600 text-white'
-                      : 'bg-yellow-100 hover:bg-yellow-200 text-yellow-900 dark:bg-yellow-700 dark:text-white'
+                    ? 'bg-yellow-500 hover:bg-yellow-600 text-white'
+                    : 'bg-yellow-100 hover:bg-yellow-200 text-yellow-900 dark:bg-yellow-700 dark:text-white'
                     }`}
                 >
                   {marked.includes(current) ? '🚫 Remove Mark' : '✔️ Mark for Review'}
