@@ -30,7 +30,7 @@ function ChallengePage() {
   const [attendedChallenges, setAttendedChallenges] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-
+  const [submittedChallengeIds, setSubmittedChallengeIds] = useState([]);
   const [animationData, setAnimationData] = useState(null);
 
   useEffect(() => {
@@ -69,36 +69,56 @@ function ChallengePage() {
       toast.error("Please select a friend and a quiz");
       return;
     }
-
     try {
+      // Step 1: Create the challenge
       const challengeRes = await axios.post('/api/create-challenge', {
         sender: username,
         opponent: selectedFriend.username,
-        questions: selectedQuiz?.quizQuestions, // 👈 this must match the Challenge schema
+        questions: selectedQuiz.quizQuestions, // must match your schema
       });
-
-
-      //const challengeData = await challengeRes.json();
-      console.log("Challenge API response:", challengeRes.data.challengeId);
-      if (challengeRes.data.success) {
-        const resp = await handleNotify(selectedFriend.username, challengeRes.data.challengeId);
-        if (resp) {
+      if (challengeRes.data.success && challengeRes.data.challengeId) {
+        setAttendedChallenges(prev => [
+          challengeRes.data.newChallenge,
+          ...prev
+        ])
+        // Step 2: Notify the opponent (optional, based on your app logic)
+        const notifyRes = await handleNotify(
+          selectedFriend.username,
+          challengeRes.data.challengeId
+        );
+        if (notifyRes?.data?.success && notifyRes?.data?.newChallenge) {
           toast.success(`Challenge sent to ${selectedFriend.username} for ${selectedQuiz.quizTitle}`);
+
           setSelectedFriend(null);
           setSelectedQuiz(null);
-          setQuizDrawerOpen(false);
         } else {
-          toast.error("Challenge creation failed.");
+          // Fallback: Challenge created, but notify failed
+          toast.success(`Challenge created for ${selectedFriend.username}, but notification failed.`);
         }
+      } else {
+        toast.error("Challenge creation failed.");
       }
     } catch (err) {
       console.error("Challenge Error:", err);
       toast.error("Failed to create challenge.");
-    }finally{
-      setIsDrawerOpen(false)
+    } finally {
+      setQuizDrawerOpen(false)
+      setIsDrawerOpen(false); // close outer drawer
     }
   };
 
+  useEffect(() => {
+    const submittedIds = attendedChallenges
+    .filter((challenge) =>
+      challenge.responses?.some(
+        (res) => res.user === username && res.submittedAt
+      )
+    )
+    .map((c) => c.challengeId);
+    console.log(submittedIds);
+    
+    setSubmittedChallengeIds(submittedIds);
+  }, [attendedChallenges, username]);
 
 
   const handleNotify = async (opponentUsername, challengeId) => {
@@ -132,6 +152,8 @@ function ChallengePage() {
           `/api/challenge/attended?user=${username}&page=${page}&limit=${LIMIT}`
         );
         const data = await res.json();
+        console.log(data);
+
         if (data.success) {
           setAttendedChallenges(data.challenges);
           setTotalPages(Math.ceil(data.total / LIMIT));
@@ -172,7 +194,37 @@ function ChallengePage() {
       console.error('AI quiz generation failed:', error);
     }
   }
-
+  // handle reject finction
+  const handleReject = async (challengeId) => {
+    try {
+      const resp = await axios.patch("/api/challenge/reject", { challengeId });
+      // console.log(resp.data.message);
+      setAttendedChallenges(prev =>
+        prev.map(c =>
+          c.challengeId === challengeId ? { ...c, status: 'reject' } : c
+        )
+      );
+      router.refresh()
+    } catch (error) {
+      console.error("Failed to reject challenge:", error?.response?.data?.message || error.message);
+    } finally {
+      router.refresh();
+    }
+  };
+  // handle accept
+  const handleAccept = async (challengeId) => {
+    try {
+      const resp = await axios.patch(`/api/challenge/accept`, { challengeId });
+      setAttendedChallenges(prev =>
+        prev.map(c =>
+          c.challengeId === challengeId ? { ...c, status: 'accepted' } : c
+        )
+      );
+      router.refresh()
+    } catch (error) {
+      console.error("Failed to accept challenge:", error?.response?.data?.message || error.message);
+    }
+  }
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-[60vh] text-xl font-semibold">
@@ -181,7 +233,7 @@ function ChallengePage() {
     );
   }
 
-  
+
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-10">
@@ -195,11 +247,11 @@ function ChallengePage() {
           <TabsTrigger value="friends">👥 Friends</TabsTrigger>
         </TabsList>
 
-        <Drawer open={isDrawerOpen} onOpenChange={() =>{ 
+        <Drawer open={isDrawerOpen} onOpenChange={() => {
           setIsDrawerOpen(prev => !prev)
           setSelectedFriend(null)
           setSelectedQuiz(null)
-          }}>
+        }}>
           {/* Friend Selection Drawer */}
           <DrawerContent className="p-6 space-y-4">
             <h2 className="text-lg font-semibold">Select a Friend</h2>
@@ -224,7 +276,7 @@ function ChallengePage() {
 
           {/* Quiz Selection Drawer */}
           <Drawer open={quizDrawerOpen} onOpenChange={setQuizDrawerOpen}>
-            
+
             <DrawerContent className="p-6 space-y-4">
               <h2 className="text-lg font-semibold">Select a Quiz</h2>
 
@@ -313,68 +365,88 @@ function ChallengePage() {
               </div>
               {/* Attended Challenges List */}
 
-              {attendedChallenges.map((ch) => {
+              {attendedChallenges.filter(ch => ch.status !== "reject").map((ch) => {
                 const opponent = ch.fromUser === username ? ch.toUser : ch.fromUser;
                 const yourResponse = ch.responses.find((r) => r.user === username);
                 const isAccepted = ch.status === "accepted";
 
                 return (
-                  <div
-                    key={ch.challengeId}
-                    className="bg-white dark:bg-gray-800 border dark:border-gray-700 border-gray-200 rounded-xl shadow-sm hover:shadow-md transition p-5"
-                  >
-                    <div className="flex justify-between items-center mb-3">
-                      <h3 className="text-lg font-bold text-gray-800 dark:text-white">
-                        Challenge vs <span className="text-purple-600">{opponent}</span>
-                      </h3>
-                      <span
-                        className={`px-3 py-1 text-xs rounded-full font-medium ${ch.status === "pending"
-                          ? "bg-yellow-100 text-yellow-800"
-                          : ch.status === "accepted"
-                            ? "bg-green-100 text-green-800"
-                            : "bg-gray-200 text-gray-700"
-                          }`}
-                      >
-                        {ch.status}
-                      </span>
-                    </div>
-
-                    <div className="text-sm text-gray-600 dark:text-gray-300 space-y-1 mb-4">
-                      <p>
-                        <strong>Your Score:</strong>{" "}
-                        {yourResponse?.score ?? "Not submitted"}
-                      </p>
-                      <p>
-                        <strong>Date:</strong>{" "}
-                        {new Date(ch.createdAt).toLocaleDateString()}
-                      </p>
-                    </div>
-
-                    <div className="flex justify-end">
-                      <button
-                        className={`px-4 py-1.5 rounded-lg text-white font-medium transition ${isAccepted
-                          ? "bg-blue-600 hover:bg-blue-700"
-                          : "bg-gray-400 cursor-not-allowed"
-                          }`}
-                        disabled={!isAccepted}
-                        onClick={() => {
-                          if (isAccepted) {
-                            router.push(`/challenge-quiz/${ch.challengeId}`);
-                          }
-                        }}
-                      >
-                        Attend Quiz
-                      </button>
-                      {ch.status === "pending" && ch.toUser === username && (
-                        <Button
-                          className="bg-green-600 hover:bg-green-700 text-white ml-2"
-                          onClick={() => router.push(`/dashboard/Challenge/${ch?.challengeId}`)}
+                  <div>
+                    {
+                      ch.status !== "reject" && (
+                        <div
+                          key={ch.challengeId}
+                          className="bg-white dark:bg-gray-800 border dark:border-gray-700 border-gray-200 rounded-xl shadow-sm hover:shadow-md transition p-5"
                         >
-                          Accept Challenge
-                        </Button>
-                      )}
+                          <div className="flex justify-between items-center mb-3">
+                            <h3 className="text-lg font-bold text-gray-800 dark:text-white">
+                              Challenge vs <span className="text-purple-600">{opponent}</span>
+                            </h3>
+                            <span
+                              className={`px-3 py-1 text-xs rounded-full font-medium ${ch.status === "pending"
+                                ? "bg-yellow-100 text-yellow-800"
+                                : ch.status === "accepted"
+                                  ? "bg-green-100 text-green-800"
+                                  : "bg-gray-200 text-gray-700"
+                                }`}
+                            >
+                              {ch.status.toUpperCase()}
+                            </span>
+                          </div>
 
-                    </div>
+                          <div className="text-sm text-gray-600 dark:text-gray-300 space-y-1 mb-4">
+                            <p>
+                              <strong>Your Score:</strong>{" "}
+                              {yourResponse?.score ?? "Not submitted"}
+                            </p>
+                            <p>
+                              <strong>Date:</strong>{" "}
+                              {new Date(ch.createdAt).toLocaleDateString()}
+                            </p>
+                          </div>
+
+                          <div className="flex justify-end">
+                            <button
+                              className={`px-4 py-1.5 rounded-lg text-white font-medium transition ${isAccepted
+                                  ? "bg-blue-600 hover:bg-blue-700"
+                                  : "bg-gray-400 cursor-not-allowed"
+                                }`}
+                              disabled={!isAccepted}
+                              onClick={() => {
+                                if (!isAccepted) return;
+
+                                // If user already submitted, go to result page
+                                if (submittedChallengeIds.includes(ch.challengeId)) {
+                                  router.push(`/challenge-result/${ch.challengeId}`);
+                                } else {
+                                  router.push(`/challenge-quiz/${ch.challengeId}`);
+                                }
+                              }}
+                            >
+                              {submittedChallengeIds.includes(ch.challengeId) ? "Result" : "Attend"}
+                            </button>
+
+                            {ch.status === "pending" && ch.toUser === username && (
+                              <div>
+                                <Button
+                                  className="bg-green-600 hover:bg-green-700 text-white ml-2"
+                                  onClick={() => handleAccept(ch?.challengeId)}
+                                >
+                                  Accept
+                                </Button>
+                                <Button
+                                  className="bg-red-600 hover:bg-red-700 text-white ml-2"
+                                  onClick={() => handleReject(ch?.challengeId)}
+                                >
+                                  Reject
+                                </Button>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )
+                    }
+
                   </div>
                 );
               })}

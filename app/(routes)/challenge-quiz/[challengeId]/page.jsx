@@ -30,8 +30,6 @@ export default function ChallengePlayPage() {
       try {
         const res = await fetch(`/api/challenge/${challengeId}`);
         const data = await res.json();
-
-
         if (!data?.challenge?.questions || !Array.isArray(data.challenge.questions)) {
           throw new Error('Invalid challenge format');
         }
@@ -116,8 +114,7 @@ export default function ChallengePlayPage() {
     router.push('/dashboard');
   };
 
-  if (loading) return <p className="p-10 text-center">Loading challenge...</p>;
-  if (!questions.length) return <p className="p-10 text-center">No questions found.</p>;
+
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
@@ -126,6 +123,9 @@ export default function ChallengePlayPage() {
   };
 
   const q = questions[current];
+
+  if (loading) return <p className="p-72 text-center ">Loading challenge...</p>;
+  if (!questions.length) return <p className="p-10 text-center">No questions found.</p>;
 
   return (
     <div className="min-h-screen bg-white dark:bg-[#0f172a] text-gray-900 dark:text-gray-100 relative">
@@ -193,9 +193,13 @@ export default function ChallengePlayPage() {
                 <h2 className="text-lg font-semibold mb-4 no-select">
                   Q{current + 1}. {q.mainQuestion}
                 </h2>
-                <div>
-                  <img src={q?.mainQuestionImage} alt="network error" className='w-full object-cover rounded-sm my-2 no-select' />
-                </div>
+                {
+                  q?.mainQuestionImage!==""&&(
+                    <div>
+                      <img src={q?.mainQuestionImage} alt="network error" className='w-full object-cover rounded-sm my-2 no-select' />
+                    </div>
+                  )
+                }
                 <div className="grid gap-4">
                   {q.choices && Array.isArray(q.choices) ? (
                     q.choices.map((choice, index) => {

@@ -3,7 +3,6 @@ import Challenge from '@/db/schema/Challenge';
 import { NextResponse } from 'next/server';
 import { v4 as uuidv4 } from 'uuid';
 
-
 export async function POST(req) {
   try {
     await dbConnect();
@@ -12,23 +11,40 @@ export async function POST(req) {
     const { sender, opponent, questions } = body;
 
     if (!sender || !opponent || !questions || !Array.isArray(questions)) {
-      return NextResponse.json({ success: false, message: 'Missing or invalid fields' }, { status: 400 });
+      return NextResponse.json(
+        { success: false, message: 'Missing or invalid fields' },
+        { status: 400 }
+      );
     }
 
-    const challengeId = uuidv4(); // generate unique challenge ID
+    const challengeId = uuidv4();
 
     const newChallenge = new Challenge({
       challengeId,
       fromUser: sender,
       toUser: opponent,
-      questions, // must match quizQuestionSchema
+      questions,
     });
 
     await newChallenge.save();
 
-    return NextResponse.json({ success: true, challengeId }, { status: 201 });
+    // Convert to plain object (optional, but safe for API)
+    const challengeData = newChallenge.toObject();
+    delete challengeData.__v; // optional cleanup
+
+    return NextResponse.json(
+      {
+        success: true,
+        challengeId,
+        newChallenge: challengeData,
+      },
+      { status: 201 }
+    );
   } catch (error) {
     console.error('Error creating challenge:', error);
-    return NextResponse.json({ success: false, message: 'Server error' }, { status: 500 });
+    return NextResponse.json(
+      { success: false, message: 'Server error' },
+      { status: 500 }
+    );
   }
 }

@@ -22,6 +22,7 @@ export async function GET(req) {
     const [challenges, total] = await Promise.all([
       Challenge.find({
         $or: [{ fromUser: username }, { toUser: username }],
+        status: { $ne: 'reject' }
       })
         .sort({ createdAt: -1 })
         .skip(skip)

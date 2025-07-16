@@ -83,7 +83,7 @@ function DashboardLayout({ children }) {
                         'flex items-center gap-3 px-3 py-2 rounded-lg transition-colors duration-300',
                         menuSelected === idx
                           ? 'bg-gradient-to-r from-emerald-500 to-teal-500 dark:from-emerald-700 dark:to-teal-700 text-white shadow-md'
-                          : 'text-black dark:text-white hover:bg-gradient-to-r hover:from-green-200 hover:to-teal-200 dark:hover:from-green-700 dark:hover:to-teal-700'
+                          : 'text-black dark:text-white hover:bg-gradient-to-r hover:from-green-200 hover:to-teal-200 dark:hover:from-green-400 dark:hover:to-teal-300 dark:hover:text-gray-900'
                       )}
                       onClick={() => setMenuSelected(idx)}
                     >

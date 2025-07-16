@@ -58,7 +58,7 @@ const challengeSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['pending', 'accepted', 'completed'],
+    enum: ['pending', 'accepted', 'completed','reject'],
     default: 'pending',
   },
   questions: {
