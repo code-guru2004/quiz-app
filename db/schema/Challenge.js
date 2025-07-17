@@ -29,7 +29,7 @@ const challengeQuestionSchema = new mongoose.Schema({
 }, { _id: false });
 
 const responseSchema = new mongoose.Schema({
-  user: { type: String, required: true }, // fromUser or toUser
+  user: { type: String, required: true, unique : true}, // fromUser or toUser
   selectedAnswers: {
     type: [{
       questionId: String,
