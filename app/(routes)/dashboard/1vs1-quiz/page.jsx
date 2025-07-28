@@ -423,7 +423,7 @@ function ChallengePage() {
                                 }
                               }}
                             >
-                              {submittedChallengeIds.includes(ch.challengeId) ? "Result" : "Attend"}
+                              {submittedChallengeIds.includes(ch.challengeId) ? "Result ⛳" : "Attend"}
                             </button>
 
                             {ch.status === "pending" && ch.toUser === username && (
