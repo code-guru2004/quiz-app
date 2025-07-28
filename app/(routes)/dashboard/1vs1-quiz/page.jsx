@@ -237,8 +237,8 @@ function ChallengePage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-10">
-      <h1 className="flex justify-center items-center text-2xl font-bold mb-6">
-        <Swords className="mr-2" /> 1 v/s 1 Challenge Arena
+      <h1 className="flex justify-center items-center text-2xl font-bold mb-6 bg-gradient-to-l from-blue-500 via-teal-500 to-green-500 text-transparent bg-clip-text">
+        <Swords className="mr-2 text-green-600" /> 1 v/s 1 Challenge Arena
       </h1>
 
       <Tabs defaultValue="challenge" className="w-full">

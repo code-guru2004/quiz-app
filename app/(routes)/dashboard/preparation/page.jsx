@@ -45,7 +45,7 @@ export default function PreparationUserPage() {
       <div className="max-w-5xl mx-auto space-y-10">
         {/* Heading */}
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-gray-800 dark:text-white">📚 Preparation Resources</h1>
+          <h1 className="text-4xl font-bold text-gray-800 dark:text-white ">📚 Preparation Resources</h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
             Browse and prepare with curated links across various topics.
           </p>

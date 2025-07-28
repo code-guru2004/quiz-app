@@ -70,7 +70,7 @@ function PracticeQuizzes() {
   return (
     <div className="container mx-auto px-4 md:px-6 py-5 mb-9 body">
       {/* Page Title */}
-      <h1 className="text-3xl font-bold text-center mb-8">🎯Practice Quizzes</h1>
+      <h1 className="text-3xl font-bold text-center mb-8 ">🎯Practice Quizzes</h1>
 
       {/* Category Buttons */}
       <div className="flex flex-wrap gap-3 justify-center mb-6">
