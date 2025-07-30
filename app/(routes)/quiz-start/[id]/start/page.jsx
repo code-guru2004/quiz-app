@@ -8,6 +8,8 @@ import Image from "next/image";
 import useGlobalContextProvider from "@/app/_context/ContextApi";
 import QuizStartQuestions from "../_component/QuizStartQuestions";
 import QuizHeader from "../_component/QuizHeader";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 function QuizStart({ params }) {
   const route = useRouter();
@@ -15,6 +17,18 @@ function QuizStart({ params }) {
   const quizId = actualParams.id;
   const { allQuiz, quizToStartObject } = useGlobalContextProvider();
   const { selectQuizToStart, setSelectQuizToStart } = quizToStartObject;
+
+  useEffect(()=>{
+    async function fetchQuizData() {
+      const resp = await axios.get(`/api/get-quiz-id/${quizId}`);
+      if(resp?.data.success === true){
+        setSelectQuizToStart(resp.data.quizData);
+      }else{
+        toast.error("Quiz not found")
+      }
+    }
+    fetchQuizData()
+  },[quizId])
   //const [quizDeatils, setQuizDeatils] = useState(null)
   //  if(!selectQuizToStart &&quizId){
 

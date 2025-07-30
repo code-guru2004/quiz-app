@@ -239,3 +239,29 @@ html {
   border-radius: 9999px;
   animation: customSpin 2s linear infinite;
 }
+
+
+@keyframes floatAround {
+  0% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(200px, 100px);
+  }
+  50% {
+    transform: translate(-150px, 150px);
+  }
+  75% {
+    transform: translate(-100px, -100px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+.floating-email {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  animation: floatAround 10s infinite linear;
+}

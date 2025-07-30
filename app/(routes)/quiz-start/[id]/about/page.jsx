@@ -60,15 +60,33 @@ const QuizAboutPage = () => {
         // console.log(quizTitle,hasUserSubmitted);
 
     }, [])
+    
     const startQuiz = () => {
-        setIsLoading(true)
+        setIsLoading(true);
+    
         if (isSubmit) {
             router.push(`/quiz-start/${_id}/result`);
         } else {
-            router.push(`/quiz-start/${selectQuizToStart._id}`);
-
+            const quizUrl = `/quiz-start/${selectQuizToStart._id}`;
+            const screenWidth = window.screen.width;
+            const screenHeight = window.screen.height;
+    
+            // Open in a new fullscreen-like window
+            const quizWindow = window.open(
+                quizUrl,
+                "_blank",
+                `toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,fullscreen=yes,width=${screenWidth},height=${screenHeight}`
+            );
+    
+            // Fallback if popup was blocked
+            if (!quizWindow) {
+                alert("Popup blocked! Please allow popups for this site.");
+                setIsLoading(false);
+            }
+            setIsLoading(false)
         }
     };
+    
 
     const [readMore, setReadMore] = useState(false);
 

@@ -59,8 +59,10 @@ function QuizStartQuestions({ timeLeft, setTimeLeft }) {
     setWantSubmitted(true);
   }
   const handleNext = () => {
+    
     const isLastQuestion = currQuizIndex === quizQuestions.length - 1;
     if (!isLastQuestion && timeLeft > 0) {
+      console.log(currQuizIndex);
       setCurrQuizIndex((prev) => prev + 1);
     }
   }
@@ -104,7 +106,7 @@ function QuizStartQuestions({ timeLeft, setTimeLeft }) {
         if (resp?.data.success) {
           toast.success(resp?.data.message, { icon: "👏" });
           setTimeout(() => {
-            redirect(`quiz-start/${quizId}/leaderboard`)
+            redirect(`/quiz-start/${quizId}/leaderboard`)
           }, 1000);
         } else {
           toast.error(resp?.data.message, { icon: "😕" });
@@ -258,7 +260,7 @@ function QuizStartQuestions({ timeLeft, setTimeLeft }) {
       )}
 
       {/* Main quiz area */}
-      <div className="flex-grow flex justify-center items-center px-4 ">
+      <div className="flex-grow flex justify-center items-center px-4 no-select">
         <div className="w-full max-w-2xl ">
           {quizCompleted ? (
             <div className="mt-3 flex flex-col items-center justify-center gap-8 text-center w-full">

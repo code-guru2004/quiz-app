@@ -2,7 +2,7 @@ import { ICONS } from "@/app/Icon";
 import ThemeToggle from "@/components/shared/ModeToggle";
 import React from "react";
 
-function QuizHeader({selectQuizToStart,timer}) {
+function QuizHeader({selectQuizToStart,timer,email}) {
   //console.log(timer);
   
   const formatTime = (seconds) => {
@@ -11,7 +11,7 @@ function QuizHeader({selectQuizToStart,timer}) {
     return `${minutes}:${secs < 10 ? `0${secs}` : secs}`;
   };
   return (
-    <div className="flex justify-between items-center mt-8 md:mt-1">
+    <div className=" flex justify-between items-center mt-8 md:mt-1">
       {/* quiz name */}
       <div className="flex gap-2 justify-center">
         <div className="bg-gray-100 dark:bg-green-200 w-12 h-12 flex items-center justify-center p-2 rounded-sm border-1 border-green-200 hover:bg-green-100">
@@ -23,8 +23,11 @@ function QuizHeader({selectQuizToStart,timer}) {
           <span className="font-light text-sm">{selectQuizToStart?.quizQuestions.length} Questions</span>
         </div>
       </div>
-      <div className="flex gap-7">
-          <ThemeToggle/>
+
+      <div className="flex items-center gap-7">
+       
+          
+        <ThemeToggle/>
           {/* timer */}
           <div className="flex gap-2 h-9 items-center  bg-green-200 px-4 rounded-md ">
             {/* <svg
