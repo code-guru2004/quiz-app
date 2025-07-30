@@ -72,7 +72,7 @@ function QuizStart({ params }) {
       setFocusLossCount(prev => prev + 1);
       console.log(focusLossCount);
       
-      toast.error("Don't click outside the quiz window!"+focusLossCount);
+      toast.error("Don't click outside the quiz window!");
     };
   
     window.addEventListener("blur", handleBlur);
