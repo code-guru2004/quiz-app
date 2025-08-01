@@ -249,7 +249,7 @@ html {
     transform: translate(200px, 100px);
   }
   50% {
-    transform: translate(-150px, 150px);
+    transform: translate(-50vw, 150px);
   }
   75% {
     transform: translate(-100px, -100px);
