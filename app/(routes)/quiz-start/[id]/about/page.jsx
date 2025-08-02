@@ -8,6 +8,7 @@ import useGlobalContextProvider from "@/app/_context/ContextApi";
 import Image from "next/image";
 import { ICONS } from "@/app/Icon";
 import LikeDislike from "../_component/LikeDislike";
+import { Bounce, toast } from "react-toastify";
 
 const QuizAboutPage = () => {
     const router = useRouter();
@@ -56,6 +57,17 @@ const QuizAboutPage = () => {
         );
         if (hasUserSubmitted) {
             setIsSubmit(true)
+            toast.success('🦄 You can ', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: false,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Bounce,
+                });
         }
         // console.log(quizTitle,hasUserSubmitted);
 
