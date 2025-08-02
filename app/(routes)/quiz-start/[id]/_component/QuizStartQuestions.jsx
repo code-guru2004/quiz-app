@@ -8,7 +8,7 @@ import { redirect, useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
-function QuizStartQuestions({ timeLeft, setTimeLeft }) {
+function QuizStartQuestions({ timeLeft, setTimeLeft, isForceSubmit }) {
   const params = useParams();
   const quizId = params.id;
   const prefixes = ["A", "B", "C", "D", "E"];
@@ -60,7 +60,12 @@ function QuizStartQuestions({ timeLeft, setTimeLeft }) {
     return () => clearInterval(interval);
   }, [currQuizIndex, reviewQues]);
 
-
+  useEffect(()=>{
+    alert("Suspicious activity detected. Your test has been automatically submitted.");
+    handleSubmit()
+    setQuizCompleted(true)
+    
+  },[isForceSubmit])
 
   const handleConfirmSubmission = () => {
     setWantSubmitted(true);
@@ -125,8 +130,6 @@ function QuizStartQuestions({ timeLeft, setTimeLeft }) {
       toast.error("Submission failed!");
     }
   };
-
-
 
   function handleAddMarkForReview() {
     if (!reviewQues.includes(currQuizIndex)) {

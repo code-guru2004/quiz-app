@@ -1,5 +1,5 @@
 "use client";
-import React, { use, useEffect, useState } from "react";
+import React, { use, useEffect, useRef, useState } from "react";
 import QuizStartQuestions from "./_component/QuizStartQuestions";
 import QuizHeader from "./_component/QuizHeader";
 import useGlobalContextProvider from "@/app/_context/ContextApi";
@@ -19,74 +19,69 @@ function QuizStart({ params }) {
   const { selectQuizToStart, setSelectQuizToStart } = quizToStartObject;
 
   const [timeLeft, setTimeLeft] = useState(null);
-
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [focusLossCount, setFocusLossCount] = useState(0);
-  const [animationData, setAnimationData] = useState(null);
+  const focusLossCountRef = useRef(0); 
+  const [isForceSubmit, setIsForceSubmit] = useState(false)
+  //const [animationData, setAnimationData] = useState(null);
 
-  useEffect(()=>{
-    try {
+  // useEffect(()=>{
+  //   try {
       
-    } catch (error) {
-      const res = fetch("/assets/loading.json")
-      const data = res.json()
-      setAnimationData(data)
-    }
-  },[])
+  //   } catch (error) {
+  //     const res = fetch("/assets/loading.json")
+  //     const data = res.json()
+  //     setAnimationData(data)
+  //   }
+  // },[])
+
   useEffect(() => {
     if (timeLeft !== null && timeLeft > 0 && !quizCompleted) {
       const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
       return () => clearTimeout(timer);
     } else if (timeLeft === 0) {
       setQuizCompleted(true);
+      setFocusLossCount(0)
     }
   }, [timeLeft, quizCompleted]);
   
 
-  // useEffect(() => {
-
-  //   if (selectQuizToStart === null) {
-  //     route.push("/dashboard");
-  //   }
-  // }, []);
   useEffect(() => {
     async function fetchQuizData() {
       const resp = await axios.get(`/api/get-quiz-id/${quizId}`);
       if (resp?.data.success === true) {
         const quizData = resp.data.quizData;
         setSelectQuizToStart(quizData);
-        setTimeLeft(quizData.quizTime * 60); // ✅ Set timeLeft here
+        setTimeLeft(quizData.quizTime * 60);
+        //setFocusLossCount(0)
       } else {
         toast.error("Quiz not found");
         route.push("/dashboard");
       }
     }
     fetchQuizData();
+    setFocusLossCount(0)
   }, [quizId]);
-
 
   useEffect(() => {
     const handleBlur = () => {
-      console.warn("User clicked outside the window!");
-      // You can use toast or set state here
-      setFocusLossCount(prev => prev + 1);
-      console.log(focusLossCount);
-      
-      toast.error("Don't click outside the quiz window!");
+      focusLossCountRef.current += 1; // Update the ref
+      setFocusLossCount(focusLossCountRef.current); // Update state for display
+      toast.error(`Don't click outside the quiz window! (${focusLossCountRef.current})`);
     };
-  
+
     window.addEventListener("blur", handleBlur);
-  
+    
     return () => {
       window.removeEventListener("blur", handleBlur);
     };
-  }, []);
-  
+  }, []); 
 
-
-
-  //console.log("quizToStartObject",quizToStartObject.selectQuizToStart.quizTime);
-  
+  useEffect(()=>{
+    if(focusLossCount>=4){
+      setIsForceSubmit(true)
+    }
+  },[focusLossCount])
   return (
     <div className="flex flex-col px-4 md:px-24 mt-[35px]">
       {selectQuizToStart === null ? (
@@ -103,10 +98,9 @@ function QuizStart({ params }) {
             <QuizHeader selectQuizToStart={selectQuizToStart} timer={timeLeft} email={email}/>
           </div>
           <div className="mt-10 w-full flex items-center justify-center">
-            <QuizStartQuestions timeLeft={timeLeft} setTimeLeft={setTimeLeft}/>
+            <QuizStartQuestions timeLeft={timeLeft} setTimeLeft={setTimeLeft} isForceSubmit={isForceSubmit}/>
           </div>
           <FloatingEmail email={email} />
-
         </>
       )}
     </div>
