@@ -14,7 +14,7 @@ const QuizAboutPage = () => {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const [isSubmit, setIsSubmit] = useState(false);
-    const { email, quizToStartObject } = useGlobalContextProvider();
+    const { email, quizToStartObject, username } = useGlobalContextProvider();
     const { selectQuizToStart } = quizToStartObject;
     //const totalQuestions = quizQuestions.length;
     //console.log(_id);
@@ -57,7 +57,7 @@ const QuizAboutPage = () => {
         );
         if (hasUserSubmitted) {
             setIsSubmit(true)
-            toast.success('🦄 You can ', {
+            toast.success(' You can view your result', {
                 position: "top-right",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -67,29 +67,50 @@ const QuizAboutPage = () => {
                 progress: undefined,
                 theme: "light",
                 transition: Bounce,
-                });
+            });
         }
         // console.log(quizTitle,hasUserSubmitted);
 
     }, [])
-    
+    // Call start-quiz API before routing user to questions
+
+    const handleStartQuiz = async () => {
+        const res = await fetch('/api/quiz/start-quiz', {
+            method: 'POST',
+            body: JSON.stringify({
+                quizId:_id,
+                email: email,
+                username: username
+            })
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+            return false;
+        } else {
+            return true;
+        }
+    };
+
     const startQuiz = () => {
         setIsLoading(true);
-    
-        if (isSubmit) {
+        const resp = handleStartQuiz()
+        
+        if (resp && isSubmit) {
             router.push(`/quiz-start/${_id}/result`);
         } else {
             const quizUrl = `/quiz-start/${selectQuizToStart._id}`;
             const screenWidth = window.screen.width;
             const screenHeight = window.screen.height;
-    
+
             // Open in a new fullscreen-like window
             const quizWindow = window.open(
                 quizUrl,
                 "_blank",
                 `toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,fullscreen=yes,width=${screenWidth},height=${screenHeight}`
             );
-    
+
             // Fallback if popup was blocked
             if (!quizWindow) {
                 alert("Popup blocked! Please allow popups for this site.");
@@ -98,7 +119,7 @@ const QuizAboutPage = () => {
             setIsLoading(false)
         }
     };
-    
+
 
     const [readMore, setReadMore] = useState(false);
 
@@ -120,6 +141,7 @@ const QuizAboutPage = () => {
                         <h1 className="text-3xl sm:text-4xl font-bold text-green-800 dark:text-green-400 mb-3 bg-gray-100 dark:bg-green-100 p-2 rounded-md">{ICONS[selectQuizToStart.quizIcon].icon}</h1>
                         {/* Title */}
                         <h1 className="text-3xl sm:text-4xl font-bold text-green-800 mb-3">{selectQuizToStart.quizTitle}</h1>
+
                     </div>
 
                     {/* Description */}

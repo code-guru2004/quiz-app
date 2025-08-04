@@ -55,6 +55,11 @@ const userQuizSchema = new mongoose.Schema({
     }],
     default: [],
   },
+  status: {
+    type: String,
+    enum: ['started', 'submitted'],
+    default: 'started', // Marked as started on "Start Test"
+  },
 });
 
 

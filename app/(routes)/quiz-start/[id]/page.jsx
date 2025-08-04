@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import axios from "axios";
 import FloatingEmail from "@/components/shared/FloatingEmail";
-import toast, { Bounce } from "react-toastify";
+import { Bounce, toast } from "react-toastify";
 import Lottie from "lottie-react";
 import { LoaderCircle } from "lucide-react";
 
@@ -53,6 +53,7 @@ function QuizStart({ params }) {
         const quizData = resp.data.quizData;
         setSelectQuizToStart(quizData);
         setTimeLeft(quizData.quizTime * 60);
+        setIsForceSubmit(false)
         //setFocusLossCount(0)
       } else {
         toast.error("Quiz not found");
@@ -68,7 +69,7 @@ function QuizStart({ params }) {
       focusLossCountRef.current += 1; // Update the ref
       setFocusLossCount(focusLossCountRef.current); // Update state for display
 
-      toast.warn(`Don't click outside the quiz window! (${focusLossCountRef.current})`, {
+      toast.warn(`Don't click outside the quiz window!`, {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -89,7 +90,21 @@ function QuizStart({ params }) {
   }, []);
 
   useEffect(() => {
-    if (focusLossCount >= 4) {
+    if (focusLossCount === 3) {
+      //setIsForceSubmit(true)
+      toast.error('This is your last warning for your suspicious activity', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Bounce,
+        });
+    }
+    if (focusLossCount === 4) {
       setIsForceSubmit(true)
     }
   }, [focusLossCount])

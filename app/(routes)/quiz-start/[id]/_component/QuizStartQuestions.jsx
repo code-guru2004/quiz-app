@@ -61,9 +61,11 @@ function QuizStartQuestions({ timeLeft, setTimeLeft, isForceSubmit }) {
   }, [currQuizIndex, reviewQues]);
 
   useEffect(()=>{
-    alert("Suspicious activity detected. Your test has been automatically submitted.");
-    handleSubmit()
-    setQuizCompleted(true)
+    if(isForceSubmit){
+      alert("Suspicious activity detected. Your test has been automatically submitted.");
+      handleSubmit()
+      setQuizCompleted(true)
+    }
     
   },[isForceSubmit])
 
@@ -307,7 +309,7 @@ function QuizStartQuestions({ timeLeft, setTimeLeft, isForceSubmit }) {
                   </div>
                 </div>
 
-                <div className="flex justify-between items-center pt-4 border-t border-gray-200">
+                <div className="flex justify-between items-center pt-4 border-t border-gray-200 dark:border-gray-600">
                   <button
                     onClick={handlePreviousQuestion}
                     disabled={currQuizIndex === 0}

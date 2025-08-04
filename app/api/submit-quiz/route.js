@@ -1,4 +1,3 @@
-
 import { dbConnect } from "@/db/dbConnect";
 import Quiz from "@/db/schema/quizSchema";
 import User from "@/db/schema/User";
@@ -8,9 +7,8 @@ export async function POST(request) {
   await dbConnect();
 
   try {
-    const { quizId, email, score,perQuestionTimes,totaltime, selectedAnswers } = await request.json();
-    console.log(quizId, email, score,{...perQuestionTimes},totaltime, {...selectedAnswers});
-    
+    const { quizId, email, score, perQuestionTimes, totaltime, selectedAnswers } = await request.json();
+
     if (!quizId || !email || typeof score !== "number") {
       return NextResponse.json(
         { success: false, message: "Missing required fields" },
@@ -19,65 +17,72 @@ export async function POST(request) {
     }
 
     const quiz = await Quiz.findById(quizId);
-    const user = await User.findOne({email});
-    // console.log(quiz);
-    console.log(email);
-    
-    console.log("user",user);
-    
-    
+    const user = await User.findOne({ email });
+
     if (!user) {
       return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
     }
-    if (!quiz) {
-      return NextResponse.json(
-        { success: false, message: "Quiz not found" },
-        { status: 404 }
-      );
-    }
-    // console.log(quiz.quizQuestions?.length);
-    
-    // Check if user already submitted
-    const existingSubmission = quiz.userSubmissions?.find(
-      (submission) => submission.email === email
-    );
-    
 
-    if (existingSubmission) {
-      // Optional: allow updating score if re-submitting
-      // existingSubmission.score = score;
-      // existingSubmission.submittedAt = new Date();
+    if (!quiz) {
+      return NextResponse.json({ success: false, message: "Quiz not found" }, { status: 404 });
+    }
+
+    // ✅ Check if user already submitted
+    const submittedSubmission = quiz.userSubmissions?.find(
+      (submission) => submission.email === email && submission.status === "submitted"
+    );
+
+    if (submittedSubmission) {
       return NextResponse.json(
-        { success: false, message: "You have already attend the quiz" },
+        { success: false, message: "You have already submitted the quiz" },
         { status: 200 }
       );
+    }
+
+    // ✅ Check if user has a "started" submission
+    const startedSubmission = quiz.userSubmissions?.find(
+      (submission) => submission.email === email && submission.status === "started"
+    );
+
+    const minimumTime = quiz.minimumTime
+      ? Math.min(quiz.minimumTime, totaltime)
+      : totaltime;
+
+    if (startedSubmission) {
+      // ✅ Update the existing started submission
+      startedSubmission.status = "submitted";
+      startedSubmission.score = score;
+      startedSubmission.submittedAt = new Date();
+      startedSubmission.perQuestionTimes = perQuestionTimes;
+      startedSubmission.selectedAnswers = [...selectedAnswers];
     } else {
-      const minimumTime = Math.min(quiz.minimumTime,totaltime);
-      // console.log("totaltime",totaltime);
-      
-      // Add new submission
+      // ✅ No started submission: push new submitted entry
       quiz.userSubmissions.push({
         email,
-        username:user?.username,
+        username: user?.username,
         score,
+        status: "submitted",
         submittedAt: new Date(),
         perQuestionTimes,
-        selectedAnswers:[...selectedAnswers]
+        selectedAnswers: [...selectedAnswers],
       });
-      quiz.minimumTime=minimumTime;
-
-      user.submitQuiz.push({
-        quizId:quiz._id,
-        quizTitle: quiz.quizTitle,
-        quizIcon:quiz.quizIcon || 0,
-        quizScore:score,
-        quizTotalQuestions:quiz.quizQuestions?.length,
-        rank: null,
-        time: totaltime,
-        quizCategory:quiz.quizCategory,
-        quizMode: quiz.quizMode,
-      })
     }
+
+    // ✅ Update quiz minimum time
+    quiz.minimumTime = minimumTime;
+
+    // ✅ Add submission to user record
+    user.submitQuiz.push({
+      quizId: quiz._id,
+      quizTitle: quiz.quizTitle,
+      quizIcon: quiz.quizIcon || 0,
+      quizScore: score,
+      quizTotalQuestions: quiz.quizQuestions?.length,
+      rank: null,
+      time: totaltime,
+      quizCategory: quiz.quizCategory,
+      quizMode: quiz.quizMode,
+    });
 
     await quiz.save();
     await user.save();
