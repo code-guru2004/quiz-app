@@ -33,7 +33,7 @@ const quizSubmitSchema = new mongoose.Schema({
   },
   quizMode: {
     type: String,
-    required: true, // optional but recommended to enforce it
+    required: true, 
   },
   quizCategory: { // ✅ added field
     type: String,

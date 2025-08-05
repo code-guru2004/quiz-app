@@ -145,7 +145,7 @@ const QuizAboutPage = () => {
                     </div>
 
                     {/* Description */}
-                    <div className="text-gray-100 dark:text-slate-100 whitespace-pre-line break-words mb-6 text-start">
+                    <div className="text-gray-900 dark:text-slate-400 whitespace-pre-line break-words mb-6 text-start">
                         {visibleText}
                         {shouldTruncate && !readMore && "..."}
                         {shouldTruncate && (
@@ -226,13 +226,13 @@ const QuizAboutPage = () => {
                             isSubmit ?
                                 (<Button
                                     onClick={startQuiz}
-                                    className="bg-green-700 hover:bg-green-800 text-white px-8 py-3 text-md font-semibold rounded-full shadow-md transition-transform hover:scale-105 dark:bg-green-600 dark:hover:bg-green-500"
+                                    className="bg-green-700 hover:bg-green-800 text-white px-8 py-3 text-md font-semibold rounded-md shadow-md transition-transform hover:scale-105 dark:bg-green-600 dark:hover:bg-green-500"
                                 >
                                     {isLoading ? 'Redirecting...' : 'View Result 🎓'}
                                 </Button>) : (
                                     <Button
                                         onClick={startQuiz}
-                                        className="bg-green-700 hover:bg-green-800 text-white px-8 py-3 text-md font-semibold rounded-full shadow-md transition-transform hover:scale-105"
+                                        className="bg-green-700 hover:bg-green-800 text-white px-8 py-3 text-md font-semibold rounded-md shadow-md transition-transform hover:scale-105"
                                     >
                                         {isLoading ? 'Redirecting to quiz...' : 'Start Quiz 🚀'}
                                     </Button>

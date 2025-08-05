@@ -116,7 +116,10 @@ const quizSchema = new mongoose.Schema({
   isPublish:{
     type: Boolean,
     default: true,
-  }
+  },
+  quizExpiry: {
+    type: Date,
+  },
 });
 
 quizQuestionSchema.pre("validate", function (next) {
