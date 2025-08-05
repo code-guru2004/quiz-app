@@ -28,7 +28,7 @@ export default function QuizStatsHeatmap({ username }) {
 
     return (
         <div>
-            <h2 className="text-xl font-semibold mb-4">Quiz Activity</h2>
+            <h2 className="text-xl font-semibold mb-4 text-emerald-800">Quiz Activity</h2>
             <CalendarHeatmap
                 startDate={startOfYear}
                 endDate={today}

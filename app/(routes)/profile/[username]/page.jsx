@@ -12,7 +12,10 @@ import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  BarChart, Bar, Legend, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar
+  BarChart, Bar, Legend, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar,
+  PieChart,
+  Pie,
+  Cell
 } from 'recharts';
 
 const BADGE_DATA = {
@@ -23,6 +26,8 @@ const BADGE_DATA = {
   FAST: { icon: <Zap size={16} />, color: 'bg-orange-300', text: '⚡ Speed Demon' },
   ACCURATE: { icon: <Lightning size={16} />, color: 'bg-green-300', text: '🎯 Precision Pro' }
 };
+const COLORS = ['#0088FE', '#00C49F'];
+
 
 export default function ProfilePage() {
   const params = useParams();
@@ -38,10 +43,13 @@ export default function ProfilePage() {
   const [userLevel, setUserLevel] = useState('BEGINNER');
   const [streakDays, setStreakDays] = useState(0);
   const [categoryStats, setCategoryStats] = useState([]);
-  const [timeStats, setTimeStats] = useState({ avgTime: 0, fastestQuiz: 0 });
+  const [timeStats, setTimeStats] = useState({ avgTime: 0, TotalTime: 0 });
   const [friends, setFriends] = useState([]);
   const [achievements, setAchievements] = useState([]);
   const [showAllQuizzes, setShowAllQuizzes] = useState(false);
+  const [quizTypeData, setQuizTypeData] = useState([]);
+  const [quizAvgScores, setQuizAvgScores] = useState([{ name: 'Live Quizzes', score: 0 },{ name: 'AI Quizzes', score: 0 }]);
+  const [quizTimeData, setQuizTimeData] = useState([])
 
   const fetchUserData = async () => {
     try {
@@ -49,22 +57,35 @@ export default function ProfilePage() {
       const [userRes, statsRes] = await Promise.all([
         fetch(`/api/get-user?username=${username}`),
         fetch(`/api/user/get-stats?username=${username}`),
-        
+
       ]);
-      
+
       const userData = await userRes.json();
       const statsData = await statsRes.json();
-      const friendsData = userData.friendList
+      const friendsData = userData?.friendList
+      console.log(statsData.data);
+
 
       const userInfo = userData?.userData;
+      console.log(userInfo.friendList);
+
       setEmail(userInfo.email);
       setSubmittedQuiz(userInfo.submitQuiz);
       setStreakDays(statsData.streakDays || 0);
       setCategoryStats(statsData.categoryStats || []);
-      setTimeStats(statsData.timeStats || { avgTime: 0, fastestQuiz: 0 });
-      setFriends(friendsData || []);
+      setTimeStats({ avgTime: statsData.data?.avgTime, fastestQuiz: statsData.data?.totalTime } || { avgTime: 0, fastestQuiz: 0 });
+      setFriends(userInfo.friendList || []);
       setAchievements(statsData.achievements || []);
-      
+      setQuizTypeData([
+        { name: 'Live Quizzes', value: statsData.data?.NoOrdinayQuiz },
+        { name: 'AI Quizzes', value: statsData.data?.NoAIQuizzes }
+      ]);
+
+      setQuizAvgScores([
+        { name: 'Live Quizzes', score: statsData.data?.averageScoreNormalQuizScore },
+        { name: 'AI Quizzes', score: statsData.data?.averageScoreAIQuizScore }
+      ]);
+      setQuizTimeData([...statsData.data?.quizTitleAndTime])
     } catch (error) {
       console.error("Error fetching user data:", error);
     } finally {
@@ -75,6 +96,9 @@ export default function ProfilePage() {
   useEffect(() => {
     fetchUserData();
   }, []);
+  useEffect(() => {
+
+  }, [])
 
   useEffect(() => {
     let score = 0;
@@ -89,7 +113,7 @@ export default function ProfilePage() {
       score += submittedQuiz[i]?.quizScore;
       totalQuestions += submittedQuiz[i]?.quizTotalQuestions;
       correctAnswers += submittedQuiz[i]?.quizScore;
-      
+
       if (submittedQuiz[i]?.quizScore > maxi) {
         maxi = submittedQuiz[i]?.quizScore;
       }
@@ -111,7 +135,7 @@ export default function ProfilePage() {
       });
 
       historyList.push({
-        name: `Quiz ${i+1}`,
+        name: `Quiz ${i + 1}`,
         score: percentageScore,
         date: new Date(submittedQuiz[i]?.submittedAt).toLocaleDateString()
       });
@@ -129,10 +153,10 @@ export default function ProfilePage() {
     setScoreHistoryData(historyList);
     setTotalScore(score);
     setMaxScore(maxi === -99 ? 0 : maxi);
-    
+
     const acc = totalQuestions > 0 ? ((correctAnswers / totalQuestions) * 100).toFixed(2) : 0;
     setAccuracy(acc);
-    
+
     // Determine user level based on performance
     if (submittedQuiz.length >= 20 && acc > 85) {
       setUserLevel('EXPERT');
@@ -147,10 +171,10 @@ export default function ProfilePage() {
 
   const getBadges = () => {
     const badges = [];
-    
+
     // Level badge
     badges.push(BADGE_DATA[userLevel].text);
-    
+
     // Achievement badges
     if (submittedQuiz.length === 0) badges.push("🚀 First Quiz Awaits");
     if (submittedQuiz.length >= 10) badges.push("🧠 Quiz Whiz");
@@ -160,7 +184,7 @@ export default function ProfilePage() {
     if (streakDays >= 7) badges.push("🔥 7-Day Streak");
     if (streakDays >= 30) badges.push("⏳ 30-Day Legend");
     if (timeStats.fastestQuiz > 0) badges.push("⚡ Speedster");
-    
+
     // Add unlocked achievements
     achievements.forEach(achievement => {
       badges.push(achievement);
@@ -209,11 +233,11 @@ export default function ProfilePage() {
                 </div>
               )}
             </div>
-            
+
             <div className="flex flex-col items-center">
               <h1 className="text-xl md:text-2xl font-bold text-emerald-800 break-words">{username}</h1>
               <p className="text-sm text-gray-600 break-all">{email}</p>
-              
+
               <div className="mt-2 flex items-center gap-2">
                 <span className={`px-2 py-1 rounded-full text-xs font-medium ${BADGE_DATA[userLevel].color}`}>
                   {BADGE_DATA[userLevel].text}
@@ -224,8 +248,8 @@ export default function ProfilePage() {
 
             <div className="w-full bg-white rounded-lg p-3 shadow-inner">
               <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-gradient-to-r from-emerald-400 to-green-500" 
+                <div
+                  className="h-full bg-gradient-to-r from-emerald-400 to-green-500"
                   style={{ width: `${Math.min(100, (submittedQuiz.length / 20) * 100)}%` }}
                 ></div>
               </div>
@@ -272,14 +296,14 @@ export default function ProfilePage() {
             {/* Friends List */}
             {friends.length > 0 && (
               <div className="w-full mt-4">
-                <h3 className="text-sm font-semibold text-emerald-800 mb-2">Quiz Friends</h3>
+                <h3 className="text-sm font-semibold text-emerald-800 mb-2">Quiz Friends👪</h3>
                 <div className="flex flex-wrap justify-center gap-2">
                   {friends.slice(0, 5).map((friend, idx) => (
                     <div key={idx} className="flex items-center bg-white rounded-full px-3 py-1 shadow-sm">
                       <div className="w-6 h-6 rounded-full bg-emerald-200 mr-2 flex items-center justify-center">
                         <UserIcon className="text-emerald-700 w-3 h-3" />
                       </div>
-                      <span className="text-xs text-gray-700">{friend}</span>
+                      <span className="text-xs text-gray-700">{friend?.email}</span>
                     </div>
                   ))}
                   {friends.length > 5 && (
@@ -303,21 +327,21 @@ export default function ProfilePage() {
                       <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                       <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#4a5568' }} />
                       <YAxis domain={[0, 100]} tick={{ fontSize: 12, fill: '#4a5568' }} />
-                      <Tooltip 
-                        contentStyle={{ 
+                      <Tooltip
+                        contentStyle={{
                           backgroundColor: 'white',
                           borderRadius: '0.5rem',
                           boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
                           border: 'none'
                         }}
                       />
-                      <Line 
-                        type="monotone" 
-                        dataKey="score" 
-                        stroke="#059669" 
-                        strokeWidth={3} 
-                        dot={{ r: 4 }} 
-                        activeDot={{ r: 6, stroke: '#065f46' }} 
+                      <Line
+                        type="monotone"
+                        dataKey="score"
+                        stroke="#059669"
+                        strokeWidth={3}
+                        dot={{ r: 4 }}
+                        activeDot={{ r: 6, stroke: '#065f46' }}
                       />
                     </LineChart>
                   </ResponsiveContainer>
@@ -333,15 +357,15 @@ export default function ProfilePage() {
                       <PolarGrid />
                       <PolarAngleAxis dataKey="subject" tick={{ fontSize: 10 }} />
                       <PolarRadiusAxis angle={30} domain={[0, 100]} />
-                      <Radar 
-                        name="Performance" 
-                        dataKey="performance" 
-                        stroke="#059669" 
-                        fill="#10b981" 
-                        fillOpacity={0.6} 
+                      <Radar
+                        name="Performance"
+                        dataKey="performance"
+                        stroke="#059669"
+                        fill="#10b981"
+                        fillOpacity={0.6}
                       />
-                      <Tooltip 
-                        contentStyle={{ 
+                      <Tooltip
+                        contentStyle={{
                           backgroundColor: 'white',
                           borderRadius: '0.5rem',
                           boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
@@ -358,49 +382,169 @@ export default function ProfilePage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <QuizStatsHeatmap username={username} />
+                <div className="bg-gray-50 p-4 md:p-6 rounded-xl shadow-md">
+                  <h3 className="text-lg md:text-xl font-semibold text-emerald-800 mb-3">Quiz Types Breakdown</h3>
+                  <div className="flex flex-col md:flex-row items-center justify-between">
+                    <div className="h-64 w-full md:w-1/2">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                          <Pie
+                            data={quizTypeData}
+                            cx="50%"
+                            cy="50%"
+                            labelLine={false}
+                            outerRadius={80}
+                            fill="#8884d8"
+                            dataKey="value"
+                            label={({ name, percent }) => (
+                              <text
+                                x={0}
+                                y={0}
+                                fill="white"
+                                textAnchor="middle"
+                                dominantBaseline="central"
+                                style={{
+                                  fontSize: '10px', // Smaller font size
+                                  fontWeight: 'bold'
+                                }}
+                              >
+                                {`${name}: ${(percent * 100).toFixed(0)}%`}
+                              </text>
+                            )}
+                          >
+                            {quizTypeData.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                            ))}
+                          </Pie>
+                          <Tooltip
+                            formatter={(value) => [`${value} quizzes`, 'Count']}
+                            contentStyle={{
+                              backgroundColor: 'white',
+                              borderRadius: '0.5rem',
+                              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                              border: 'none',
+                              fontSize: '12px' // Optional: make tooltip text smaller too
+                            }}
+                          />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </div>
+                    <div className="w-full md:w-1/2 pl-0 md:pl-6">
+                      <div className="space-y-4">
+                        <div className="flex items-center">
+                          <div className="w-4 h-4 rounded-full bg-[#0088FE] mr-2"></div>
+                          <span className="text-xs">Live Quizzes: {quizTypeData[0]?.value || 0}</span>
+                        </div>
+                        <div className="flex items-center">
+                          <div className="w-4 h-4 rounded-full bg-[#00C49F] mr-2"></div>
+                          <span className="text-xs">AI Quizzes: {quizTypeData[1]?.value || 0}</span>
+                        </div>
+                        <div className="pt-4">
+                          <h4 className="text-xs font-semibold text-emerald-700 mb-2">Performance Comparison</h4>
+                          <div className="space-y-2">
+                            <div className="flex justify-between items-center">
+                              <span className="text-xs text-gray-600">Avg Score (Live):</span>
+                              <span className="text-xs font-medium">
+                                {quizAvgScores[0].score}
+                              </span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                              <span className="text-xs text-gray-600">Avg Score (AI):</span>
+                              <span className="text-sm font-medium">
+                                {quizAvgScores[1].score}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              
-              <div className="bg-gray-50 p-4 md:p-6 rounded-xl shadow-md">
+
+              <div className="bg-gray-50 p-4 md:p-6 rounded-xl shadow-md flex flex-col justify-center items-center pb-1 md:pb-0">
                 <h3 className="text-lg md:text-xl font-semibold text-emerald-800 mb-3">Time Statistics</h3>
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-gray-600">Average Time per Quiz:</span>
                     <span className="font-medium">{timeStats.avgTime}s</span>
                   </div>
-                  <div className="flex justify-between items-center">
+                  {/* <div className="flex justify-between items-center">
                     <span className="text-sm text-gray-600">Fastest Quiz Completion:</span>
                     <span className="font-medium">{timeStats.fastestQuiz}s</span>
-                  </div>
+                  </div> */}
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-gray-600">Total Time Spent:</span>
                     <span className="font-medium">
-                       {
-                        Math.floor((timeStats.avgTime * submittedQuiz.length) / 60)
-                       } minutes
+                      {timeStats.avgTime} minutes
                     </span>
                   </div>
                   <div className="pt-4">
                     <h4 className="text-sm font-semibold text-emerald-700 mb-2">Speed Trend</h4>
-                    <div className="h-32">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={performanceData.slice(-5)}>
-                          <Bar dataKey="avgScore" fill="#10b981" radius={[4, 4, 0, 0]} />
-                          <XAxis dataKey="name" hide />
-                          <Tooltip />
-                        </BarChart>
-                      </ResponsiveContainer>
-                    </div>
+                    {
+                      quizTimeData.length>0?(
+                        <div className="h-32">
+                          <ResponsiveContainer width="100%" height="100%">
+                            <LineChart
+                              data={quizTimeData }
+                              margin={{ top: 5, right: 20, left: 0, bottom: 5 }}
+                            >
+                              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                              <XAxis
+                                dataKey="title"
+                                tick={{ fontSize: 12 }}
+                                tickFormatter={(title) => title.length > 15 ? `${title.substring(0, 12)}...` : title}
+                              />
+                              <YAxis
+                                label={{
+                                  value: 'Time (seconds)',
+                                  angle: -90,
+                                  position: 'insideLeft',
+                                  fontSize: 12
+                                }}
+                                tick={{ fontSize: 12 }}
+                              />
+                              <Tooltip
+                                formatter={(value) => [`${value} seconds`, 'Completion Time']}
+                                labelFormatter={(title) => `Quiz: ${title}`}
+                                contentStyle={{
+                                  backgroundColor: 'white',
+                                  borderRadius: '0.5rem',
+                                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                                  border: 'none',
+                                  fontSize: '12px'
+                                }}
+                              />
+                              <Line
+                                type="monotone"
+                                dataKey="time"
+                                stroke="#10b981"
+                                strokeWidth={2}
+                                dot={{ r: 4, fill: '#059669' }}
+                                activeDot={{ r: 6, stroke: '#065f46', strokeWidth: 2 }}
+                              />
+                            </LineChart>
+                          </ResponsiveContainer>
+                          <p className="text-xs text-center text-gray-500 mt-0.5">Time taken to complete each quiz</p>
+                        </div>
+                      ):(
+                        <div className='h-32 text-green-700'>
+                          First attend the quiz
+                        </div>
+                      )
+                    }
                   </div>
                 </div>
               </div>
             </div>
+
 
             {/* Recent Quizzes Table */}
             <div className="bg-gray-50 p-4 md:p-6 rounded-xl shadow-md">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg md:text-xl font-semibold text-emerald-800">Quiz History</h3>
                 {submittedQuiz.length > 5 && (
-                  <button 
+                  <button
                     onClick={() => setShowAllQuizzes(!showAllQuizzes)}
                     className="text-xs bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full hover:bg-emerald-200 transition-colors"
                   >
@@ -408,7 +552,7 @@ export default function ProfilePage() {
                   </button>
                 )}
               </div>
-              
+
               <div className="overflow-x-auto">
                 <table className="min-w-full text-sm">
                   <thead className="bg-gray-100">
@@ -433,10 +577,9 @@ export default function ProfilePage() {
                           </span>
                         </td>
                         <td className="p-3 text-center">
-                          <span className={`font-medium ${
-                            (quiz.quizScore / quiz.quizTotalQuestions) >= 0.7 ? 'text-green-600' : 
+                          <span className={`font-medium ${(quiz.quizScore / quiz.quizTotalQuestions) >= 0.7 ? 'text-green-600' :
                             (quiz.quizScore / quiz.quizTotalQuestions) >= 0.5 ? 'text-yellow-600' : 'text-red-600'
-                          }`}>
+                            }`}>
                             {quiz?.quizScore}/{quiz?.quizTotalQuestions}
                           </span>
                         </td>

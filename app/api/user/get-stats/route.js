@@ -1,4 +1,3 @@
-
 import { dbConnect } from "@/db/dbConnect";
 import User from "@/db/schema/User";
 import { NextResponse } from "next/server";
@@ -9,7 +8,6 @@ export async function GET(req) {
     const { searchParams } = new URL(req.url);
     const username = searchParams.get("username");
 
-    
     if (!username) {
         return NextResponse.json({ success: false, message: "Username required" }, { status: 400 });
     }
@@ -22,16 +20,13 @@ export async function GET(req) {
     // --- Stats
     const totalQuizzes = user.submitQuiz.length + user.aiQuizzes.length;
 
-    const allScores = [...user.submitQuiz.map(q => q.quizScore), ...user.aiQuizzes.map(q => q.score)];
-    const averageScore = allScores.length ? (allScores.reduce((a, b) => a + b, 0) / allScores.length) : 0;
-
-    const categories = {};
-    user.submitQuiz.forEach(q => {
-        categories[q.quizCategory] = (categories[q.quizCategory] || 0) + 1;
-    });
-    user.aiQuizzes.forEach(q => {
-        categories[q.category] = (categories[q.category] || 0) + 1;
-    });
+    const totalTime = [...user.submitQuiz.map(q => q.time), ...user.aiQuizzes.map(q => q.totalTime)];
+    const avgTime = totalTime.length ? (totalTime.reduce((a,b)=>a+b , 0) / totalTime.length) : 0;
+    
+    const normalQuiz = [...user.submitQuiz.map(q => q.quizScore)];
+    const aiQuiz = [ ...user.aiQuizzes.map(q => q.score)];
+    const averageScoreNormalQuizScore = normalQuiz.length ? (normalQuiz.reduce((a, b) => a + b, 0) / normalQuiz.length) : 0;
+    const averageScoreAIQuizScore = aiQuiz.length ? (aiQuiz.reduce((a, b) => a + b, 0) / aiQuiz.length) : 0;
 
     const calendar = {};
     [...user.submitQuiz, ...user.aiQuizzes].forEach(q => {
@@ -39,13 +34,29 @@ export async function GET(req) {
         calendar[date] = (calendar[date] || 0) + 1;
     });
 
+    // --- Add quiz title and time array
+    const quizTitleAndTime = [
+        ...user.submitQuiz.map(q => ({
+            title: q.quizTitle || 'Untitled Quiz',
+            time: q.time || 0
+        })),
+        ...user.aiQuizzes.map(q => ({
+            title: q.title || 'AI Quiz',
+            time: q.totalTime || 0
+        }))
+    ];
+
     return NextResponse.json({
         success: true,
         data: {
-            totalQuizzes,
-            averageScore,
-            categories,
-            calendar
+            NoOrdinayQuiz: user.submitQuiz.length,
+            NoAIQuizzes: user.aiQuizzes.length,
+            calendar,
+            totalTime,
+            avgTime,
+            averageScoreNormalQuizScore,
+            averageScoreAIQuizScore,
+            quizTitleAndTime
         }
     });
 }
