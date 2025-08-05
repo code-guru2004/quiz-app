@@ -462,7 +462,7 @@ export default function ProfilePage() {
                 </div>
               </div>
 
-              <div className="bg-gray-50 p-4 md:p-6 rounded-xl shadow-md flex flex-col justify-center items-center pb-1 md:pb-0">
+              <div className="bg-gray-50 p-4 md:p-6 rounded-xl shadow-md flex flex-col justify-center items-center ">
                 <h3 className="text-lg md:text-xl font-semibold text-emerald-800 mb-3">Time Statistics</h3>
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
