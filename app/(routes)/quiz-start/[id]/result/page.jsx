@@ -111,18 +111,19 @@ const ResultPage = () => {
                     y="19.5"
                     textAnchor="middle"
                     fill="white"
-                    fontSize="3.5"
+                    fontSize="4.5"
                     fontWeight="bold"
+                    
                   >
-                    {percentage}%
+                    {percentage}% 
                   </text>
                   <text
                     x="18"
                     y="24.5"
                     textAnchor="middle"
                     fill="white"
-                    fontSize="2.5"
-                    fontWeight="500"
+                    fontSize="5.5"
+                    fontWeight="300"
                   >
                     Score
                   </text>
