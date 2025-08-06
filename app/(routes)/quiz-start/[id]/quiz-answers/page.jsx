@@ -154,176 +154,178 @@ function QuizAnswer() {
     const progressValue = ((currQuizIndex + 1) / totalQuestions) * 100;
 
     return (
-        <div className="max-w-3xl mx-auto px-4 py-8 sm:py-12 relative bg-background min-h-screen">
-            {/* Header */}
-            <header className="flex items-center justify-between mb-8">
-                <Link 
-                    href={'/dashboard'} 
-                    className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
-                >
-                    <CircleChevronLeft className="size-6" />
-                    <span className="font-medium">Back to Dashboard</span>
-                </Link>
-                <ThemeToggle />
-            </header>
+        <div className='w-full bg-background'>
+            <div className="max-w-3xl mx-auto px-4 py-8 sm:py-12 relative bg-background min-h-screen">
+                {/* Header */}
+                <header className="flex items-center justify-between mb-8">
+                    <Link 
+                        href={'/dashboard'} 
+                        className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
+                    >
+                        <CircleChevronLeft className="size-6" />
+                        <span className="font-medium">Back to Dashboard</span>
+                    </Link>
+                    <ThemeToggle />
+                </header>
 
-            {/* Progress indicator */}
-            <div className="mb-6">
-                <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm font-medium text-muted-foreground">
-                        Question {currQuizIndex + 1} of {totalQuestions}
-                    </span>
-                    <span className="text-sm font-medium text-muted-foreground">
-                        {Math.round(progressValue)}% complete
-                    </span>
-                </div>
-                <Progress value={progressValue} className="h-2" />
-            </div>
-
-            {/* Score and submission info */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 p-4 bg-card rounded-lg border">
-                <div className="flex items-center gap-2">
-                    <div className="p-2 rounded-lg bg-primary/10 text-primary">
-                        {ICONS[icon]?.icon}
-                    </div>
-                    <h1 className="text-xl font-bold text-foreground">
-                        {quizTitle}
-                    </h1>
-                </div>
-                <div className="flex flex-col sm:flex-row gap-4 text-sm">
-                    <div className="flex items-center gap-2">
-                        <span className="text-muted-foreground">Score:</span>
-                        <span className="font-semibold text-green-600 dark:text-green-400">
-                            {totalScore}/{totalQuestions}
+                {/* Progress indicator */}
+                <div className="mb-6">
+                    <div className="flex justify-between items-center mb-2">
+                        <span className="text-sm font-medium text-muted-foreground">
+                            Question {currQuizIndex + 1} of {totalQuestions}
+                        </span>
+                        <span className="text-sm font-medium text-muted-foreground">
+                            {Math.round(progressValue)}% complete
                         </span>
                     </div>
+                    <Progress value={progressValue} className="h-2" />
+                </div>
+
+                {/* Score and submission info */}
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 p-4 bg-card rounded-lg border">
                     <div className="flex items-center gap-2">
-                        <span className="text-muted-foreground">Submitted:</span>
-                        <span className="font-medium text-foreground">
-                            {timeOfSubmission}
-                        </span>
+                        <div className="p-2 rounded-lg bg-primary/10 text-primary">
+                            {ICONS[icon]?.icon}
+                        </div>
+                        <h1 className="text-xl font-bold text-foreground">
+                            {quizTitle}
+                        </h1>
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-4 text-sm">
+                        <div className="flex items-center gap-2">
+                            <span className="text-muted-foreground">Score:</span>
+                            <span className="font-semibold text-green-600 dark:text-green-400">
+                                {totalScore}/{totalQuestions}
+                            </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <span className="text-muted-foreground">Submitted:</span>
+                            <span className="font-medium text-foreground">
+                                {timeOfSubmission}
+                            </span>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            {/* Animation effects */}
-            <AnimatePresence>
-                {showPlusOne && (
-                    <motion.div
-                        key="plus-one"
-                        initial={{ opacity: 0, y: 600, scale: 0.5 }}
-                        animate={{ opacity: 2, y: -50, scale: 1.2 }}
-                        exit={{ opacity: 0, y: -80, scale: 1 }}
-                        transition={{ duration: 2, ease: 'easeOut' }}
-                        className="absolute top-32 left-1/2 transform -translate-x-1/2 text-yellow-600 text-5xl font-bold z-50 pointer-events-none"
-                    >
-                        +1
-                    </motion.div>
-                )}
-            </AnimatePresence>
+                {/* Animation effects */}
+                <AnimatePresence>
+                    {showPlusOne && (
+                        <motion.div
+                            key="plus-one"
+                            initial={{ opacity: 0, y: 600, scale: 0.5 }}
+                            animate={{ opacity: 2, y: -50, scale: 1.2 }}
+                            exit={{ opacity: 0, y: -80, scale: 1 }}
+                            transition={{ duration: 2, ease: 'easeOut' }}
+                            className="absolute top-32 left-1/2 transform -translate-x-1/2 text-yellow-600 text-5xl font-bold z-50 pointer-events-none"
+                        >
+                            +1
+                        </motion.div>
+                    )}
+                </AnimatePresence>
 
-            <AnimatePresence>
-                {isWrong && (
-                    <motion.div
-                        key="wrong"
-                        initial={{ opacity: 0, y: 600, scale: 0.5 }}
-                        animate={{ opacity: 1, y: -50, scale: 1.2 }}
-                        exit={{ opacity: 0, y: -80, scale: 1 }}
-                        transition={{ duration: 2, ease: 'easeOut' }}
-                        className="absolute top-32 left-1/2 transform -translate-x-1/2 text-rose-500 text-5xl font-bold z-50 pointer-events-none"
-                    >
-                        😕
-                    </motion.div>
-                )}
-            </AnimatePresence>
+                <AnimatePresence>
+                    {isWrong && (
+                        <motion.div
+                            key="wrong"
+                            initial={{ opacity: 0, y: 600, scale: 0.5 }}
+                            animate={{ opacity: 1, y: -50, scale: 1.2 }}
+                            exit={{ opacity: 0, y: -80, scale: 1 }}
+                            transition={{ duration: 2, ease: 'easeOut' }}
+                            className="absolute top-32 left-1/2 transform -translate-x-1/2 text-rose-500 text-5xl font-bold z-50 pointer-events-none"
+                        >
+                            😕
+                        </motion.div>
+                    )}
+                </AnimatePresence>
 
-            {/* Question card */}
-            <motion.div 
-                key={currQuizIndex}
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.3 }}
-                className="mb-8 p-6 bg-card rounded-xl border shadow-sm"
-            >
-                <h2 className="text-lg font-semibold text-foreground mb-6 whitespace-pre-line">
-                    {currQuizIndex + 1}. {currentQuestion?.mainQuestion}
-                </h2>
+                {/* Question card */}
+                <motion.div 
+                    key={currQuizIndex}
+                    initial={{ opacity: 0, x: 50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="mb-8 p-6 bg-card rounded-xl border shadow-sm"
+                >
+                    <h2 className="text-lg font-semibold text-foreground mb-6 whitespace-pre-line">
+                        {currQuizIndex + 1}. {currentQuestion?.mainQuestion}
+                    </h2>
 
-                <div className="space-y-3">
-                    {currentQuestion?.choices.map((choice, idx) => {
-                        const questionId = currentQuestion._id;
-                        const correctAnswer = currentQuestion.correctAnswer;
-                        const userAnswer = allUserAnswers.find(ans => ans.questionId === questionId)?.selectedOption;
+                    <div className="space-y-3">
+                        {currentQuestion?.choices.map((choice, idx) => {
+                            const questionId = currentQuestion._id;
+                            const correctAnswer = currentQuestion.correctAnswer;
+                            const userAnswer = allUserAnswers.find(ans => ans.questionId === questionId)?.selectedOption;
 
-                        const isCorrect = correctAnswer === prefixes[idx];
-                        const isSelected = userAnswer === prefixes[idx];
+                            const isCorrect = correctAnswer === prefixes[idx];
+                            const isSelected = userAnswer === prefixes[idx];
 
-                        let optionClasses = "p-4 rounded-lg border transition-all flex items-start cursor-default ";
-                        
-                        if (isCorrect) {
-                            optionClasses += "bg-green-50 dark:bg-green-900/30 border-green-300 dark:border-green-800";
-                        } else if (isSelected) {
-                            optionClasses += "bg-red-50 dark:bg-red-900/30 border-red-300 dark:border-red-800";
-                        } else {
-                            optionClasses += "bg-muted/50 hover:bg-muted border-border";
-                        }
+                            let optionClasses = "p-4 rounded-lg border transition-all flex items-start cursor-default ";
+                            
+                            if (isCorrect) {
+                                optionClasses += "bg-green-50 dark:bg-green-900/30 border-green-300 dark:border-green-800";
+                            } else if (isSelected) {
+                                optionClasses += "bg-red-50 dark:bg-red-900/30 border-red-300 dark:border-red-800";
+                            } else {
+                                optionClasses += "bg-muted/50 hover:bg-muted border-border";
+                            }
 
-                        return (
-                            <div
-                                key={idx}
-                                className={optionClasses}
-                            >
-                                <span className={`font-bold mr-3 min-w-[20px] ${
-                                    isCorrect ? "text-green-600 dark:text-green-400" : 
-                                    isSelected ? "text-red-600 dark:text-red-400" : 
-                                    "text-muted-foreground"
-                                }`}>
-                                    {prefixes[idx]}.
-                                </span>
-                                <span className="whitespace-pre-line break-words">
-                                    {choice.slice(3)}
-                                </span>
-                                {isCorrect && (
-                                    <span className="ml-auto text-green-600 dark:text-green-400">
-                                        ✓ Correct
+                            return (
+                                <div
+                                    key={idx}
+                                    className={optionClasses}
+                                >
+                                    <span className={`font-bold mr-3 min-w-[20px] ${
+                                        isCorrect ? "text-green-600 dark:text-green-400" : 
+                                        isSelected ? "text-red-600 dark:text-red-400" : 
+                                        "text-muted-foreground"
+                                    }`}>
+                                        {prefixes[idx]}.
                                     </span>
-                                )}
-                                {isSelected && !isCorrect && (
-                                    <span className="ml-auto text-red-600 dark:text-red-400">
-                                        ✗ Your choice
+                                    <span className="whitespace-pre-line break-words">
+                                        {choice.slice(3)}
                                     </span>
-                                )}
-                            </div>
-                        );
-                    })}
+                                    {isCorrect && (
+                                        <span className="ml-auto text-green-600 dark:text-green-400">
+                                            ✓ Correct
+                                        </span>
+                                    )}
+                                    {isSelected && !isCorrect && (
+                                        <span className="ml-auto text-red-600 dark:text-red-400">
+                                            ✗ Your choice
+                                        </span>
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
+                </motion.div>
+
+                {/* Navigation buttons */}
+                <div className="flex justify-between mt-8">
+                    <button
+                        onClick={handlePrevious}
+                        disabled={currQuizIndex === 0}
+                        className={`px-6 py-2 rounded-lg font-medium transition-colors ${
+                            currQuizIndex === 0 
+                                ? "bg-muted text-muted-foreground cursor-not-allowed" 
+                                : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                        }`}
+                    >
+                        Previous
+                    </button>
+
+                    <button
+                        onClick={handleNext}
+                        disabled={currQuizIndex === quizQuiestions.length - 1}
+                        className={`px-6 py-2 rounded-lg font-medium transition-colors ${
+                            currQuizIndex === quizQuiestions.length - 1 
+                                ? "bg-muted text-muted-foreground cursor-not-allowed" 
+                                : "bg-primary text-primary-foreground hover:bg-primary/90"
+                        }`}
+                    >
+                        {currQuizIndex === quizQuiestions.length - 1 ? "Review Complete" : "Next"}
+                    </button>
                 </div>
-            </motion.div>
-
-            {/* Navigation buttons */}
-            <div className="flex justify-between mt-8">
-                <button
-                    onClick={handlePrevious}
-                    disabled={currQuizIndex === 0}
-                    className={`px-6 py-2 rounded-lg font-medium transition-colors ${
-                        currQuizIndex === 0 
-                            ? "bg-muted text-muted-foreground cursor-not-allowed" 
-                            : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
-                    }`}
-                >
-                    Previous
-                </button>
-
-                <button
-                    onClick={handleNext}
-                    disabled={currQuizIndex === quizQuiestions.length - 1}
-                    className={`px-6 py-2 rounded-lg font-medium transition-colors ${
-                        currQuizIndex === quizQuiestions.length - 1 
-                            ? "bg-muted text-muted-foreground cursor-not-allowed" 
-                            : "bg-primary text-primary-foreground hover:bg-primary/90"
-                    }`}
-                >
-                    {currQuizIndex === quizQuiestions.length - 1 ? "Review Complete" : "Next"}
-                </button>
             </div>
         </div>
     );

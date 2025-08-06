@@ -61,6 +61,12 @@ const ResultPage = () => {
     "Average": "text-amber-600 bg-amber-50",
     "Needs Improvement": "text-rose-600 bg-rose-50"
   };
+  const performanceBgColor = {
+    "Excellent": "bg-gradient-to-r from-green-500 to-emerald-600 dark:from-green-600 dark:to-emerald-700",
+    "Good": "bg-gradient-to-r from-blue-500 to-indigo-600 dark:from-blue-600 dark:to-indigo-700",
+    "Average": "bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600",
+    "Needs Improvement": "bg-gradient-to-r from-rose-500 to-pink-600 dark:from-rose-600 dark:to-pink-700"
+  };
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-gray-50 to-gray-100 py-12 px-4 sm:px-6 lg:px-8">
@@ -77,7 +83,7 @@ const ResultPage = () => {
         {/* Main Card */}
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
           {/* Performance Summary */}
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-6 text-white">
+          <div className={`bg-gradient-to-r ${performanceBgColor[performanceLevel]} p-6 text-white`}>
             <div className="flex flex-col items-center">
               <div className="relative w-32 h-32 mb-4">
                 <svg className="w-full h-full" viewBox="0 0 36 36">
