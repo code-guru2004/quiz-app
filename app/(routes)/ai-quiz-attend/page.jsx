@@ -111,7 +111,7 @@ export default function AIAttendPage() {
             //         email
             //     }),
             //   });
-              
+
             if (resp) {
                 toast.success("Quiz Submitted")
             }
@@ -213,56 +213,131 @@ export default function AIAttendPage() {
                             >
                                 🔁 Back to Dashboard
                             </button>
-                            <div className="mt-10 space-y-6">
-                            
-                                {questions.map((q, idx) => {
-                                    const userAnswer = userAnswers[idx];
-                                    const isCorrect = userAnswer?.selected === userAnswer?.correct;
+                            <div className="mt-10 space-y-8">
+  {questions.map((q, idx) => {
+    const userAnswer = userAnswers[idx];
+    const isCorrect = userAnswer?.selected === userAnswer?.correct;
 
-                                    return (
-                                        <div
-                                            key={idx}
-                                            className={`p-4 rounded-xl shadow ${isCorrect ? 'bg-green-100 dark:bg-green-200 text-black' : 'bg-red-100 dark:bg-red-200 text-black'}`}
-                                        >
-                                            <h3 className="font-semibold mb-4">
-                                                Q{idx + 1}. {q.mainQuestion}
-                                            </h3>
-                                            <div className="grid gap-4">
-                                                {q.choices.map((choice, i) => {
-                                                    const letter = choice[0];
-                                                    const isUserSelected = userAnswer?.selected === letter;
-                                                    const isCorrectAnswer = userAnswer?.correct === letter;
+    return (
+      <div
+        key={idx}
+        className={`relative p-6 rounded-2xl shadow-sm border transition-all duration-300 hover:shadow-md ${
+          isCorrect
+            ? 'border-emerald-200/80 bg-gradient-to-br from-emerald-50/50 to-white dark:from-emerald-900/10 dark:to-gray-900 dark:border-emerald-800/50'
+            : 'border-rose-200/80 bg-gradient-to-br from-rose-50/50 to-white dark:from-rose-900/10 dark:to-gray-900 dark:border-rose-800/50'
+        }`}
+      >
+        {/* Question header with number */}
+        <div className="flex items-start mb-5">
+          <div className={`flex-shrink-0 mr-4 flex items-center justify-center w-10 h-10 rounded-lg ${
+            isCorrect
+              ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/80 dark:text-emerald-100'
+              : 'bg-rose-100 text-rose-800 dark:bg-rose-900/80 dark:text-rose-100'
+          }`}>
+            <span className="font-bold text-lg">{idx + 1}</span>
+          </div>
+          <h3 className="text-lg md:text-xl font-semibold text-gray-800 dark:text-gray-100 pt-1">
+            {q.mainQuestion}
+          </h3>
+        </div>
 
-                                                    return (
-                                                        <div
-                                                            key={i}
-                                                            className={`w-full text-left px-5 py-3 rounded-lg border font-medium transition-all
-                            ${isCorrectAnswer
-                                                                    ? 'bg-green-600 text-white border-green-600'
-                                                                    : isUserSelected
-                                                                        ? 'bg-red-600 text-white border-red-600'
-                                                                        : 'bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 border-gray-300 dark:border-gray-600'
-                                                                }`}
-                                                        >
-                                                            {choice}
-                                                        </div>
-                                                    );
-                                                })}
-                                            </div>
-                                            <p className="mt-4">
-                                                ✅ Correct Answer: <strong>{userAnswer?.correct}</strong>
-                                            </p>
-                                            <p>
-                                                🧑 Your Answer:{' '}
-                                                <strong className={isCorrect ? 'text-green-700' : 'text-red-700'}>
-                                                    {userAnswer?.selected || 'Not Answered'}
-                                                </strong>
-                                            </p>
-                                        </div>
-                                    );
-                                })}
+        {/* Choices grid - now single column to handle long text better */}
+        <div className="space-y-3 ml-14">
+          {q.choices.map((choice, i) => {
+            const letter = choice[0];
+            const optionText = choice.substring(2);
+            const isUserSelected = userAnswer?.selected === letter;
+            const isCorrectAnswer = userAnswer?.correct === letter;
+            const isIncorrectSelection = isUserSelected && !isCorrectAnswer;
 
-                            </div>
+            return (
+              <div
+                key={i}
+                className={`w-full text-left p-3 rounded-xl border-2 font-medium transition-all duration-200 ${
+                  isCorrectAnswer
+                    ? 'bg-emerald-50 border-emerald-400 text-emerald-900 dark:bg-emerald-900/40 dark:border-emerald-600 dark:text-emerald-100 shadow-emerald-100 dark:shadow-emerald-900/20 shadow-sm'
+                    : isIncorrectSelection
+                      ? 'bg-rose-50 border-rose-400 text-rose-900 dark:bg-rose-900/40 dark:border-rose-600 dark:text-rose-100 shadow-rose-100 dark:shadow-rose-900/20 shadow-sm'
+                      : 'bg-white dark:bg-gray-800/50 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700/30'
+                }`}
+              >
+                <div className="flex">
+                  <span className={`flex-shrink-0 inline-flex items-center justify-center w-6 h-6 mr-3 mt-0.5 rounded ${
+                    isCorrectAnswer
+                      ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-800 dark:text-emerald-100'
+                      : isIncorrectSelection
+                        ? 'bg-rose-100 text-rose-800 dark:bg-rose-800 dark:text-rose-100'
+                        : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300'
+                  }`}>
+                    {letter}
+                  </span>
+                  <span className="break-words">{optionText}</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Feedback section */}
+        <div className="mt-6 ml-14 space-y-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className={`flex items-center p-3 rounded-lg border ${
+              isCorrect
+                ? 'border-emerald-200 bg-emerald-50/50 text-emerald-800 dark:border-emerald-800/50 dark:bg-emerald-900/20 dark:text-emerald-100'
+                : 'border-rose-200 bg-rose-50/50 text-rose-800 dark:border-rose-800/50 dark:bg-rose-900/20 dark:text-rose-100'
+            }`}>
+              <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mr-3 ${
+                isCorrect ? 'bg-emerald-100 dark:bg-emerald-800' : 'bg-rose-100 dark:bg-rose-800'
+              }`}>
+                ✅
+              </div>
+              <div>
+                <p className="text-xs font-medium text-gray-500 dark:text-gray-400">Correct answer</p>
+                <p className="font-semibold">{userAnswer?.correct}</p>
+              </div>
+            </div>
+
+            <div className={`flex items-center p-3 rounded-lg border ${
+              isCorrect
+                ? 'border-emerald-200 bg-emerald-50/50 text-emerald-800 dark:border-emerald-800/50 dark:bg-emerald-900/20 dark:text-emerald-100'
+                : 'border-rose-200 bg-rose-50/50 text-rose-800 dark:border-rose-800/50 dark:bg-rose-900/20 dark:text-rose-100'
+            }`}>
+              <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mr-3 ${
+                isCorrect ? 'bg-emerald-100 dark:bg-emerald-800' : 'bg-rose-100 dark:bg-rose-800'
+              }`}>
+                🧑
+              </div>
+              <div>
+                <p className="text-xs font-medium text-gray-500 dark:text-gray-400">Your answer</p>
+                <p className={`font-semibold ${isCorrect ? 'text-emerald-600 dark:text-emerald-300' : 'text-rose-600 dark:text-rose-300'}`}>
+                  {userAnswer?.selected || 'Not answered'}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Explanation */}
+          <div className="p-4 bg-blue-50/50 rounded-lg border border-blue-200 dark:bg-blue-900/20 dark:border-blue-800/50">
+            <div className="flex items-center mb-2">
+              <svg className="w-5 h-5 mr-2 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <h4 className="font-medium text-blue-800 dark:text-blue-200">Explanation</h4>
+            </div>
+            <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">{q.explanation}</p>
+          </div>
+        </div>
+
+        {/* Corner decoration */}
+        <div className={`absolute top-0 right-0 w-16 h-16 overflow-hidden`}>
+          <div className={`absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-full ${
+            isCorrect ? 'bg-emerald-100/50 dark:bg-emerald-900/30' : 'bg-rose-100/50 dark:bg-rose-900/30'
+          }`}></div>
+        </div>
+      </div>
+    );
+  })}
+</div>
 
                         </div>
                     ) : (

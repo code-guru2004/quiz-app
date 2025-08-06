@@ -9,8 +9,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ICONS } from '@/app/Icon';
 import ThemeToggle from '@/components/shared/ModeToggle';
 import Link from 'next/link';
-import { TbArrowLeftFromArc } from 'react-icons/tb';
-import { CircleArrowLeft, CircleChevronLeft, MoveLeft } from 'lucide-react';
+import { CircleChevronLeft } from 'lucide-react';
+import { Progress } from '@/components/ui/progress';
 
 function QuizAnswer() {
     const params = useParams();
@@ -60,7 +60,7 @@ function QuizAnswer() {
                     );
                     setIcon(quizData?.quizIcon);
                 } else {
-                    setIsSubmitted(false); // user didn't submit
+                    setIsSubmitted(false);
                 }
             }
         } catch (error) {
@@ -70,7 +70,6 @@ function QuizAnswer() {
             setIsLoading(false);
         }
     }
-
 
     useEffect(() => {
         if (!quizId || !email) return;
@@ -111,9 +110,12 @@ function QuizAnswer() {
     // Loading UI
     if (isLoading || !hasFetched) {
         return (
-            <div className="w-full h-screen flex items-center justify-center">
-                <div className="text-xl font-semibold animate-pulse text-blue-600 dark:text-blue-400">
-                    Loading Quiz...
+            <div className="w-full h-screen flex items-center justify-center bg-background">
+                <div className="flex flex-col items-center gap-4">
+                    <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                    <div className="text-xl font-semibold text-primary">
+                        Loading Quiz Results...
+                    </div>
                 </div>
             </div>
         );
@@ -121,30 +123,90 @@ function QuizAnswer() {
 
     if (!isSubmitted) {
         return (
-            <div className="w-full h-screen flex flex-col items-center justify-center gap-4 text-center px-4">
-                <div className="text-red-600 dark:text-red-400 text-lg font-semibold">
-                    You haven’t submitted this quiz yet, so answers are not available.
-                </div>
-                <div className='flex justify-center items-center gap-3'>
-                    <Link href={'/dashboard/live-quizzes'} className='bg-pink-700 p-3 text-white rounded-md'>Live Quizzes</Link>
-                    <Link href={'/dashboard/practice-quizzes'} className='bg-orange-600 p-3 text-white rounded-md'>Practice Quizzes</Link>
-
+            <div className="w-full h-screen flex flex-col items-center justify-center gap-6 text-center px-4 bg-background">
+                <div className="max-w-md mx-auto">
+                    <div className="text-2xl font-bold text-destructive mb-2">
+                        Quiz Not Submitted
+                    </div>
+                    <p className="text-muted-foreground mb-6">
+                        You haven't submitted this quiz yet, so answers are not available.
+                    </p>
+                    <div className='flex justify-center items-center gap-4'>
+                        <Link 
+                            href={'/dashboard/live-quizzes'} 
+                            className='bg-primary px-6 py-3 text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium'
+                        >
+                            Live Quizzes
+                        </Link>
+                        <Link 
+                            href={'/dashboard/practice-quizzes'} 
+                            className='bg-secondary px-6 py-3 text-secondary-foreground rounded-lg hover:bg-secondary/80 transition-colors font-medium'
+                        >
+                            Practice Quizzes
+                        </Link>
+                    </div>
                 </div>
             </div>
         );
     }
 
+    const currentQuestion = quizQuiestions[currQuizIndex];
+    const progressValue = ((currQuizIndex + 1) / totalQuestions) * 100;
+
     return (
-        <div className="max-w-2xl mx-auto px-3 py-20 lg:py-24 relative overflow-hidden z-10">
-            <div className='absolute top-4 left-2 lg:left-0 z-20'>
-                <Link href={'/dashboard'}>
-                    <CircleChevronLeft className='size-9 rounded-full  bg-blue-400 text-white dark:text-black dark:bg-white'/>
+        <div className="max-w-3xl mx-auto px-4 py-8 sm:py-12 relative bg-background min-h-screen">
+            {/* Header */}
+            <header className="flex items-center justify-between mb-8">
+                <Link 
+                    href={'/dashboard'} 
+                    className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
+                >
+                    <CircleChevronLeft className="size-6" />
+                    <span className="font-medium">Back to Dashboard</span>
                 </Link>
-            </div>
-            <div className='absolute top-4 right-2 lg:right-0 z-20'>
                 <ThemeToggle />
+            </header>
+
+            {/* Progress indicator */}
+            <div className="mb-6">
+                <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm font-medium text-muted-foreground">
+                        Question {currQuizIndex + 1} of {totalQuestions}
+                    </span>
+                    <span className="text-sm font-medium text-muted-foreground">
+                        {Math.round(progressValue)}% complete
+                    </span>
+                </div>
+                <Progress value={progressValue} className="h-2" />
             </div>
 
+            {/* Score and submission info */}
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 p-4 bg-card rounded-lg border">
+                <div className="flex items-center gap-2">
+                    <div className="p-2 rounded-lg bg-primary/10 text-primary">
+                        {ICONS[icon]?.icon}
+                    </div>
+                    <h1 className="text-xl font-bold text-foreground">
+                        {quizTitle}
+                    </h1>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-4 text-sm">
+                    <div className="flex items-center gap-2">
+                        <span className="text-muted-foreground">Score:</span>
+                        <span className="font-semibold text-green-600 dark:text-green-400">
+                            {totalScore}/{totalQuestions}
+                        </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <span className="text-muted-foreground">Submitted:</span>
+                        <span className="font-medium text-foreground">
+                            {timeOfSubmission}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            {/* Animation effects */}
             <AnimatePresence>
                 {showPlusOne && (
                     <motion.div
@@ -153,7 +215,7 @@ function QuizAnswer() {
                         animate={{ opacity: 2, y: -50, scale: 1.2 }}
                         exit={{ opacity: 0, y: -80, scale: 1 }}
                         transition={{ duration: 2, ease: 'easeOut' }}
-                        className="absolute top-10 left-1/2 transform -translate-x-1/2 text-yellow-600 text-5xl font-bold z-50 pointer-events-none"
+                        className="absolute top-32 left-1/2 transform -translate-x-1/2 text-yellow-600 text-5xl font-bold z-50 pointer-events-none"
                     >
                         +1
                     </motion.div>
@@ -168,66 +230,85 @@ function QuizAnswer() {
                         animate={{ opacity: 1, y: -50, scale: 1.2 }}
                         exit={{ opacity: 0, y: -80, scale: 1 }}
                         transition={{ duration: 2, ease: 'easeOut' }}
-                        className="absolute top-10 left-1/2 transform -translate-x-1/2 text-rose-500 text-5xl font-bold z-50 pointer-events-none"
+                        className="absolute top-32 left-1/2 transform -translate-x-1/2 text-rose-500 text-5xl font-bold z-50 pointer-events-none"
                     >
                         😕
                     </motion.div>
                 )}
             </AnimatePresence>
 
-            <div className="mb-8 text-center text-sm flex justify-between items-center text-gray-700 dark:text-gray-300">
-                <p>Total Score: <span className="font-semibold text-green-700 dark:text-green-400">{totalScore}</span></p>
-                <p>Submitted At: <span className="font-semibold text-blue-700 dark:text-blue-400">{timeOfSubmission}</span></p>
-            </div>
-
-            <div className="mb-6 text-center flex justify-between items-center">
-                <h2 className="text-2xl font-bold text-blue-800 dark:text-blue-300 flex items-center gap-3">
-                    <span className='bg-gray-300 dark:bg-gray-200 p-2 rounded-md'>{ICONS[icon]?.icon}</span>
-                    {quizTitle.toUpperCase()}
+            {/* Question card */}
+            <motion.div 
+                key={currQuizIndex}
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.3 }}
+                className="mb-8 p-6 bg-card rounded-xl border shadow-sm"
+            >
+                <h2 className="text-lg font-semibold text-foreground mb-6 whitespace-pre-line">
+                    {currQuizIndex + 1}. {currentQuestion?.mainQuestion}
                 </h2>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Question {currQuizIndex + 1} of {totalQuestions}
-                </p>
-            </div>
 
-            <div className="mb-6 text-sm md:text-lg font-semibold text-green-900 dark:text-green-500 whitespace-pre-line break-words w-full">
-                {currQuizIndex + 1}. {quizQuiestions[currQuizIndex]?.mainQuestion}
-            </div>
+                <div className="space-y-3">
+                    {currentQuestion?.choices.map((choice, idx) => {
+                        const questionId = currentQuestion._id;
+                        const correctAnswer = currentQuestion.correctAnswer;
+                        const userAnswer = allUserAnswers.find(ans => ans.questionId === questionId)?.selectedOption;
 
-            <div className="space-y-3 flex flex-col items-center justify-center">
-                {quizQuiestions[currQuizIndex]?.choices.map((choice, idx) => {
-                    const questionId = quizQuiestions[currQuizIndex]._id;
-                    const correctAnswer = quizQuiestions[currQuizIndex].correctAnswer;
-                    const userAnswer = allUserAnswers.find(ans => ans.questionId === questionId)?.selectedOption;
+                        const isCorrect = correctAnswer === prefixes[idx];
+                        const isSelected = userAnswer === prefixes[idx];
 
-                    const isCorrect = correctAnswer === prefixes[idx];
-                    const isSelected = userAnswer === prefixes[idx];
+                        let optionClasses = "p-4 rounded-lg border transition-all flex items-start cursor-default ";
+                        
+                        if (isCorrect) {
+                            optionClasses += "bg-green-50 dark:bg-green-900/30 border-green-300 dark:border-green-800";
+                        } else if (isSelected) {
+                            optionClasses += "bg-red-50 dark:bg-red-900/30 border-red-300 dark:border-red-800";
+                        } else {
+                            optionClasses += "bg-muted/50 hover:bg-muted border-border";
+                        }
 
-                    const highlightClass = isCorrect
-                        ? "bg-green-600 dark:bg-green-600 text-white border-green-700"
-                        : isSelected
-                            ? "bg-red-600 dark:bg-red-600 text-white border-red-700"
-                            : "bg-slate-200 dark:bg-slate-600 border-green-300 hover:bg-green-200 dark:hover:bg-slate-500";
+                        return (
+                            <div
+                                key={idx}
+                                className={optionClasses}
+                            >
+                                <span className={`font-bold mr-3 min-w-[20px] ${
+                                    isCorrect ? "text-green-600 dark:text-green-400" : 
+                                    isSelected ? "text-red-600 dark:text-red-400" : 
+                                    "text-muted-foreground"
+                                }`}>
+                                    {prefixes[idx]}.
+                                </span>
+                                <span className="whitespace-pre-line break-words">
+                                    {choice.slice(3)}
+                                </span>
+                                {isCorrect && (
+                                    <span className="ml-auto text-green-600 dark:text-green-400">
+                                        ✓ Correct
+                                    </span>
+                                )}
+                                {isSelected && !isCorrect && (
+                                    <span className="ml-auto text-red-600 dark:text-red-400">
+                                        ✗ Your choice
+                                    </span>
+                                )}
+                            </div>
+                        );
+                    })}
+                </div>
+            </motion.div>
 
-                    return (
-                        <div
-                            key={idx}
-                            className={`py-4 px-4 w-screen lg:w-full border rounded-lg cursor-pointer transition-all flex ${highlightClass}`}
-                        >
-                            <span className="font-bold mr-2">{prefixes[idx]}.</span>
-                            <span className="whitespace-pre-line break-words w-full block">
-                                {choice.slice(3)}
-                            </span>
-                        </div>
-                    );
-                })}
-            </div>
-
-            <div className="mt-6 flex justify-between px-3 lg:px-4">
+            {/* Navigation buttons */}
+            <div className="flex justify-between mt-8">
                 <button
                     onClick={handlePrevious}
                     disabled={currQuizIndex === 0}
-                    className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-all disabled:opacity-50"
+                    className={`px-6 py-2 rounded-lg font-medium transition-colors ${
+                        currQuizIndex === 0 
+                            ? "bg-muted text-muted-foreground cursor-not-allowed" 
+                            : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                    }`}
                 >
                     Previous
                 </button>
@@ -235,13 +316,16 @@ function QuizAnswer() {
                 <button
                     onClick={handleNext}
                     disabled={currQuizIndex === quizQuiestions.length - 1}
-                    className="px-6 py-2 bg-green-700 text-white rounded-md hover:bg-green-800 transition-all disabled:opacity-50"
+                    className={`px-6 py-2 rounded-lg font-medium transition-colors ${
+                        currQuizIndex === quizQuiestions.length - 1 
+                            ? "bg-muted text-muted-foreground cursor-not-allowed" 
+                            : "bg-primary text-primary-foreground hover:bg-primary/90"
+                    }`}
                 >
-                    {currQuizIndex === quizQuiestions.length - 1 ? "End" : "Next"}
+                    {currQuizIndex === quizQuiestions.length - 1 ? "Review Complete" : "Next"}
                 </button>
             </div>
         </div>
-
     );
 }
 

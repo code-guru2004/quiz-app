@@ -28,14 +28,15 @@ This seed ensures that even repeated requests with the same parameters generate 
 4. Vary difficulty, phrasing, and use-case examples. No repeating previous structure or options.
 5. You can provide 3 to 5 choices per question.
 6. Randomize the order of options for each question.
-
+7. Also provide a brief explanation
 Use this format:
 \`\`\`json
 {
   "id": "uuid-v4",
   "mainQuestion": "The actual question text?",
   "choices": ["A. Option 1", "B. Option 2", "C. Option 3"],
-  "correctAnswer": "B"
+  "correctAnswer": "B",
+  'explanation': ""
 }
 \`\`\`
 
@@ -60,6 +61,7 @@ Return only valid JSON. Do not include markdown or any explanation text.
     const text = await aiResponse.response.text();
     const jsonText = text.replace(/```json|```/g, '');
     const quizData = JSON.parse(jsonText);
+console.log(quizData);
 
     return Response.json({
       success: true,

@@ -24,6 +24,9 @@ const quizQuestionSchema = new mongoose.Schema({
   avgTime:{
     type: Number, //store the avg time to answer a particular question
     default: 0,
+  },
+  explanation: {
+    type: String
   }
 });
 
