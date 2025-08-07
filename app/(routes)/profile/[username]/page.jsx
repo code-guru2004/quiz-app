@@ -284,7 +284,7 @@ export default function ProfilePage() {
                 <span className="text-xs md:text-sm opacity-90">Accuracy</span>
               </div>
               <div className="bg-purple-400 text-white rounded-lg p-3 shadow-md flex flex-col items-center">
-                <span className="text-xl md:text-2xl font-bold">{timeStats.avgTime}s</span>
+                <span className="text-xl md:text-2xl font-bold">{timeStats.avgTime.toFixed(2)}s</span>
                 <span className="text-xs md:text-sm opacity-90">Avg Time</span>
               </div>
               <div className="bg-orange-400 text-white rounded-lg p-3 shadow-md flex flex-col items-center">
@@ -445,13 +445,13 @@ export default function ProfilePage() {
                             <div className="flex justify-between items-center">
                               <span className="text-xs text-gray-600">Avg Score (Live):</span>
                               <span className="text-xs font-medium">
-                                {quizAvgScores[0].score}
+                                {quizAvgScores[0].score.toFixed(2)}
                               </span>
                             </div>
                             <div className="flex justify-between items-center">
                               <span className="text-xs text-gray-600">Avg Score (AI):</span>
                               <span className="text-sm font-medium">
-                                {quizAvgScores[1].score}
+                                {quizAvgScores[1].score.toFixed(2)}
                               </span>
                             </div>
                           </div>
@@ -467,16 +467,16 @@ export default function ProfilePage() {
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-gray-600">Average Time per Quiz:</span>
-                    <span className="font-medium">{timeStats.avgTime}s</span>
+                    <span className="font-medium">{timeStats.avgTime.toFixed(2)}s</span>
                   </div>
                   {/* <div className="flex justify-between items-center">
                     <span className="text-sm text-gray-600">Fastest Quiz Completion:</span>
                     <span className="font-medium">{timeStats.fastestQuiz}s</span>
                   </div> */}
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">Total Time Spent:</span>
+                  <div className="flex justify-between items-center w-full">
+                    <span className="text-sm text-gray-600">Total Time Spent: </span>
                     <span className="font-medium">
-                      {timeStats.avgTime} minutes
+                      {timeStats.avgTime.toFixed(2)} min
                     </span>
                   </div>
                   <div className="pt-4">
