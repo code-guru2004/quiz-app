@@ -86,9 +86,9 @@ const LeaderboardPage = () => {
       <div className="flex items-center justify-between mb-14 ">
         <Link
           href="/dashboard"
-          className="group flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
+          className="group flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors z-50"
         >
-          <ArrowLeft className="w-5 h-5 transform transition-transform duration-200 group-hover:-translate-x-2" />
+          <ArrowLeft className="w-5 h-5 transform transition-transform duration-200 group-hover:-translate-x-1" />
           <span className="hidden sm:inline">Back to Dashboard</span>
         </Link>
 
