@@ -1,13 +1,11 @@
 'use client';
 
 import { FC, useEffect, useState } from 'react';
-import { Clock, Users, Star, ArrowRight, BadgeQuestionMark } from 'lucide-react'; // Added ArrowRight for the button icon
+import { Clock, Users, Star, ArrowRight, BadgeCheck, Zap } from 'lucide-react';
 import Link from 'next/link';
-import { ICONS } from '@/app/Icon'; // Assuming this path is correct for your icons
+import { ICONS } from '@/app/Icon';
 import useGlobalContextProvider from '@/app/_context/ContextApi';
-import { PiSealQuestionDuotone } from 'react-icons/pi';
 import Lottie from 'lottie-react';
-
 
 const QuizCard = ({ quiz, isPopular }) => {
   const { quizToStartObject } = useGlobalContextProvider();
@@ -23,73 +21,85 @@ const QuizCard = ({ quiz, isPopular }) => {
 
     loadAnimation();
   }, []);
+
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 p-7 border border-gray-100 dark:border-gray-700 flex flex-col justify-between transform hover:-translate-y-1 relative"
+    <div 
+      className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 overflow-hidden group z-10"
       onClick={() => setSelectQuizToStart(quiz)}
     >
-      {/* popular quiz icon */}
-      {
-        isPopular && (
-          <div className="absolute -top-2 right-8 flex items-center gap-1 px-1.5 py-1 rounded-xl bg-gradient-to-r from-orange-200 to-amber-300 border border-orange-300 text-orange-900 shadow-md z-50">
-            <Lottie animationData={animationData} loop autoplay className="w-5 h-5" />
-            <span className="text-xs font-semibold">Popular</span>
+      {/* Popular Badge */}
+      {isPopular && (
+        <div className="absolute top-5 right-5  flex items-center gap-1 px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 shadow-lg z-50">
+          {animationData && (
+            <Lottie 
+              animationData={animationData} 
+              loop 
+              autoplay 
+              className="w-5 h-5" 
+            />
+          )}
+          <span className="text-xs font-bold text-white">Trending</span>
+        </div>
+      )}
+
+      {/* Card Content */}
+      <div className="p-6 flex flex-col h-full z-10">
+        {/* Header */}
+        <div className="flex items-start justify-between mb-6">
+          <div className="text-5xl bg-indigo-100 dark:bg-indigo-900/50 p-3 rounded-xl">
+            {ICONS[quiz.quizIcon]?.icon || '🧠'}
           </div>
-
-        )
-      }
-      {/* Header */}
-      <div className="flex items-start justify-between mb-5">
-        <div className="text-5xl md:text-6xl text-indigo-600 dark:text-indigo-400">
-          {ICONS[quiz.quizIcon]?.icon || '🧠'}
+          <span className="text-xs font-bold flex items-center bg-gradient-to-r from-pink-500 to-rose-500 text-white px-3 py-1.5 rounded-full shadow-md">
+            <Zap className="w-3 h-3 mr-1 fill-white" />
+            {quiz.quizMode}
+          </span>
         </div>
-        <span className="text-xs font-bold flex items-center bg-red-400 text-white px-4 py-2 rounded-full shadow-md">
-          <div className="relative flex items-center justify-center h-4 w-4">
-            <span className="absolute inline-flex h-full w-full rounded-full bg-white opacity-75 animate-ping"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+
+        {/* Title and Description */}
+        <div className="mb-5 flex-1">
+          <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-3 line-clamp-2">
+            {quiz.quizTitle}
+          </h2>
+          <p className="text-gray-500 dark:text-gray-400 text-sm line-clamp-3">
+            {quiz.quizDescription}
+          </p>
+        </div>
+
+        {/* Metadata */}
+        <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-300 mb-6">
+          <div className="flex items-center gap-2">
+            <Clock className="w-4 h-4 text-indigo-500" />
+            <span>{quiz.quizTime} min</span>
           </div>
-          {quiz.quizMode}
-        </span>
+          <div className="flex items-center gap-2">
+            <BadgeCheck className="w-4 h-4 text-indigo-500" />
+            <span>{quiz.quizQuestions.length} Qs</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Star className="w-4 h-4 text-amber-400 fill-amber-400/20" />
+            <span>{quiz.quizLikes.length}</span>
+          </div>
+        </div>
+
+        {/* Category Tag */}
+        <div className="mb-6">
+          <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-900/30 px-3 py-1.5 rounded-full border border-emerald-100 dark:border-emerald-800">
+            {quiz.quizCategory}
+          </span>
+        </div>
+
+        {/* Start Quiz Button */}
+        <Link
+          href={`/quiz-start/${quiz._id}/about`}
+          className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-300 group-hover:shadow-lg"
+        >
+          Start Quiz
+          <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+        </Link>
       </div>
 
-      {/* Title and Description */}
-      <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-3 truncate">
-        {quiz.quizTitle}
-      </h2>
-      <p className="text-gray-500 dark:text-gray-400 text-sm line-clamp-3 mb-4">
-        {quiz.quizDescription}
-      </p>
-
-      {/* Metadata */}
-      <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-300 mt-auto mb-5">
-        <div className="flex items-center gap-2">
-          <Clock className="w-4 h-4 text-indigo-500" />
-          <span>{quiz.quizTime} min</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <PiSealQuestionDuotone className="w-4 h-4 text-indigo-500" />
-          <span>{quiz.quizQuestions.length} Qs</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <Star className="w-4 h-4 text-yellow-400" />
-          <span>{quiz.quizLikes.length}</span>
-        </div>
-      </div>
-
-      {/* Category Tag */}
-      <div className="mb-6">
-        <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-700 px-3 py-1.5 rounded-full shadow-sm">
-          {quiz.quizCategory}
-        </span>
-      </div>
-
-      {/* Start Quiz Button */}
-      <Link
-        href={`/quiz-start/${quiz._id}/about`}
-        className="mt-2 flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 text-white text-base font-semibold py-3 px-6 rounded-xl text-center transition-all duration-300 transform hover:scale-105 shadow-lg"
-      >
-        Start Quiz
-        <ArrowRight className="w-5 h-5" />
-      </Link>
+      {/* Hover Effect Border */}
+      <div className="absolute inset-0 border-2 border-transparent group-hover:border-indigo-400 rounded-2xl pointer-events-none transition-all duration-300"></div>
     </div>
   );
 };
