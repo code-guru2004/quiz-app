@@ -7,7 +7,8 @@ import { useRouter } from 'next/navigation';
 import useGlobalContextProvider from '@/app/_context/ContextApi';
 import toast from 'react-hot-toast';
 import { jwtDecode } from 'jwt-decode';
-import { LuCircleFadingPlus } from "react-icons/lu";
+import { LuCircleFadingPlus, LuClock, LuBookOpen, LuZap, LuChevronLeft, LuChevronRight } from "react-icons/lu";
+import { FiAward, FiBarChart2, FiHardDrive, FiCpu } from "react-icons/fi";
 
 export default function AIQuizDashboard() {
   const router = useRouter();
@@ -16,49 +17,46 @@ export default function AIQuizDashboard() {
   const [difficulty, setDifficulty] = useState('');
   const [totalQuestions, setTotalQuestions] = useState(5);
   const [timePerQuestion, setTimePerQuestion] = useState(1);
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
   const [previousQuizzes, setPreviousQuizzes] = useState([]);
 
   const fetchUserData = async (username) => {
     try {
       const res = await fetch(`/api/get-user?username=${username}`);
       const data = await res.json();
-      console.log(data.userData);
-      const userInfo = data?.userData;
-      setPreviousQuizzes(userInfo?.aiQuizzes)
-      //console.log("User data:", res.data.userData);
+      setPreviousQuizzes(data?.userData?.aiQuizzes || []);
     } catch (error) {
-      console.error("Error fetching user data:", error.response?.data || error.message);
+      console.error("Error fetching user data:", error);
     }
   };
+
   useEffect(() => {
     const fetchUser = async () => {
-      if (typeof window !== "undefined") {
-        const token = localStorage.getItem("token");
+      const token = typeof window !== "undefined" && localStorage.getItem("token");
+      if (token) {
         try {
           const decoded = jwtDecode(token);
-          const username = decoded.username;
-          const email = decoded.email;
-          if (username && email) {
-            fetchUserData(username)
+          if (decoded.username) {
+            fetchUserData(decoded.username);
           }
         } catch (err) {
-          toast.error("User not found")
+          toast.error("Session expired. Please login again.");
         }
       }
     };
     fetchUser();
   }, []);
-  // ];
-  async function handleGetAiQuiz(e) {
-    e.preventDefault(); // Prevent page reload
-    setIsLoading(true)
 
-    if (category === "" || difficulty === "") {
-      toast.error("Fill all options.");
-      setIsLoading(false)
+  async function handleGetAiQuiz(e) {
+    e.preventDefault();
+    setIsLoading(true);
+
+    if (!category || !difficulty) {
+      toast.error("Please select category and difficulty");
+      setIsLoading(false);
       return;
     }
+
     try {
       const resp = await axios.post('/api/get-ai-quiz', {
         category,
@@ -68,96 +66,134 @@ export default function AIQuizDashboard() {
       });
 
       if (resp?.data?.quiz) {
-        console.log(resp.data.quiz);
-        
         setAiQuiz(resp.data.quiz);
         router.push('/ai-quiz-attend');
       }
     } catch (error) {
+      toast.error("Failed to generate quiz. Please try again.");
       console.error('AI quiz generation failed:', error);
+    } finally {
+      setIsLoading(false);
     }
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-10 space-y-8">
-      {/* Button to open modal */}
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-blue-600 dark:text-blue-300">🎓 AI Quiz Dashboard</h1>
+    <div className="max-w-6xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-8">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
+            <FiCpu className="text-blue-600 dark:text-blue-400" />
+            AI Quiz Generator
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-2">
+            Generate custom quizzes powered by AI
+          </p>
+        </div>
+
         <Dialog>
           <DialogTrigger asChild>
-            <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-xl shadow-md transition flex justify-center items-center gap-1 text-xs md:text-base">
-              <LuCircleFadingPlus className='text-white size-6 font-bold'/> New AI Quiz
+            <button className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium py-3 px-6 rounded-xl shadow-lg transition-all hover:shadow-xl">
+              <LuCircleFadingPlus className="w-5 h-5" />
+              New AI Quiz
             </button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl">
+
+          <DialogContent className="max-w-2xl rounded-xl">
             <DialogHeader>
-              <DialogTitle className="text-xl font-bold text-blue-700 dark:text-blue-300">🧠 Generate AI Quiz</DialogTitle>
+              <div className="flex items-center gap-3">
+                <FiCpu className="text-blue-600 w-6 h-6" />
+                <DialogTitle className="text-2xl font-bold text-gray-900 dark:text-white">
+                  Generate New Quiz
+                </DialogTitle>
+              </div>
             </DialogHeader>
 
-            {/* AI Quiz Form in Modal */}
-            <form className="space-y-6 mt-4" onSubmit={handleGetAiQuiz}>
-
+            <form className="space-y-6 mt-2" onSubmit={handleGetAiQuiz}>
               {/* Category */}
-              <div>
-                <label className="block text-sm font-medium mb-1">📚 Category</label>
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <LuBookOpen className="inline mr-2 w-4 h-4" />
+                  Category
+                </label>
                 <input
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  placeholder="e.g., Data Structures"
-                  className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                  placeholder="e.g., JavaScript, Machine Learning, History"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
 
               {/* Difficulty */}
-              <div>
-                <label className="block text-sm font-medium mb-1">🎯 Difficulty</label>
-                <div className="flex gap-3">
-                  {['easy', 'medium', 'hard'].map((level) => (
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <FiBarChart2 className="inline mr-2 w-4 h-4" />
+                  Difficulty Level
+                </label>
+                <div className="flex flex-wrap gap-3">
+                  {[
+                    { level: 'easy', color: 'bg-green-500', icon: <FiAward className="w-4 h-4" /> },
+                    { level: 'medium', color: 'bg-yellow-500', icon: <FiHardDrive className="w-4 h-4" /> },
+                    { level: 'hard', color: 'bg-red-500', icon: <LuZap className="w-4 h-4" /> }
+                  ].map(({ level, color, icon }) => (
                     <button
                       type="button"
                       key={level}
                       onClick={() => setDifficulty(level)}
-                      className={`px-4 py-1.5 rounded-full border text-sm capitalize ${difficulty === level
-                        ? 'bg-blue-600 text-white border-blue-600'
-                        : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600'
+                      className={`flex items-center gap-2 px-4 py-2 rounded-full border text-sm capitalize transition-all ${difficulty === level
+                        ? `${color} text-white border-transparent shadow-md`
+                        : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 border-gray-200 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600'
                         }`}
                     >
+                      {icon}
                       {level}
                     </button>
                   ))}
                 </div>
               </div>
 
-              {/* Total Questions */}
-              <div>
-                <label className="block text-sm font-medium mb-1">🔢 Total Questions</label>
-                <div className="flex items-center gap-3">
-                  <input
-                    type="range"
-                    min={3}
-                    max={20}
-                    value={totalQuestions}
-                    onChange={(e) => setTotalQuestions(Number(e.target.value))}
-                    className="w-full"
-                  />
-                  <span className="text-blue-600 font-bold">{totalQuestions}</span>
+              {/* Questions & Time */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Total Questions */}
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Number of Questions
+                  </label>
+                  <div className="flex items-center gap-4">
+                    <input
+                      type="range"
+                      min={3}
+                      max={20}
+                      value={totalQuestions}
+                      onChange={(e) => setTotalQuestions(Number(e.target.value))}
+                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+                    />
+                    <span className="text-lg font-bold text-blue-600 dark:text-blue-400 min-w-[2rem] text-center">
+                      {totalQuestions}
+                    </span>
+                  </div>
                 </div>
-              </div>
 
-              {/* Time per Question */}
-              <div>
-                <label className="block text-sm font-medium mb-1">⏱️ Time Per Question (min)</label>
-                <div className="flex items-center gap-3">
-                  <input
-                    type="range"
-                    min={0.5}
-                    max={5}
-                    step={0.5}
-                    value={timePerQuestion}
-                    onChange={(e) => setTimePerQuestion(Number(e.target.value))}
-                    className="w-full"
-                  />
-                  <span className="text-indigo-600 font-bold">{timePerQuestion}</span>
+                {/* Time per Question */}
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <LuClock className="inline mr-2 w-4 h-4" />
+                    Time per Question (min)
+                  </label>
+                  <div className="flex items-center gap-4">
+                    <input
+                      type="range"
+                      min={0.5}
+                      max={5}
+                      step={0.5}
+                      value={timePerQuestion}
+                      onChange={(e) => setTimePerQuestion(Number(e.target.value))}
+                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+                    />
+                    <span className="text-lg font-bold text-indigo-600 dark:text-indigo-400 min-w-[3rem] text-center">
+                      {timePerQuestion}
+                    </span>
+                  </div>
                 </div>
               </div>
 
@@ -165,108 +201,170 @@ export default function AIQuizDashboard() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-medium shadow transition"
+                className={`w-full py-3 px-6 rounded-xl font-medium text-white shadow-lg transition-all ${isLoading
+                  ? 'bg-gray-400 cursor-not-allowed'
+                  : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 hover:shadow-xl'
+                  }`}
               >
-
-                {
-                  isLoading ? "Preparing..." : "🚀 Generate Quiz"
-                }
+                {isLoading ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Generating...
+                  </span>
+                ) : (
+                  <span className="flex items-center justify-center gap-2">
+                    <LuZap className="w-5 h-5" />
+                    Generate Quiz
+                  </span>
+                )}
               </button>
-
             </form>
-            <div>
-              <p className='text-xs text-center text-gray-400'>⚠️ All questions are generated based on your given information.</p>
-            </div>
           </DialogContent>
         </Dialog>
       </div>
 
-      {/* Previously Attended Quizzes */}
-      
-      <PaginatedQuizzes previousQuizzes={previousQuizzes}/>
+      {/* Previous Quizzes Section */}
+      <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+            <FiAward className="text-blue-600 dark:text-blue-400" />
+            Your Quiz History
+          </h2>
+        </div>
+
+        <PaginatedQuizzes previousQuizzes={previousQuizzes} />
+      </div>
     </div>
   );
 }
 
-
 const PaginatedQuizzes = ({ previousQuizzes = [] }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const quizzesPerPage = 5;
-
   const totalPages = Math.ceil(previousQuizzes.length / quizzesPerPage);
-  const startIdx = (currentPage - 1) * quizzesPerPage;
-  const currentQuizzes = previousQuizzes.slice(startIdx, startIdx + quizzesPerPage);
-
-  const handlePrev = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
-  const handleNext = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  const currentQuizzes = previousQuizzes.slice(
+    (currentPage - 1) * quizzesPerPage,
+    currentPage * quizzesPerPage
+  );
 
   return (
-    <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow rounded-xl p-6">
-      <h2 className="text-xl font-semibold text-blue-700 dark:text-blue-300 mb-4">📄 Previous AI Quizzes</h2>
-
-      {previousQuizzes.length > 0 ? (
+    <div className="divide-y divide-gray-200 dark:divide-gray-700">
+      {currentQuizzes.length > 0 ? (
         <>
-          <div className="space-y-4">
-            {currentQuizzes.map((quiz, idx) => (
-              <div
-                key={idx}
-                className="flex justify-between items-center bg-gray-100 dark:bg-gray-800 px-4 py-3 rounded-lg hover:shadow transition"
-              >
-                <div className="flex gap-5 justify-center items-center">
-                  <h3 className="font-semibold text-gray-800 dark:text-gray-100">{quiz.category}</h3>
-                  <p
-                    className={`text-xs font-semibold px-2 py-1 rounded-xl capitalize
-                      ${quiz.level === 'hard'
-                        ? 'bg-red-700 text-white'
-                        : quiz.level === 'medium'
-                        ? 'bg-yellow-600 text-gray-100'
-                        : 'bg-green-500 text-white'
-                      }`}
-                  >
-                    {quiz.level}
-                  </p>
+          {currentQuizzes.map((quiz, idx) => (
+            <div key={idx} className="p-6 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div className="flex items-start gap-4">
+                  <div className={`p-3 rounded-lg ${getDifficultyColor(quiz.level).bg} ${getDifficultyColor(quiz.level).text}`}>
+                    {getDifficultyIcon(quiz.level)}
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900 dark:text-white">{quiz.category}</h3>
+                    <div className="flex items-center gap-3 mt-1">
+                      <span className={`text-xs font-medium px-2 py-1 rounded-full ${getDifficultyColor(quiz.level).badge}`}>
+                        {quiz.level}
+                      </span>
+                      <span className="text-sm text-gray-500 dark:text-gray-400">
+                        {new Date(quiz.createdAt).toLocaleDateString()}
+                      </span>
+                    </div>
+                  </div>
                 </div>
-                <div className="text-right space-y-2">
-                  <p className="text-blue-600 font-bold">
-                    Score: {quiz.score}/{quiz.totalQuestions}
-                  </p>
-                  <p className="text-xs">
-                    {new Date(quiz.createdAt).toLocaleString(undefined, {
-                      dateStyle: 'medium',
-                      timeStyle: 'short',
-                    })}
-                  </p>
+
+                <div className="flex items-center gap-6">
+                  <div className="text-center">
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Score</p>
+                    <p className="text-xl font-bold text-blue-600 dark:text-blue-400">
+                      {quiz.score}/{quiz.totalQuestions}
+                    </p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Time</p>
+                    <p className="text-lg font-medium text-gray-900 dark:text-white">
+                      {quiz.totalTime} min
+                    </p>
+                  </div>
                 </div>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
 
-          {/* Pagination Controls */}
-          <div className="flex justify-center items-center gap-4 mt-6">
-            <button
-              onClick={handlePrev}
-              disabled={currentPage === 1}
-              className="px-3 py-1 rounded bg-gray-300 dark:bg-gray-700 text-sm dark:text-white disabled:opacity-50"
-            >
-              Previous
-            </button>
-            <span className="text-sm text-gray-700 dark:text-gray-300">
-              Page {currentPage} of {totalPages}
-            </span>
-            <button
-              onClick={handleNext}
-              disabled={currentPage === totalPages}
-              className="px-3 py-1 rounded bg-gray-300 dark:bg-gray-700 text-sm dark:text-white disabled:opacity-50"
-            >
-              Next
-            </button>
-          </div>
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="px-6 py-4 flex items-center justify-between border-t border-gray-200 dark:border-gray-700">
+              <button
+                onClick={() => setCurrentPage(p => Math.max(p - 1, 1))}
+                disabled={currentPage === 1}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 dark:hover:bg-gray-800"
+              >
+                <LuChevronLeft className="w-5 h-5" />
+                Previous
+              </button>
+
+              <span className="text-sm text-gray-700 dark:text-gray-300">
+                Page {currentPage} of {totalPages}
+              </span>
+
+              <button
+                onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))}
+                disabled={currentPage === totalPages}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 dark:hover:bg-gray-800"
+              >
+                Next
+                <LuChevronRight className="w-5 h-5" />
+              </button>
+            </div>
+          )}
         </>
       ) : (
-        <p className="text-gray-600 dark:text-gray-400">You haven’t taken any AI quiz yet.</p>
+        <div className="p-12 text-center">
+          <div className="mx-auto max-w-md">
+            <FiAward className="mx-auto h-12 w-12 text-gray-400" />
+            <h3 className="mt-2 text-lg font-medium text-gray-900 dark:text-white">No quiz history</h3>
+            <p className="mt-1 text-gray-500 dark:text-gray-400">
+              Your generated quizzes will appear here once you start creating them.
+            </p>
+          </div>
+        </div>
       )}
     </div>
   );
 };
 
+// Helper functions for difficulty styling
+function getDifficultyColor(level) {
+  switch (level) {
+    case 'hard':
+      return {
+        bg: 'bg-red-100 dark:bg-red-900/30',
+        text: 'text-red-600 dark:text-red-400',
+        badge: 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200'
+      };
+    case 'medium':
+      return {
+        bg: 'bg-yellow-100 dark:bg-yellow-900/30',
+        text: 'text-yellow-600 dark:text-yellow-400',
+        badge: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200'
+      };
+    default:
+      return {
+        bg: 'bg-green-100 dark:bg-green-900/30',
+        text: 'text-green-600 dark:text-green-400',
+        badge: 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200'
+      };
+  }
+}
 
+function getDifficultyIcon(level) {
+  switch (level) {
+    case 'hard':
+      return <LuZap className="w-6 h-6" />;
+    case 'medium':
+      return <FiHardDrive className="w-6 h-6" />;
+    default:
+      return <FiAward className="w-6 h-6" />;
+  }
+}
