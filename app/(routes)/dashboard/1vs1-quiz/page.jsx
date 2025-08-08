@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { Swords, Sword, UserPlus, ArrowRight, Zap, Check, X, Bookmark, ChevronRight, Trophy, BookOpen, Send } from 'lucide-react';
+import { Swords, Sword, UserPlus, ArrowRight, Zap, Check, X, Bookmark, ChevronRight, Trophy, BookOpen, Send, Search } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -281,8 +281,8 @@ function ChallengePage() {
                     <div
                       key={friend.email}
                       className={`flex items-center p-4 rounded-lg transition-all cursor-pointer ${selectedFriend?.email === friend.email
-                          ? 'bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-700'
-                          : 'hover:bg-gray-50 dark:hover:bg-gray-700/50 border border-transparent'
+                        ? 'bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-700'
+                        : 'hover:bg-gray-50 dark:hover:bg-gray-700/50 border border-transparent'
                         }`}
                       onClick={() => {
                         setSelectedFriend(friend);
@@ -349,8 +349,8 @@ function ChallengePage() {
                           <div
                             key={quiz._id}
                             className={`flex items-center p-4 rounded-lg transition-all cursor-pointer ${selectedQuiz?._id === quiz._id
-                                ? 'bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-700'
-                                : 'hover:bg-gray-50 dark:hover:bg-gray-700/50 border border-transparent'
+                              ? 'bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-700'
+                              : 'hover:bg-gray-50 dark:hover:bg-gray-700/50 border border-transparent'
                               }`}
                             onClick={() => setSelectedQuiz(quiz)}
                           >
@@ -377,8 +377,8 @@ function ChallengePage() {
                           <div
                             key={quiz._id}
                             className={`flex items-center p-4 rounded-lg transition-all cursor-pointer ${selectedQuiz?._id === quiz._id
-                                ? 'bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-700'
-                                : 'hover:bg-gray-50 dark:hover:bg-gray-700/50 border border-transparent'
+                              ? 'bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-700'
+                              : 'hover:bg-gray-50 dark:hover:bg-gray-700/50 border border-transparent'
                               }`}
                             onClick={() => setSelectedQuiz(quiz)}
                           >
@@ -590,41 +590,68 @@ function ChallengePage() {
 
         {/* FRIEND TAB */}
         <TabsContent value="friends">
-          <div className="space-y-4">
-            {/* Search input */}
-            <SearchFriends friendList={friendList} onAddFriend={handleAddFriend} />
+  <div className="space-y-6">
+    {/* Search input with modern styling */}
+    <div className="relative">
+      <SearchFriends friendList={friendList} onAddFriend={handleAddFriend} />
+      
+    </div>
 
-            {/* Friends list */}
-            <div className="space-y-2">
-              {friendList.length === 0 ? (
-                <p className="text-center text-gray-500 italic">No friends yet</p>
-              ) : (
-                friendList.map((friend, idx) => (
-                  <div
-                    key={idx}
-                    className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm hover:shadow-md transition"
-                  >
-                    <div className="flex items-center gap-4">
-                      {/* Avatar placeholder */}
-                      <div className="w-10 h-10 rounded-full bg-purple-200 text-purple-800 font-bold flex items-center justify-center uppercase">
-                        {friend.username?.charAt(0)}
-                      </div>
+    {/* Friends list */}
+    <div className="space-y-3">
+      {friendList.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-8 rounded-xl border-2 border-dashed border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/30">
+          <Users className="h-10 w-10 text-gray-400 mb-3" />
+          <h4 className="text-lg font-medium text-gray-500 dark:text-gray-400">No friends yet</h4>
+          <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">
+            Add friends to start challenging them
+          </p>
+        </div>
+      ) : (
+        friendList.map((friend) => (
+          <div
+            key={friend.email}
+            className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 hover:shadow-sm transition-all duration-200 group"
+          >
+            <div className="flex items-center gap-3">
+              {/* Avatar with gradient */}
+              <div className="relative">
+                <div className="w-11 h-11 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white font-bold text-lg uppercase">
+                  {friend.username?.charAt(0)}
+                </div>
+                <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-green-500 border-2 border-white dark:border-gray-800"></div>
+              </div>
 
-                      {/* Username */}
-                      <div>
-                        <p className="text-sm font-medium text-gray-900 dark:text-white">
-                          {friend.username}
-                        </p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">{friend.email}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))
-              )}
+              {/* User info */}
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                  {friend.username}
+                </h4>
+                <p className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-[180px]">
+                  {friend.email}
+                </p>
+              </div>
             </div>
-          </div>
 
-        </TabsContent>
+            {/* Action button */}
+            <Button
+              size="sm"
+              variant="outline"
+              className="border-indigo-500 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30"
+              onClick={() => {
+                setSelectedFriend(friend);
+                setQuizDrawerOpen(true);
+              }}
+            >
+              Challenge
+              <Zap className="ml-2 h-4 w-4" />
+            </Button>
+          </div>
+        ))
+      )}
+    </div>
+  </div>
+</TabsContent>
       </Tabs>
     </div>
   );
