@@ -1,5 +1,6 @@
 // components/Footer.tsx
 
+import Image from "next/image";
 import React from "react";
 import { FaGithub, FaLinkedin, FaEnvelope } from "react-icons/fa";
 
@@ -12,7 +13,16 @@ const Footer = () => {
           
           {/* Brand & Description */}
           <div>
-            <h2 className="text-2xl font-bold mb-2">Quizo</h2>
+            <div className=" mb-2">
+                <Image
+                                    src="/logo-1.png"
+                                    alt="Eduprobe"
+                                    width={180}
+                                    height={150}
+                                    placeholder="blur"
+                                    blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAU..." // tiny base64 blur image
+                                  />
+            </div>
             <p className="text-sm">
               Practice, test, and level up your knowledge. Designed for students and teams.
             </p>
