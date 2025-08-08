@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { Swords, Sword, UserPlus, ArrowRight, Zap, Check, X, Bookmark } from 'lucide-react';
+import { Swords, Sword, UserPlus, ArrowRight, Zap, Check, X, Bookmark, ChevronRight, Trophy, BookOpen, Send } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -228,7 +228,7 @@ function ChallengePage() {
   const handleAddFriend = (friendUsername, email) => {
     //console.log("friendUsername,email" + friendUsername + " ", email)
     const newFrind = {
-      username : friendUsername,
+      username: friendUsername,
       email
     }
     setFriendList(prev => [newFrind, ...prev])
@@ -259,90 +259,154 @@ function ChallengePage() {
           setSelectedQuiz(null)
         }}>
           {/* Friend Selection Drawer */}
-          <DrawerContent className="p-6 space-y-4">
-            <h2 className="text-lg font-semibold">Select a Friend</h2>
-            <div className="space-y-2 max-h-64 overflow-y-auto my-4 py-3">
-              {
-                friendList.length === 0 && (
-                  <div>
-                    No friends found
-                  </div>
-                )
-              }
-              {friendList.length > 0 && friendList.map((friend) => (
-                <div
-                  key={friend.email}
-                  className={`cursor-pointer p-3 rounded border transition ${selectedFriend?.email === friend.email
-                    ? 'bg-green-300 border-green-500 text-green-900 font-bold'
-                    : 'hover:bg-green-200 hover:text-black'
-                    }`}
-                  onClick={() => {
-                    setSelectedFriend(friend);
-                    setQuizDrawerOpen(true);
-                  }}
-                >
-                  {friend.username}
+          <DrawerContent className="p-6 max-h-[80vh]">
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-bold text-gray-800 dark:text-white">Select Friend</h2>
+                <X
+                  className="h-5 w-5 text-gray-500 cursor-pointer"
+                  onClick={() => setIsDrawerOpen(false)}
+                />
+              </div>
+
+              {friendList.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-8 text-center">
+                  <Users className="h-10 w-10 text-gray-400 mb-2" />
+                  <p className="text-gray-500 dark:text-gray-400">No friends found</p>
+                  <p className="text-sm text-gray-400 mt-1">Invite friends to challenge them</p>
                 </div>
-              ))}
+              ) : (
+                <div className="space-y-3 overflow-y-auto max-h-[60vh] pr-2">
+                  {friendList.map((friend) => (
+                    <div
+                      key={friend.email}
+                      className={`flex items-center p-4 rounded-lg transition-all cursor-pointer ${selectedFriend?.email === friend.email
+                          ? 'bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-700'
+                          : 'hover:bg-gray-50 dark:hover:bg-gray-700/50 border border-transparent'
+                        }`}
+                      onClick={() => {
+                        setSelectedFriend(friend);
+                        setQuizDrawerOpen(true);
+                      }}
+                    >
+                      <div className="flex-shrink-0 h-10 w-10 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center text-indigo-600 dark:text-indigo-300 font-medium">
+                        {friend.username.charAt(0).toUpperCase()}
+                      </div>
+                      <div className="ml-4">
+                        <h3 className="font-medium text-gray-900 dark:text-white">{friend.username}</h3>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">{friend.email}</p>
+                      </div>
+                      <ChevronRight className="ml-auto h-5 w-5 text-gray-400" />
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </DrawerContent>
 
           {/* Quiz Selection Drawer */}
           <Drawer open={quizDrawerOpen} onOpenChange={setQuizDrawerOpen}>
-
-            <DrawerContent className="p-6 space-y-4">
-              <h2 className="text-lg font-semibold">Select a Quiz</h2>
-
-              <Tabs defaultValue="practice-quiz" className="w-full h-1/2 overflow-y-auto">
-                <TabsList>
-                  <TabsTrigger value="live-quiz">Live Quiz</TabsTrigger>
-                  <TabsTrigger value="practice-quiz">Practice Quiz</TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="live-quiz">
-                  <div className="space-y-2">
-                    {allQuiz
-                      .filter((quiz) => quiz.quizMode === "Live Quiz")
-                      .map((quiz, index) => (
-                        <div
-                          key={index}
-                          className={`cursor-pointer p-3 rounded border transition ${selectedQuiz === quiz
-                            ? 'bg-purple-400 border-purple-500'
-                            : 'hover:bg-gray-200 dark:hover:bg-purple-200 hover:text-black '
-                            }`}
-                          onClick={() => setSelectedQuiz(quiz)}
-                        >
-                          {quiz.quizTitle}
-                        </div>
-                      ))}
+            <DrawerContent className="p-6 max-h-[80vh]">
+              <div className="space-y-6 ">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-800 dark:text-white">Select Quiz</h2>
+                    {selectedFriend && (
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        Challenging: <span className="font-medium text-indigo-600 dark:text-indigo-400">{selectedFriend.username}</span>
+                      </p>
+                    )}
                   </div>
-                </TabsContent>
+                  <X
+                    className="h-5 w-5 text-gray-500 cursor-pointer"
+                    onClick={() => setQuizDrawerOpen(false)}
+                  />
+                </div>
 
-                <TabsContent value="practice-quiz">
-                  <div className="space-y-2">
-                    {allQuiz
-                      .filter((quiz) => quiz.quizMode === "Practice Quiz")
-                      .map((quiz, index) => (
-                        <div
-                          key={index}
-                          className={`cursor-pointer p-3 rounded border transition ${selectedQuiz === quiz
-                            ? 'bg-purple-400 border-purple-500'
-                            : 'hover:bg-gray-200 dark:hover:bg-purple-200 hover:text-black '
-                            }`}
-                          onClick={() => setSelectedQuiz(quiz)}
-                        >
-                          {quiz.quizTitle}
-                        </div>
-                      ))}
-                  </div>
-                </TabsContent>
-              </Tabs>
-              <Button
-                className="w-full bg-green-600 hover:bg-green-700 text-white mt-4"
-                onClick={handleCreateChallenge}
-              >
-                Send Challenge
-              </Button>
+                <Tabs defaultValue="practice-quiz" className="w-full">
+                  <TabsList className="grid w-full grid-cols-2 bg-gray-100 dark:bg-gray-800">
+                    <TabsTrigger
+                      value="live-quiz"
+                      className="data-[state=active]:bg-white data-[state=active]:shadow-sm dark:data-[state=active]:bg-gray-700"
+                    >
+                      <Zap className="h-4 w-4 mr-2" />
+                      Live Quiz
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="practice-quiz"
+                      className="data-[state=active]:bg-white data-[state=active]:shadow-sm dark:data-[state=active]:bg-gray-700"
+                    >
+                      <BookOpen className="h-4 w-4 mr-2" />
+                      Practice Quiz
+                    </TabsTrigger>
+                  </TabsList>
+
+                  <TabsContent value="live-quiz" className="">
+                    <div className="space-y-3 overflow-y-auto max-h-[45vh] pr-2">
+                      {allQuiz
+                        .filter((quiz) => quiz.quizMode === "Live Quiz")
+                        .map((quiz) => (
+                          <div
+                            key={quiz._id}
+                            className={`flex items-center p-4 rounded-lg transition-all cursor-pointer ${selectedQuiz?._id === quiz._id
+                                ? 'bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-700'
+                                : 'hover:bg-gray-50 dark:hover:bg-gray-700/50 border border-transparent'
+                              }`}
+                            onClick={() => setSelectedQuiz(quiz)}
+                          >
+                            <div className="flex-shrink-0 h-10 w-10 rounded-full bg-purple-100 dark:bg-purple-900 flex items-center justify-center text-purple-600 dark:text-purple-300">
+                              <Trophy className="h-5 w-5" />
+                            </div>
+                            <div className="ml-4 flex-1 min-w-0">
+                              <h3 className="font-medium text-gray-900 dark:text-white truncate">{quiz.quizTitle}</h3>
+                              <p className="text-sm text-gray-500 dark:text-gray-400 truncate">{quiz.quizDescription}</p>
+                            </div>
+                            {selectedQuiz?._id === quiz._id && (
+                              <Check className="h-5 w-5 text-green-500 ml-2" />
+                            )}
+                          </div>
+                        ))}
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="practice-quiz" className="mt-4">
+                    <div className="space-y-3 overflow-y-auto max-h-[50vh] pr-2">
+                      {allQuiz
+                        .filter((quiz) => quiz.quizMode === "Practice Quiz")
+                        .map((quiz) => (
+                          <div
+                            key={quiz._id}
+                            className={`flex items-center p-4 rounded-lg transition-all cursor-pointer ${selectedQuiz?._id === quiz._id
+                                ? 'bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-700'
+                                : 'hover:bg-gray-50 dark:hover:bg-gray-700/50 border border-transparent'
+                              }`}
+                            onClick={() => setSelectedQuiz(quiz)}
+                          >
+                            <div className="flex-shrink-0 h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600 dark:text-blue-300">
+                              <BookOpen className="h-5 w-5" />
+                            </div>
+                            <div className="ml-4 flex-1 min-w-0">
+                              <h3 className="font-medium text-gray-900 dark:text-white truncate">{quiz.quizTitle}</h3>
+                              <p className="text-sm text-gray-500 dark:text-gray-400 truncate">{quiz.quizDescription}</p>
+                            </div>
+                            {selectedQuiz?._id === quiz._id && (
+                              <Check className="h-5 w-5 text-green-500 ml-2" />
+                            )}
+                          </div>
+                        ))}
+                    </div>
+                  </TabsContent>
+                </Tabs>
+
+                <Button
+                  className="w-full py-6 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-medium shadow-lg"
+                  onClick={handleCreateChallenge}
+                  disabled={!selectedQuiz}
+                >
+                  <Send className="h-5 w-5 mr-2" />
+                  Send Challenge
+                </Button>
+              </div>
             </DrawerContent>
           </Drawer>
         </Drawer>
