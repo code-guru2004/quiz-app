@@ -32,10 +32,12 @@ const COLORS = ['#0088FE', '#00C49F'];
 
 export default function ProfilePage() {
   const params = useParams();
-  const username = params.username;
+  const user_name = params.username;
+  const {username} = useGlobalContextProvider()
   const [isLoading, setIsLoading] = useState(false);
   const [submittedQuiz, setSubmittedQuiz] = useState([]);
   const [email, setEmail] = useState(null);
+  const [yourUsername, setYourUsername] = useState(null);
   const [totalScore, setTotalScore] = useState(0);
   const [maxScore, setMaxScore] = useState(0);
   const [performanceData, setPerformanceData] = useState([]);
@@ -58,8 +60,8 @@ export default function ProfilePage() {
     try {
       setIsLoading(true);
       const [userRes, statsRes] = await Promise.all([
-        fetch(`/api/get-user?username=${username}`),
-        fetch(`/api/user/get-stats?username=${username}`),
+        fetch(`/api/get-user?username=${user_name}`),
+        fetch(`/api/user/get-stats?username=${user_name}`),
 
       ]);
 
@@ -71,6 +73,7 @@ export default function ProfilePage() {
 
 
       setEmail(userInfo.email);
+      setYourUsername(userInfo.username);
       setProfileImg(userInfo?.profileImg)
       setSubmittedQuiz(userInfo.submitQuiz);
       setStreakDays(statsData.streakDays || 0);
@@ -218,7 +221,7 @@ export default function ProfilePage() {
     //console.log(data.data.secure_url);
     try {
       const resp = await axios.patch("/api/user/update-profile-img", {
-        username,
+        user_name,
         profileImg: data.data.secure_url
       })
       if (resp) {
@@ -255,8 +258,8 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-700 to-green-800 text-gray-100 font-sans px-2 md:px-4 py-6 flex items-center justify-center">
       <Head>
-        <title>{username}'s Profile - Quizo</title>
-        <meta name="description" content={`View ${username}'s quiz performance and statistics.`} />
+        <title>{user_name}'s Profile - Quizo</title>
+        <meta name="description" content={`View ${user_name}'s quiz performance and statistics.`} />
       </Head>
 
       <Link href="/dashboard" className="absolute top-4 left-4 bg-white rounded-full shadow hover:scale-105 transition-transform">
@@ -302,26 +305,30 @@ export default function ProfilePage() {
                 )}
 
                 {/* Hover Overlay with Camera Icon - Enhanced */}
-                <div className="absolute inset-0 bg-gradient-to-br from-black/40 to-emerald-900/40 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center transition-opacity duration-300 z-30 gap-1">
-                  <label className="cursor-pointer flex flex-col items-center">
-                    <div className="bg-white/80 p-2 rounded-full mb-1">
-                      <CameraIcon className="text-emerald-700 size-6" />
+                {
+                  user_name === username&&(
+                    <div className="absolute inset-0 bg-gradient-to-br from-black/40 to-emerald-900/40 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center transition-opacity duration-300 z-30 gap-1">
+                      <label className="cursor-pointer flex flex-col items-center">
+                        <div className="bg-white/80 p-2 rounded-full mb-1">
+                          <CameraIcon className="text-emerald-700 size-6" />
+                        </div>
+                        <span className="text-white text-xs font-medium">Change Photo</span>
+                        <input
+                          name='profileImg'
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              handleProfileImgUpload(file)
+                            }
+                          }}
+                        />
+                      </label>
                     </div>
-                    <span className="text-white text-xs font-medium">Change Photo</span>
-                    <input
-                      name='profileImg'
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          handleProfileImgUpload(file)
-                        }
-                      }}
-                    />
-                  </label>
-                </div>
+                  )
+                }
               </div>
               {streakDays > 0 && (
                 <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-6 w-6 flex items-center justify-center shadow-md">
@@ -331,7 +338,7 @@ export default function ProfilePage() {
             </div>
 
             <div className="flex flex-col items-center">
-              <h1 className="text-xl md:text-2xl font-bold text-emerald-800 break-words">{username}</h1>
+              <h1 className="text-xl md:text-2xl font-bold text-emerald-800 break-words">{user_name}</h1>
               <p className="text-sm text-gray-600 break-all">{email}</p>
 
               <div className="mt-2 flex items-center gap-2">
@@ -477,7 +484,7 @@ export default function ProfilePage() {
             {/* Heatmap and Time Stats */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <QuizStatsHeatmap username={username} />
+                <QuizStatsHeatmap username={user_name} />
                 <div className="bg-gray-50 p-4 md:p-6 rounded-xl shadow-md">
                   <h3 className="text-lg md:text-xl font-semibold text-emerald-800 mb-3">Quiz Types Breakdown</h3>
                   <div className="flex flex-col md:flex-row items-center justify-between">
