@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { Swords, Sword, UserPlus } from 'lucide-react';
+import { Swords, Sword, UserPlus, ArrowRight, Zap, Check, X } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -109,14 +109,14 @@ function ChallengePage() {
 
   useEffect(() => {
     const submittedIds = attendedChallenges
-    .filter((challenge) =>
-      challenge.responses?.some(
-        (res) => res.user === username && res.submittedAt
+      .filter((challenge) =>
+        challenge.responses?.some(
+          (res) => res.user === username && res.submittedAt
+        )
       )
-    )
-    .map((c) => c.challengeId);
+      .map((c) => c.challengeId);
     console.log(submittedIds);
-    
+
     setSubmittedChallengeIds(submittedIds);
   }, [attendedChallenges, username]);
 
@@ -369,84 +369,108 @@ function ChallengePage() {
                 const opponent = ch.fromUser === username ? ch.toUser : ch.fromUser;
                 const yourResponse = ch.responses.find((r) => r.user === username);
                 const isAccepted = ch.status === "accepted";
+                const isSubmitted = submittedChallengeIds.includes(ch.challengeId);
 
                 return (
-                  <div>
-                    {
-                      ch.status !== "reject" && (
-                        <div
-                          key={ch.challengeId}
-                          className="bg-white dark:bg-gray-800 border dark:border-gray-700 border-gray-200 rounded-xl shadow-sm hover:shadow-md transition p-5"
-                        >
-                          <div className="flex justify-between items-center mb-3">
-                            <h3 className="text-lg font-bold text-gray-800 dark:text-white">
-                              Challenge vs <span className="text-purple-600">{opponent}</span>
-                            </h3>
-                            <span
-                              className={`px-3 py-1 text-xs rounded-full font-medium ${ch.status === "pending"
-                                ? "bg-yellow-100 text-yellow-800"
-                                : ch.status === "accepted"
-                                  ? "bg-green-100 text-green-800"
-                                  : "bg-gray-200 text-gray-700"
-                                }`}
-                            >
-                              {ch.status.toUpperCase()}
-                            </span>
-                          </div>
+                  <div key={ch.challengeId} className="group relative">
+                    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 p-6 overflow-hidden">
+                      {/* Status ribbon */}
+                      <div className={`absolute top-0 right-0 px-3 py-1 text-xs font-semibold rounded-bl-lg rounded-tr-2xl ${ch.status === "pending"
+                          ? "bg-amber-500/10 text-amber-600 dark:text-amber-400"
+                          : ch.status === "accepted"
+                            ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                            : "bg-gray-500/10 text-gray-600 dark:text-gray-400"
+                        }`}>
+                        {ch.status.charAt(0).toUpperCase() + ch.status.slice(1)}
+                      </div>
 
-                          <div className="text-sm text-gray-600 dark:text-gray-300 space-y-1 mb-4">
-                            <p>
-                              <strong>Your Score:</strong>{" "}
-                              {yourResponse?.score ?? "Not submitted"}
-                            </p>
-                            <p>
-                              <strong>Date:</strong>{" "}
-                              {new Date(ch.createdAt).toLocaleDateString()}
-                            </p>
-                          </div>
-
-                          <div className="flex justify-end">
-                            <button
-                              className={`px-4 py-1.5 rounded-lg text-white font-medium transition ${isAccepted
-                                  ? "bg-blue-600 hover:bg-blue-700"
-                                  : "bg-gray-400 cursor-not-allowed"
-                                }`}
-                              disabled={!isAccepted}
-                              onClick={() => {
-                                if (!isAccepted) return;
-
-                                // If user already submitted, go to result page
-                                if (submittedChallengeIds.includes(ch.challengeId)) {
-                                  router.push(`/challenge-result/${ch.challengeId}`);
-                                } else {
-                                  router.push(`/challenge-quiz/${ch.challengeId}`);
-                                }
-                              }}
-                            >
-                              {submittedChallengeIds.includes(ch.challengeId) ? "Result ⛳" : "Attend"}
-                            </button>
-
-                            {ch.status === "pending" && ch.toUser === username && (
-                              <div>
-                                <Button
-                                  className="bg-green-600 hover:bg-green-700 text-white ml-2"
-                                  onClick={() => handleAccept(ch?.challengeId)}
-                                >
-                                  Accept
-                                </Button>
-                                <Button
-                                  className="bg-red-600 hover:bg-red-700 text-white ml-2"
-                                  onClick={() => handleReject(ch?.challengeId)}
-                                >
-                                  Reject
-                                </Button>
-                              </div>
-                            )}
-                          </div>
+                      {/* Header */}
+                      <div className="flex items-start justify-between mb-4">
+                        <div>
+                          <h3 className="text-lg font-bold text-gray-800 dark:text-white">
+                            Challenge vs <span className="text-indigo-600 dark:text-indigo-400 font-semibold">{opponent}</span>
+                          </h3>
+                          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                            Created: {new Date(ch.createdAt).toLocaleDateString('en-US', {
+                              year: 'numeric',
+                              month: 'short',
+                              day: 'numeric'
+                            })}
+                          </p>
                         </div>
-                      )
-                    }
+                      </div>
 
+                      {/* Stats */}
+                      <div className="grid grid-cols-2 gap-4 mb-6">
+                        <div className="bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg">
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Your Score</p>
+                          <p className="text-lg font-semibold text-gray-800 dark:text-white">
+                            {yourResponse?.score ?? (
+                              <span className="text-gray-400 dark:text-gray-500">--</span>
+                            )}
+                          </p>
+                        </div>
+                        <div className="bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg">
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Status</p>
+                          <p className="text-lg font-semibold capitalize text-gray-800 dark:text-white">
+                            {isSubmitted ? "Completed" : ch.status}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Action Buttons */}
+                      <div className="flex justify-end space-x-3">
+                        {isAccepted && (
+                          <button
+                            onClick={() => {
+                              if (isSubmitted) {
+                                router.push(`/challenge-result/${ch.challengeId}`);
+                              } else {
+                                router.push(`/challenge-quiz/${ch.challengeId}`);
+                              }
+                            }}
+                            className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center ${isSubmitted
+                                ? "bg-indigo-600 hover:bg-indigo-700 text-white shadow-md"
+                                : "bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-md"
+                              }`}
+                          >
+                            {isSubmitted ? (
+                              <>
+                                View Results
+                                <ArrowRight className="w-4 h-4 ml-2" />
+                              </>
+                            ) : (
+                              <>
+                                Attend Now
+                                <Zap className="w-4 h-4 ml-2 fill-white" />
+                              </>
+                            )}
+                          </button>
+                        )}
+
+                        {ch.status === "pending" && ch.toUser === username && (
+                          <>
+                            <button
+                              onClick={() => handleAccept(ch?.challengeId)}
+                              className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-all duration-200 flex items-center"
+                            >
+                              <Check className="w-4 h-4 mr-2" />
+                              Accept
+                            </button>
+                            <button
+                              onClick={() => handleReject(ch?.challengeId)}
+                              className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-all duration-200 flex items-center"
+                            >
+                              <X className="w-4 h-4 mr-2" />
+                              Decline
+                            </button>
+                          </>
+                        )}
+                      </div>
+
+                      {/* Hover effect border */}
+                      <div className="absolute inset-0 border-2 border-transparent group-hover:border-indigo-400/20 rounded-xl pointer-events-none transition-all duration-300"></div>
+                    </div>
                   </div>
                 );
               })}
