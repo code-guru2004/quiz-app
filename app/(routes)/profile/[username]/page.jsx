@@ -4,12 +4,13 @@ import useGlobalContextProvider from '@/app/_context/ContextApi';
 import { ICONS } from '@/app/Icon';
 import QuizStatsHeatmap from '@/components/shared/QuizStatsHeatmap';
 import axios from 'axios';
-import { ArrowLeft, CircleArrowLeft, Crown, Medal, Trophy, UserIcon, Award, Star, Zap, Lightning } from 'lucide-react';
+import { ArrowLeft, CircleArrowLeft, Crown, Medal, Trophy, UserIcon, Award, Star, Zap, Lightning, CameraIcon, LoaderCircle } from 'lucide-react';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { Bounce, toast } from 'react-toastify';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   BarChart, Bar, Legend, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar,
@@ -48,8 +49,10 @@ export default function ProfilePage() {
   const [achievements, setAchievements] = useState([]);
   const [showAllQuizzes, setShowAllQuizzes] = useState(false);
   const [quizTypeData, setQuizTypeData] = useState([]);
-  const [quizAvgScores, setQuizAvgScores] = useState([{ name: 'Live Quizzes', score: 0 },{ name: 'AI Quizzes', score: 0 }]);
+  const [quizAvgScores, setQuizAvgScores] = useState([{ name: 'Live Quizzes', score: 0 }, { name: 'AI Quizzes', score: 0 }]);
   const [quizTimeData, setQuizTimeData] = useState([])
+  const [profileImg, setProfileImg] = useState(null);
+  const [profileUploadLoading, setProfileUploadLoading] = useState(false);
 
   const fetchUserData = async () => {
     try {
@@ -63,13 +66,12 @@ export default function ProfilePage() {
       const userData = await userRes.json();
       const statsData = await statsRes.json();
       const friendsData = userData?.friendList
-      console.log(statsData.data);
-
 
       const userInfo = userData?.userData;
-      console.log(userInfo.friendList);
+
 
       setEmail(userInfo.email);
+      setProfileImg(userInfo?.profileImg)
       setSubmittedQuiz(userInfo.submitQuiz);
       setStreakDays(statsData.streakDays || 0);
       setCategoryStats(statsData.categoryStats || []);
@@ -203,6 +205,52 @@ export default function ProfilePage() {
       performance: cat.A
     }));
   };
+  const handleProfileImgUpload = async (file) => {
+    setProfileUploadLoading(true);
+    const formData = new FormData();
+    formData.append("file", file)
+    const res = await fetch("/api/upload", {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await res.json();
+    //console.log(data.data.secure_url);
+    try {
+      const resp = await axios.patch("/api/user/update-profile-img", {
+        username,
+        profileImg: data.data.secure_url
+      })
+      if (resp) {
+        setProfileImg(resp.data.profileImg)
+        toast.success('Profile image update successfully', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
+      }
+    } catch (error) {
+      toast.error('Unable to update the profile image', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+    } finally {
+      setProfileUploadLoading(false)
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-700 to-green-800 text-gray-100 font-sans px-2 md:px-4 py-6 flex items-center justify-center">
@@ -224,8 +272,56 @@ export default function ProfilePage() {
           {/* LEFT PANEL - Profile & Stats */}
           <div className="bg-gradient-to-br from-emerald-100 to-green-100 rounded-xl p-6 flex flex-col items-center text-center space-y-4 shadow-lg">
             <div className="relative">
-              <div className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-emerald-300 border-4 border-white flex items-center justify-center shadow">
-                <UserIcon className="text-green-700 w-10 h-10 md:w-12 md:h-12" />
+              <div className="relative group w-24 h-24 md:w-32 md:h-32 rounded-full bg-emerald-100 border-4 border-white flex items-center justify-center shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105">
+                {/* Loading animation with cool effect */}
+                {profileUploadLoading && (
+                  <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm">
+                    <div className="relative">
+                      <div className="w-12 h-12 border-4 border-emerald-400 border-t-transparent rounded-full animate-spin"></div>
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="text-xs font-semibold text-white">Uploading...</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Profile Image */}
+                {profileImg ? (
+                  <Image
+                    src={profileImg}
+                    alt='profile img'
+                    width={300}
+                    height={300}
+                    className='object-cover w-full h-full z-20'
+                  />
+                ) : (
+                  <div className="flex flex-col items-center justify-center">
+                    <UserIcon className="text-emerald-700 w-10 h-10 md:w-12 md:h-12" />
+                    <span className="text-xs text-emerald-700 mt-1">Add Photo</span>
+                  </div>
+                )}
+
+                {/* Hover Overlay with Camera Icon - Enhanced */}
+                <div className="absolute inset-0 bg-gradient-to-br from-black/40 to-emerald-900/40 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center transition-opacity duration-300 z-30 gap-1">
+                  <label className="cursor-pointer flex flex-col items-center">
+                    <div className="bg-white/80 p-2 rounded-full mb-1">
+                      <CameraIcon className="text-emerald-700 size-6" />
+                    </div>
+                    <span className="text-white text-xs font-medium">Change Photo</span>
+                    <input
+                      name='profileImg'
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          handleProfileImgUpload(file)
+                        }
+                      }}
+                    />
+                  </label>
+                </div>
               </div>
               {streakDays > 0 && (
                 <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-6 w-6 flex items-center justify-center shadow-md">
@@ -482,11 +578,11 @@ export default function ProfilePage() {
                   <div className="pt-4">
                     <h4 className="text-sm font-semibold text-emerald-700 mb-2">Speed Trend</h4>
                     {
-                      quizTimeData.length>0?(
+                      quizTimeData.length > 0 ? (
                         <div className="h-32">
                           <ResponsiveContainer width="100%" height="100%">
                             <LineChart
-                              data={quizTimeData }
+                              data={quizTimeData}
                               margin={{ top: 5, right: 20, left: 0, bottom: 5 }}
                             >
                               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
@@ -527,7 +623,7 @@ export default function ProfilePage() {
                           </ResponsiveContainer>
                           <p className="text-xs text-center text-gray-500 mt-0.5">Time taken to complete each quiz</p>
                         </div>
-                      ):(
+                      ) : (
                         <div className='h-32 text-green-700'>
                           First attend the quiz
                         </div>

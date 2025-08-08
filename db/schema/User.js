@@ -123,8 +123,19 @@ const UserSchema = new mongoose.Schema({
     required: true,
     unique: true
   },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
+  email: { 
+    type: String, 
+    required: true, 
+    unique: true 
+  },
+  profileImg:{
+    type: String,
+    default: "https://res.cloudinary.com/dlvbaulyy/image/upload/v1754649008/abo7ucf6qo0xx28r0oqy.jpg"
+  },
+  password: { 
+    type: String, 
+    required: true 
+  },
   submitQuiz: {
     type: [quizSubmitSchema],
     default:[]
@@ -140,6 +151,10 @@ const UserSchema = new mongoose.Schema({
   friendList:{
     type: [FriendSchema],
     default: []
+  },
+  createdAt:{
+    type: Date,
+    default: Date.now()
   }
 });
 
