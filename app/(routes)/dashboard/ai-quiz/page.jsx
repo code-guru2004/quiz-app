@@ -265,7 +265,7 @@ const PaginatedQuizzes = ({ previousQuizzes = [] }) => {
                     <h3 className="font-semibold text-gray-900 dark:text-white">{quiz.category}</h3>
                     <div className="flex items-center gap-3 mt-1">
                       <span className={`text-xs font-medium px-2 py-1 rounded-full ${getDifficultyColor(quiz.level).badge}`}>
-                        {quiz.level}
+                        {quiz.level.toUpperCase()}
                       </span>
                       <span className="text-sm text-gray-500 dark:text-gray-400">
                         {new Date(quiz.createdAt).toLocaleDateString()}
