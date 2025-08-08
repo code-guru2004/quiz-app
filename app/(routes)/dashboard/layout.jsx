@@ -119,7 +119,16 @@ function DashboardLayout({ children }) {
           {/* Sidebar - Mobile */}
           <aside className={`fixed top-0 left-0 h-screen w-64 bg-gray-900 z-40 transform transition-transform duration-300 ease-in-out ${sidebarDrawerOpen ? 'translate-x-0' : '-translate-x-full'} border-r border-gray-800 lg:hidden`}>
             <div className="flex items-center justify-between p-4 border-b border-gray-800">
-              <div className="text-xl font-bold text-amber-500">Quizo</div>
+              <div className="text-xl font-bold text-amber-500">
+              <Image
+                      src="/logo-1.png"
+                      alt="Eduprobe"
+                      width={180}
+                      height={150}
+                      placeholder="blur"
+                      blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAU..." // tiny base64 blur image
+                    />
+              </div>
               <Button onClick={() => setSidebarDrawerOpen(false)} size="icon" className="bg-transparent hover:bg-gray-800">
                 <XIcon className="text-gray-300 size-5" />
               </Button>
