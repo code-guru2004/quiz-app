@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
 import toast from 'react-hot-toast';
 
-const SearchFriends = ({ friendList }) => {
+const SearchFriends = ({ friendList,onAddFriend }) => {
   const [search, setSearch] = useState('');
   const [results, setResults] = useState([]);
   const { username } = useGlobalContextProvider();
@@ -63,6 +63,7 @@ const SearchFriends = ({ friendList }) => {
         setSearch('');
         setResults([]);
         setShowDropdown(false);
+        onAddFriend(friendUsername,email)
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {

@@ -62,8 +62,6 @@ function ChallengePage() {
     }
   }, [username]);
 
-
-
   const handleCreateChallenge = async () => {
     if (!selectedFriend || !selectedQuiz) {
       toast.error("Please select a friend and a quiz");
@@ -116,7 +114,7 @@ function ChallengePage() {
         )
       )
       .map((c) => c.challengeId);
-    console.log(submittedIds);
+    //console.log(submittedIds);
 
     setSubmittedChallengeIds(submittedIds);
   }, [attendedChallenges, username]);
@@ -226,6 +224,15 @@ function ChallengePage() {
       console.error("Failed to accept challenge:", error?.response?.data?.message || error.message);
     }
   }
+
+  const handleAddFriend = (friendUsername, email) => {
+    //console.log("friendUsername,email" + friendUsername + " ", email)
+    const newFrind = {
+      username : friendUsername,
+      email
+    }
+    setFriendList(prev => [newFrind, ...prev])
+  }
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-[60vh] text-xl font-semibold">
@@ -233,8 +240,6 @@ function ChallengePage() {
       </div>
     );
   }
-
-
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-10">
@@ -260,7 +265,7 @@ function ChallengePage() {
               {
                 friendList.length === 0 && (
                   <div>
-                    No frind found
+                    No friends found
                   </div>
                 )
               }
@@ -406,7 +411,7 @@ function ChallengePage() {
                               day: 'numeric'
                             })}
                           </p>
-                          <div className="flex items-center gap-2 mb-3 text-sm mt-2">
+                          <div className="flex items-center gap-2  text-sm mt-2">
                             <span className="bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-200 px-2.5 py-1 rounded-full flex items-center text-xs">
                               <Bookmark className="w-3 h-3 mr-1.5" />
                               {ch.topic}
@@ -523,7 +528,7 @@ function ChallengePage() {
         <TabsContent value="friends">
           <div className="space-y-4">
             {/* Search input */}
-            <SearchFriends friendList={friendList} />
+            <SearchFriends friendList={friendList} onAddFriend={handleAddFriend} />
 
             {/* Friends list */}
             <div className="space-y-2">
