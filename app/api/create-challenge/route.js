@@ -8,9 +8,9 @@ export async function POST(req) {
     await dbConnect();
 
     const body = await req.json();
-    const { sender, opponent, questions } = body;
+    const { sender, opponent, questions,testTopic } = body;
 
-    if (!sender || !opponent || !questions || !Array.isArray(questions)) {
+    if (!sender || !opponent || !questions || !Array.isArray(questions) || !testTopic) {
       return NextResponse.json(
         { success: false, message: 'Missing or invalid fields' },
         { status: 400 }
@@ -23,6 +23,7 @@ export async function POST(req) {
       challengeId,
       fromUser: sender,
       toUser: opponent,
+      topic: testTopic,
       questions,
     });
 

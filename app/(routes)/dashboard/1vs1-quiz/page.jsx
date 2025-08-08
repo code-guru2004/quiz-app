@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { Swords, Sword, UserPlus, ArrowRight, Zap, Check, X } from 'lucide-react';
+import { Swords, Sword, UserPlus, ArrowRight, Zap, Check, X, Bookmark } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -74,6 +74,7 @@ function ChallengePage() {
       const challengeRes = await axios.post('/api/create-challenge', {
         sender: username,
         opponent: selectedFriend.username,
+        testTopic: selectedQuiz.quizTitle,
         questions: selectedQuiz.quizQuestions, // must match your schema
       });
       if (challengeRes.data.success && challengeRes.data.challengeId) {
@@ -256,7 +257,14 @@ function ChallengePage() {
           <DrawerContent className="p-6 space-y-4">
             <h2 className="text-lg font-semibold">Select a Friend</h2>
             <div className="space-y-2 max-h-64 overflow-y-auto my-4 py-3">
-              {friendList.map((friend) => (
+              {
+                friendList.length === 0 && (
+                  <div>
+                    No frind found
+                  </div>
+                )
+              }
+              {friendList.length > 0 && friendList.map((friend) => (
                 <div
                   key={friend.email}
                   className={`cursor-pointer p-3 rounded border transition ${selectedFriend?.email === friend.email
@@ -376,10 +384,10 @@ function ChallengePage() {
                     <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 p-6 overflow-hidden">
                       {/* Status ribbon */}
                       <div className={`absolute top-0 right-0 px-3 py-1 text-xs font-semibold rounded-bl-lg rounded-tr-2xl ${ch.status === "pending"
-                          ? "bg-amber-500/10 text-amber-600 dark:text-amber-400"
-                          : ch.status === "accepted"
-                            ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                            : "bg-gray-500/10 text-gray-600 dark:text-gray-400"
+                        ? "bg-amber-500/10 text-amber-600 dark:text-amber-400"
+                        : ch.status === "accepted"
+                          ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                          : "bg-gray-500/10 text-gray-600 dark:text-gray-400"
                         }`}>
                         {ch.status.charAt(0).toUpperCase() + ch.status.slice(1)}
                       </div>
@@ -390,6 +398,7 @@ function ChallengePage() {
                           <h3 className="text-lg font-bold text-gray-800 dark:text-white">
                             Challenge vs <span className="text-indigo-600 dark:text-indigo-400 font-semibold">{opponent}</span>
                           </h3>
+
                           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                             Created: {new Date(ch.createdAt).toLocaleDateString('en-US', {
                               year: 'numeric',
@@ -397,6 +406,12 @@ function ChallengePage() {
                               day: 'numeric'
                             })}
                           </p>
+                          <div className="flex items-center gap-2 mb-3 text-sm mt-2">
+                            <span className="bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-200 px-2.5 py-1 rounded-full flex items-center text-xs">
+                              <Bookmark className="w-3 h-3 mr-1.5" />
+                              {ch.topic}
+                            </span>
+                          </div>
                         </div>
                       </div>
 
@@ -430,8 +445,8 @@ function ChallengePage() {
                               }
                             }}
                             className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center ${isSubmitted
-                                ? "bg-indigo-600 hover:bg-indigo-700 text-white shadow-md"
-                                : "bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-md"
+                              ? "bg-indigo-600 hover:bg-indigo-700 text-white shadow-md"
+                              : "bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-md"
                               }`}
                           >
                             {isSubmitted ? (
