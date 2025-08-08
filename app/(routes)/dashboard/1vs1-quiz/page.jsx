@@ -634,18 +634,31 @@ function ChallengePage() {
             </div>
 
             {/* Action button */}
-            <Button
-              size="sm"
-              variant="outline"
-              className="border-indigo-500 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30"
-              onClick={() => {
-                setSelectedFriend(friend);
-                setQuizDrawerOpen(true);
-              }}
-            >
-              Challenge
-              <Zap className="ml-2 h-4 w-4" />
-            </Button>
+            <div>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="border-indigo-500 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hidden  md:flex "
+                  onClick={() => {
+                    setSelectedFriend(friend);
+                    setQuizDrawerOpen(true);
+                  }}
+                >
+                  Challenge
+                  <Zap className="ml-2 h-4 w-4" />
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="border-indigo-500 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30  md:hidden"
+                  onClick={() => {
+                    setSelectedFriend(friend);
+                    setQuizDrawerOpen(true);
+                  }}
+                >
+                  <Zap className=" h-4 w-4" />
+                </Button>
+            </div>
           </div>
         ))
       )}
