@@ -6,6 +6,7 @@ export async function PATCH(req) {
     try {
         const body = await req.json();
         const { username, profileImg } = body;
+console.log(username, profileImg);
 
         if (!username) {
             return NextResponse.json(

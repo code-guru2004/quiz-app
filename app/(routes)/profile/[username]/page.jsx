@@ -221,7 +221,7 @@ export default function ProfilePage() {
     //console.log(data.data.secure_url);
     try {
       const resp = await axios.patch("/api/user/update-profile-img", {
-        user_name,
+        username : user_name,
         profileImg: data.data.secure_url
       })
       if (resp) {
