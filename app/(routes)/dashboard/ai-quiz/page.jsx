@@ -98,7 +98,6 @@ export default function AIQuizDashboard() {
               New AI Quiz
             </button>
           </DialogTrigger>
-
           <DialogContent className="max-w-2xl rounded-xl">
             <DialogHeader>
               <div className="flex items-center gap-3">
@@ -114,7 +113,7 @@ export default function AIQuizDashboard() {
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                   <LuBookOpen className="inline mr-2 w-4 h-4" />
-                  Category
+                  Topic
                 </label>
                 <input
                   value={category}

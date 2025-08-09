@@ -55,7 +55,7 @@ export default function AIAttendPage() {
 
     if (!aiQuiz) return null;
 
-    const questions = aiQuiz.mcq;
+    const questions = aiQuiz.quizQuestions;
     const total = questions.length;
     const currentQ = questions[currentIndex];
 

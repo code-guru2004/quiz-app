@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { Swords, Sword, UserPlus, ArrowRight, Zap, Check, X, Bookmark, ChevronRight, Trophy, BookOpen, Send, Search } from 'lucide-react';
+import { Swords, Sword, UserPlus, ArrowRight, Zap, Check, X, Bookmark, ChevronRight, Trophy, BookOpen, Send, Search, History, CheckCircle, AlertCircle, Users } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,8 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import Lottie from 'lottie-react';
 import { GiBattleGear } from "react-icons/gi";
+import { FiAward, FiBarChart2, FiCpu, FiHardDrive } from 'react-icons/fi';
+import { LuClock, LuZap } from 'react-icons/lu';
 
 function ChallengePage() {
   const router = useRouter();
@@ -21,10 +23,6 @@ function ChallengePage() {
   const [selectedFriend, setSelectedFriend] = useState(null);
   const [quizDrawerOpen, setQuizDrawerOpen] = useState(false); // NEW STATE
   const [selectedQuiz, setSelectedQuiz] = useState(null); // optional
-  const [category, setCategory] = useState('');
-  const [difficulty, setDifficulty] = useState('');
-  const [totalQuestions, setTotalQuestions] = useState(5);
-  const [timePerQuestion, setTimePerQuestion] = useState(1);
   const LIMIT = 5; // Items per page
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [attendedChallenges, setAttendedChallenges] = useState([]);
@@ -32,6 +30,12 @@ function ChallengePage() {
   const [totalPages, setTotalPages] = useState(1);
   const [submittedChallengeIds, setSubmittedChallengeIds] = useState([]);
   const [animationData, setAnimationData] = useState(null);
+  const [topic, setTopic] = useState("");
+  const [difficulty, setDifficulty] = useState('');
+  const [totalQuestions, setTotalQuestions] = useState(5);
+  const [timePerQuestion, setTimePerQuestion] = useState(1);
+  const [isLoadingAI, setIsLoadingAI] = useState(false);
+  const [isGetAiQuiz, setIsGetAiQuiz] = useState(false);
 
   useEffect(() => {
     const loadAnimation = async () => {
@@ -72,7 +76,7 @@ function ChallengePage() {
       const challengeRes = await axios.post('/api/create-challenge', {
         sender: username,
         opponent: selectedFriend.username,
-        testTopic: selectedQuiz.quizTitle,
+        testTopic: selectedQuiz.quizTitle || selectedQuiz.category,
         questions: selectedQuiz.quizQuestions, // must match your schema
       });
       if (challengeRes.data.success && challengeRes.data.challengeId) {
@@ -233,6 +237,38 @@ function ChallengePage() {
     }
     setFriendList(prev => [newFrind, ...prev])
   }
+
+  async function handleGetAiQuiz(e) {
+    e.preventDefault();
+    setIsLoadingAI(true);
+
+    if (!topic || !difficulty) {
+      toast.error("Please select category and difficulty");
+      setIsLoadingAI(false);
+      return;
+    }
+
+    try {
+      const resp = await axios.post('/api/get-ai-quiz', {
+        category: topic,
+        difficulty,
+        totalQuestions,
+        timePerQuestion
+      });
+
+      if (resp?.data?.quiz) {
+        console.log(resp.data.quiz);
+        setSelectedQuiz(resp.data.quiz);
+        setIsGetAiQuiz(true)
+      }
+    } catch (error) {
+      toast.error("Failed to generate quiz. Please try again.");
+      console.error('AI quiz generation failed:', error);
+    } finally {
+      setIsLoadingAI(false);
+      setIsGetAiQuiz(false)
+    }
+  }
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-[60vh] text-xl font-semibold">
@@ -324,7 +360,7 @@ function ChallengePage() {
                 </div>
 
                 <Tabs defaultValue="practice-quiz" className="w-full">
-                  <TabsList className="grid w-full grid-cols-2 bg-gray-100 dark:bg-gray-800">
+                  <TabsList className="grid w-full grid-cols-3 bg-gray-100 dark:bg-gray-800">
                     <TabsTrigger
                       value="live-quiz"
                       className="data-[state=active]:bg-white data-[state=active]:shadow-sm dark:data-[state=active]:bg-gray-700"
@@ -338,6 +374,13 @@ function ChallengePage() {
                     >
                       <BookOpen className="h-4 w-4 mr-2" />
                       Practice Quiz
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="ai-quiz"
+                      className="data-[state=active]:bg-white data-[state=active]:shadow-sm dark:data-[state=active]:bg-gray-700"
+                    >
+                      <FiCpu className="h-4 w-4 mr-2" />
+                      AI Quiz
                     </TabsTrigger>
                   </TabsList>
 
@@ -394,6 +437,185 @@ function ChallengePage() {
                             )}
                           </div>
                         ))}
+                    </div>
+                  </TabsContent>
+                  <TabsContent value="ai-quiz" className="mt-4">
+                    <div className="space-y-4 overflow-y-auto max-h-[44vh] pr-2">
+                      <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                          <FiCpu className="text-blue-600 dark:text-blue-400" />
+                          Generate AI Quiz
+                        </h3>
+
+                        <form className="space-y-5" onSubmit={handleGetAiQuiz}>
+                          {/* Topic Input */}
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                              Topic
+                            </label>
+                            <input
+                              type="text"
+                              placeholder="Enter quiz topic (e.g., JavaScript, Machine Learning)"
+                              className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                              onChange={(e) => {
+                                setTopic(e.target.value)
+                                setIsGetAiQuiz(false)
+                              }}
+                              value={topic}
+                              required
+                            />
+                          </div>
+
+                          {/* Difficulty Level */}
+                          <div className="space-y-3">
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center">
+                              <FiBarChart2 className="mr-2 w-4 h-4 text-indigo-500 dark:text-indigo-400" />
+                              Difficulty Level
+                            </label>
+
+                            <div className="grid grid-cols-3 gap-3">
+                              {[
+                                {
+                                  level: 'easy',
+                                  color: 'from-green-400 to-emerald-500',
+                                  hover: 'hover:from-green-500 hover:to-emerald-600',
+                                  icon: <FiAward className="w-4 h-4" />,
+                                  label: 'Beginner'
+                                },
+                                {
+                                  level: 'medium',
+                                  color: 'from-amber-400 to-orange-500',
+                                  hover: 'hover:from-amber-500 hover:to-orange-600',
+                                  icon: <FiHardDrive className="w-4 h-4" />,
+                                  label: 'Intermediate'
+                                },
+                                {
+                                  level: 'hard',
+                                  color: 'from-rose-500 to-red-600',
+                                  hover: 'hover:from-rose-600 hover:to-red-700',
+                                  icon: <LuZap className="w-4 h-4" />,
+                                  label: 'Advanced'
+                                }
+                              ].map(({ level, color, hover, icon, label }) => (
+                                <button
+                                  type="button"
+                                  key={level}
+                                  onClick={() => {
+                                    setDifficulty(level);
+                                    setIsGetAiQuiz(false);
+                                  }}
+                                  className={`relative overflow-hidden group rounded-xl p-0.5 ${difficulty === level
+                                    ? `bg-gradient-to-r ${color}`
+                                    : 'bg-gray-200 dark:bg-gray-700'
+                                    }`}
+                                >
+                                  <div className={`relative z-10 flex flex-col items-center justify-center gap-2 px-4 py-3 rounded-[10px] transition-all ${difficulty === level
+                                      ? 'bg-white/10 text-white'
+                                      : 'bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700'
+                                    }`}>
+                                    <div className={`p-2 rounded-full ${difficulty === level
+                                        ? 'bg-white/20 text-white'
+                                        : `bg-gradient-to-r ${color} text-white`
+                                      }`}>
+                                      {icon}
+                                    </div>
+                                    <span className={`text-sm font-medium ${difficulty === level ? 'text-white' : 'text-gray-800 dark:text-gray-200'
+                                      }`}>
+                                      {label}
+                                    </span>
+                                  </div>
+
+                                  {/* Animated background for selected state */}
+                                  {difficulty === level && (
+                                    <div className="absolute inset-0 bg-gradient-to-r opacity-75 animate-pulse"></div>
+                                  )}
+
+                                  {/* Hover effect */}
+                                  {difficulty !== level && (
+                                    <div className={`absolute inset-0 bg-gradient-to-r opacity-0 group-hover:opacity-10 transition-opacity ${color} ${hover}`}></div>
+                                  )}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+
+
+                          {/* Number of Questions */}
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {/* Total Questions */}
+                            <div className="space-y-2">
+                              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                Number of Questions
+                              </label>
+                              <div className="flex items-center gap-4">
+                                <input
+                                  type="range"
+                                  min={3}
+                                  max={20}
+                                  value={totalQuestions}
+                                  onChange={(e) => {
+                                    setTotalQuestions(Number(e.target.value))
+                                    setIsGetAiQuiz(false)
+                                  }}
+                                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+                                />
+                                <span className="text-lg font-bold text-blue-600 dark:text-blue-400 min-w-[2rem] text-center">
+                                  {totalQuestions}
+                                </span>
+                              </div>
+                            </div>
+
+                            {/* Time per Question */}
+                            <div className="space-y-2">
+                              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <LuClock className="inline mr-2 w-4 h-4" />
+                                Time per Question (min)
+                              </label>
+                              <div className="flex items-center gap-4">
+                                <input
+                                  type="range"
+                                  min={0.5}
+                                  max={5}
+                                  step={0.5}
+                                  value={timePerQuestion}
+                                  onChange={(e) => {
+                                    setTimePerQuestion(Number(e.target.value))
+                                    setIsGetAiQuiz(false)
+                                  }}
+                                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+                                />
+                                <span className="text-lg font-bold text-indigo-600 dark:text-indigo-400 min-w-[3rem] text-center">
+                                  {timePerQuestion}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          {/* Generate Button */}
+                          <button
+                            type="submit"
+                            disabled={isLoadingAI || isGetAiQuiz}
+                            className={`w-full py-3 px-6 rounded-xl font-medium text-white shadow-lg transition-all ${isLoadingAI
+                              ? 'bg-gray-400 cursor-not-allowed'
+                              : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 hover:shadow-xl'
+                              }`}
+                          >
+                            {isLoadingAI ? (
+                              <span className="flex items-center justify-center gap-2">
+                                <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                Generating...
+                              </span>
+                            ) : (
+                              <span className="flex items-center justify-center gap-2">
+                                <LuZap className="w-5 h-5" />
+                                Generate Quiz
+                              </span>
+                            )}
+                          </button>
+                        </form>
+                      </div>
                     </div>
                   </TabsContent>
                 </Tabs>
@@ -590,81 +812,81 @@ function ChallengePage() {
 
         {/* FRIEND TAB */}
         <TabsContent value="friends">
-  <div className="space-y-6">
-    {/* Search input with modern styling */}
-    <div className="relative">
-      <SearchFriends friendList={friendList} onAddFriend={handleAddFriend} />
-      
-    </div>
+          <div className="space-y-6">
+            {/* Search input with modern styling */}
+            <div className="relative">
+              <SearchFriends friendList={friendList} onAddFriend={handleAddFriend} />
 
-    {/* Friends list */}
-    <div className="space-y-3">
-      {friendList.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-8 rounded-xl border-2 border-dashed border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/30">
-          <Users className="h-10 w-10 text-gray-400 mb-3" />
-          <h4 className="text-lg font-medium text-gray-500 dark:text-gray-400">No friends yet</h4>
-          <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">
-            Add friends to start challenging them
-          </p>
-        </div>
-      ) : (
-        friendList.map((friend) => (
-          <div
-            key={friend.email}
-            className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 hover:shadow-sm transition-all duration-200 group"
-          >
-            <div className="flex items-center gap-3">
-              {/* Avatar with gradient */}
-              <div className="relative">
-                <div className="w-11 h-11 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white font-bold text-lg uppercase">
-                  {friend.username?.charAt(0)}
-                </div>
-                <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-green-500 border-2 border-white dark:border-gray-800"></div>
-              </div>
-
-              {/* User info */}
-              <div>
-                <h4 className="font-medium text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-                  {friend.username}
-                </h4>
-                <p className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-[180px]">
-                  {friend.email}
-                </p>
-              </div>
             </div>
 
-            {/* Action button */}
-            <div>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="border-indigo-500 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hidden  md:flex "
-                  onClick={() => {
-                    setSelectedFriend(friend);
-                    setQuizDrawerOpen(true);
-                  }}
-                >
-                  Challenge
-                  <Zap className="ml-2 h-4 w-4" />
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="border-indigo-500 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30  md:hidden"
-                  onClick={() => {
-                    setSelectedFriend(friend);
-                    setQuizDrawerOpen(true);
-                  }}
-                >
-                  <Zap className=" h-4 w-4" />
-                </Button>
+            {/* Friends list */}
+            <div className="space-y-3">
+              {friendList.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-8 rounded-xl border-2 border-dashed border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/30">
+                  <Users className="h-10 w-10 text-gray-400 mb-3" />
+                  <h4 className="text-lg font-medium text-gray-500 dark:text-gray-400">No friends yet</h4>
+                  <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">
+                    Add friends to start challenging them
+                  </p>
+                </div>
+              ) : (
+                friendList.map((friend) => (
+                  <div
+                    key={friend.email}
+                    className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 hover:shadow-sm transition-all duration-200 group"
+                  >
+                    <div className="flex items-center gap-3">
+                      {/* Avatar with gradient */}
+                      <div className="relative">
+                        <div className="w-11 h-11 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white font-bold text-lg uppercase">
+                          {friend.username?.charAt(0)}
+                        </div>
+                        <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-green-500 border-2 border-white dark:border-gray-800"></div>
+                      </div>
+
+                      {/* User info */}
+                      <div>
+                        <h4 className="font-medium text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                          {friend.username}
+                        </h4>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-[180px]">
+                          {friend.email}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Action button */}
+                    <div>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="border-indigo-500 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hidden  md:flex "
+                        onClick={() => {
+                          setSelectedFriend(friend);
+                          setQuizDrawerOpen(true);
+                        }}
+                      >
+                        Challenge
+                        <Zap className="ml-2 h-4 w-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="border-indigo-500 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30  md:hidden"
+                        onClick={() => {
+                          setSelectedFriend(friend);
+                          setQuizDrawerOpen(true);
+                        }}
+                      >
+                        <Zap className=" h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
-        ))
-      )}
-    </div>
-  </div>
-</TabsContent>
+        </TabsContent>
       </Tabs>
     </div>
   );
