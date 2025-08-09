@@ -549,7 +549,7 @@ function ChallengePage() {
                                     : 'bg-gray-200 dark:bg-gray-700'
                                     }`}
                                 >
-                                  <div className={`relative z-10 flex flex-col items-center justify-center gap-2 px-4 py-3 rounded-[10px] transition-all ${difficulty === level
+                                  <div className={`relative z-10 flex flex-col items-center justify-center gap-2 px-6 py-3 rounded-[10px] transition-all ${difficulty === level
                                     ? 'bg-white/10 text-white'
                                     : 'bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700'
                                     }`}>
@@ -559,7 +559,7 @@ function ChallengePage() {
                                       }`}>
                                       {icon}
                                     </div>
-                                    <span className={`text-sm font-medium ${difficulty === level ? 'text-white' : 'text-gray-800 dark:text-gray-200'
+                                    <span className={`text-xs md:text-sm font-medium ${difficulty === level ? 'text-white' : 'text-gray-800 dark:text-gray-200'
                                       }`}>
                                       {label}
                                     </span>
