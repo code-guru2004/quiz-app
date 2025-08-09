@@ -403,23 +403,23 @@ function ChallengePage() {
                   <TabsList className="grid w-full grid-cols-3 bg-gray-100 dark:bg-gray-800">
                     <TabsTrigger
                       value="live-quiz"
-                      className="data-[state=active]:bg-white data-[state=active]:shadow-sm dark:data-[state=active]:bg-gray-700"
+                      className="data-[state=active]:bg-white data-[state=active]:shadow-sm dark:data-[state=active]:bg-gray-700 text-xs md:text-base"
                     >
-                      <Zap className="h-4 w-4 mr-2" />
+                      <Zap className="h-4 w-4 md:mr-2" />
                       Live Quiz
                     </TabsTrigger>
                     <TabsTrigger
                       value="practice-quiz"
-                      className="data-[state=active]:bg-white data-[state=active]:shadow-sm dark:data-[state=active]:bg-gray-700"
+                      className="data-[state=active]:bg-white data-[state=active]:shadow-sm dark:data-[state=active]:bg-gray-700 text-xs md:text-base"
                     >
-                      <BookOpen className="h-4 w-4 mr-2" />
+                      <BookOpen className="h-4 w-4 md:mr-2" />
                       Practice Quiz
                     </TabsTrigger>
                     <TabsTrigger
                       value="ai-quiz"
-                      className="data-[state=active]:bg-white data-[state=active]:shadow-sm dark:data-[state=active]:bg-gray-700"
+                      className="data-[state=active]:bg-white data-[state=active]:shadow-sm dark:data-[state=active]:bg-gray-700 text-xs md:text-base"
                     >
-                      <FiCpu className="h-4 w-4 mr-2" />
+                      <FiCpu className="h-4 w-4 md:mr-2" />
                       AI Quiz
                     </TabsTrigger>
                   </TabsList>
