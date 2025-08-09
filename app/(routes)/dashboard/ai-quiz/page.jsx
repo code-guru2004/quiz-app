@@ -24,11 +24,18 @@ export default function AIQuizDashboard() {
     try {
       const res = await fetch(`/api/get-user?username=${username}`);
       const data = await res.json();
-      setPreviousQuizzes(data?.userData?.aiQuizzes || []);
+  
+      if (data) {
+        const sortedQuizzes = (data?.userData?.aiQuizze || []).sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt) // newest first
+        );
+        setPreviousQuizzes(sortedQuizzes);
+      }
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
   };
+  
 
   useEffect(() => {
     const fetchUser = async () => {
