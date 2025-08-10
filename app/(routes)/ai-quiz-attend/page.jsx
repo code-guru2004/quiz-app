@@ -20,6 +20,7 @@ export default function AIAttendPage() {
     const [timeLeft, setTimeLeft] = useState(0);
     const [showTimeAlert, setShowTimeAlert] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isAnimating, setIsAnimating] = useState(false);
 
     useEffect(() => {
         if (!aiQuiz) {
@@ -70,23 +71,35 @@ export default function AIAttendPage() {
     };
 
     const handleNext = () => {
-        if (currentIndex < total - 1) {
-            setCurrentIndex(currentIndex + 1);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        } else {
-            calculateScore();
-        }
+        setIsAnimating(true);
+        setTimeout(() => {
+            if (currentIndex < total - 1) {
+                setCurrentIndex(currentIndex + 1);
+            } else {
+                calculateScore();
+            }
+            setIsAnimating(false);
+        }, 300);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const handlePrevious = () => {
-        if (currentIndex > 0) {
-            setCurrentIndex(currentIndex - 1);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+        setIsAnimating(true);
+        setTimeout(() => {
+            if (currentIndex > 0) {
+                setCurrentIndex(currentIndex - 1);
+            }
+            setIsAnimating(false);
+        }, 300);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const jumpTo = (index) => {
-        setCurrentIndex(index);
+        setIsAnimating(true);
+        setTimeout(() => {
+            setCurrentIndex(index);
+            setIsAnimating(false);
+        }, 300);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
@@ -166,14 +179,15 @@ export default function AIAttendPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-gray-100 relative">
-            <div className='absolute top-4 right-4'>
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-gray-100 relative overflow-x-hidden">
+            {/* Floating Theme Toggle */}
+            <div className='fixed top-6 right-6 z-50'>
                 <ThemeToggle />
             </div>
             
             {/* Floating Time Display */}
             {!showScore && (
-                <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-white dark:bg-gray-800 shadow-lg rounded-full px-6 py-2 z-50 flex items-center border border-gray-200 dark:border-gray-700">
+                <div className="fixed top-6 left-1/2 transform -translate-x-1/2 bg-white dark:bg-gray-800 shadow-lg rounded-full px-6 py-2 z-50 flex items-center border border-gray-200 dark:border-gray-700 backdrop-blur-sm">
                     <div className="w-3 h-3 rounded-full bg-red-500 mr-2 animate-pulse"></div>
                     <span className="font-bold text-gray-700 dark:text-gray-200">
                         {formatTime(timeLeft)}
@@ -183,13 +197,22 @@ export default function AIAttendPage() {
 
             <div className="max-w-7xl mx-auto px-4 py-20 gap-8">
                 {/* Quiz Container */}
-                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-200 dark:border-gray-700">
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-200 dark:border-gray-700 transition-all duration-300">
                     {/* Header */}
-                    <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white">
-                        <h1 className="text-2xl md:text-3xl font-bold">{aiQuiz.category} Quiz</h1>
-                        <p className="text-blue-100 mt-1">
-                            Level: <span className="font-medium capitalize">{aiQuiz.level}</span>
-                        </p>
+                    <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 text-white relative overflow-hidden">
+                        <div className="absolute -right-10 -top-10 w-32 h-32 rounded-full bg-white/10"></div>
+                        <div className="absolute -right-20 -bottom-20 w-40 h-40 rounded-full bg-white/5"></div>
+                        <div className="relative z-10">
+                            <h1 className="text-2xl md:text-3xl font-bold">{aiQuiz.category} Quiz</h1>
+                            <div className="flex items-center mt-2 space-x-4">
+                                <span className="px-3 py-1 bg-white/20 rounded-full text-sm font-medium">
+                                    Level: {aiQuiz.level}
+                                </span>
+                                <span className="px-3 py-1 bg-white/20 rounded-full text-sm font-medium">
+                                    {total} Questions
+                                </span>
+                            </div>
+                        </div>
                     </div>
 
                     <div className="flex flex-col lg:flex-row">
@@ -200,7 +223,7 @@ export default function AIAttendPage() {
                                     <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                                     </svg>
-                                    Questions
+                                    Question Navigator
                                 </h2>
                                 <div className="grid grid-cols-5 lg:grid-cols-4 xl:grid-cols-5 gap-2">
                                     {questions.map((_, idx) => (
@@ -209,17 +232,17 @@ export default function AIAttendPage() {
                                             onClick={() => jumpTo(idx)}
                                             className={`relative rounded-lg p-2 font-medium transition-all transform hover:scale-105 ${
                                                 currentIndex === idx
-                                                    ? 'bg-blue-600 text-white shadow-lg'
+                                                    ? 'bg-gradient-to-br from-blue-500 to-indigo-500 text-white shadow-lg'
                                                     : markForReview.includes(idx)
-                                                        ? 'bg-yellow-500 text-white shadow-md'
+                                                        ? 'bg-gradient-to-br from-amber-400 to-amber-500 text-white shadow-md'
                                                         : userAnswers[idx]
-                                                            ? 'bg-green-500 text-white shadow'
+                                                            ? 'bg-gradient-to-br from-emerald-400 to-emerald-500 text-white shadow'
                                                             : 'bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-500'
                                             }`}
                                         >
                                             Q{idx + 1}
                                             {markForReview.includes(idx) && (
-                                                <span className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-200 rounded-full border border-yellow-600"></span>
+                                                <span className="absolute -top-1 -right-1 w-3 h-3 bg-amber-200 rounded-full border border-amber-600"></span>
                                             )}
                                         </button>
                                     ))}
@@ -228,9 +251,9 @@ export default function AIAttendPage() {
                         )}
 
                         {/* Main Content */}
-                        <div className="flex-1 p-6">
+                        <div className={`flex-1 p-6 transition-opacity duration-300 ${isAnimating ? 'opacity-50' : 'opacity-100'}`}>
                             {showTimeAlert && (
-                                <div className="mb-6 p-4 rounded-xl bg-gradient-to-r from-yellow-400 to-yellow-500 text-white font-bold shadow-lg animate-bounce">
+                                <div className="mb-6 p-4 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-white font-bold shadow-lg animate-pulse">
                                     <div className="flex items-center justify-center">
                                         <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -244,10 +267,10 @@ export default function AIAttendPage() {
                                 <div className="text-center py-10">
                                     <div className="max-w-2xl mx-auto">
                                         <div className="relative mb-10">
-                                            <div className="absolute -top-6 -left-6 w-24 h-24 bg-blue-100 dark:bg-blue-900 rounded-full opacity-30"></div>
-                                            <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-purple-100 dark:bg-purple-900 rounded-full opacity-30"></div>
+                                            <div className="absolute -top-6 -left-6 w-24 h-24 bg-blue-100 dark:bg-blue-900 rounded-full opacity-30 animate-pulse"></div>
+                                            <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-indigo-100 dark:bg-indigo-900 rounded-full opacity-30 animate-pulse"></div>
                                             <div className="relative bg-white dark:bg-gray-700 p-8 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-600">
-                                                <div className="w-24 h-24 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                                                <div className="w-24 h-24 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg animate-bounce">
                                                     <span className="text-3xl font-bold text-white">{score}</span>
                                                 </div>
                                                 <h2 className="text-3xl font-extrabold text-gray-800 dark:text-white mb-2">
@@ -275,7 +298,7 @@ export default function AIAttendPage() {
                                                 <svg className="w-6 h-6 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                 </svg>
-                                                Question Review
+                                                Detailed Review
                                             </h3>
 
                                             {questions.map((q, idx) => {
@@ -413,18 +436,23 @@ export default function AIAttendPage() {
                                         </div>
                                         <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                                             <div
-                                                className="h-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full transition-all duration-500"
+                                                className="h-3 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full transition-all duration-500"
                                                 style={{ width: `${((currentIndex + 1) / total) * 100}%` }}
                                             />
                                         </div>
                                     </div>
 
                                     {/* Question Card */}
-                                    <div className="bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 p-6 rounded-xl shadow-lg mb-8 transition-all duration-300 hover:shadow-xl">
-                                        <h2 className="text-xl md:text-2xl font-bold text-gray-800 dark:text-white mb-6">
-                                            {currentQ.mainQuestion}
-                                        </h2>
-                                        <div className="grid gap-3">
+                                    <div className="bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 p-8 rounded-2xl shadow-lg mb-8 transition-all duration-300 hover:shadow-xl">
+                                        <div className="flex items-start mb-6">
+                                            <div className="flex-shrink-0 mr-4 flex items-center justify-center w-10 h-10 rounded-lg bg-blue-100 text-blue-800 dark:bg-blue-900/80 dark:text-blue-100">
+                                                <span className="font-bold text-lg">{currentIndex + 1}</span>
+                                            </div>
+                                            <h2 className="text-xl md:text-2xl font-bold text-gray-800 dark:text-white pt-1">
+                                                {currentQ.mainQuestion}
+                                            </h2>
+                                        </div>
+                                        <div className="grid gap-3 ml-14">
                                             {currentQ.choices.map((choice, idx) => {
                                                 const letter = choice[0];
                                                 const optionText = choice.substring(2);
@@ -441,9 +469,9 @@ export default function AIAttendPage() {
                                                         }`}
                                                     >
                                                         <div className="flex items-center">
-                                                            <span className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mr-4 ${
+                                                            <span className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mr-4 transition-all ${
                                                                 isSelected
-                                                                    ? 'bg-blue-500 text-white'
+                                                                    ? 'bg-blue-500 text-white scale-110'
                                                                     : 'bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300'
                                                             }`}>
                                                                 {letter}
@@ -466,8 +494,8 @@ export default function AIAttendPage() {
                                             }
                                             className={`px-6 py-3 rounded-xl shadow font-medium transition-all transform hover:scale-105 ${
                                                 markForReview.includes(currentIndex)
-                                                    ? 'bg-yellow-500 hover:bg-yellow-600 text-white'
-                                                    : 'bg-yellow-100 hover:bg-yellow-200 text-yellow-900 dark:bg-yellow-700 dark:text-white'
+                                                    ? 'bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white'
+                                                    : 'bg-amber-100 hover:bg-amber-200 text-amber-900 dark:bg-amber-700 dark:text-white'
                                             }`}
                                         >
                                             {markForReview.includes(currentIndex) ? (
@@ -503,8 +531,8 @@ export default function AIAttendPage() {
                                                 disabled={userAnswers[currentIndex] === undefined}
                                                 className={`flex items-center px-6 py-3 rounded-xl shadow transition-all transform hover:scale-105 disabled:opacity-50 disabled:hover:scale-100 ${
                                                     currentIndex === total - 1
-                                                        ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white'
-                                                        : 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white'
+                                                        ? 'bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white'
+                                                        : 'bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white'
                                                 }`}
                                             >
                                                 {currentIndex === total - 1 ? (
