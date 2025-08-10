@@ -26,9 +26,10 @@ export default function AIQuizDashboard() {
       const data = await res.json();
   
       if (data) {
-        const sortedQuizzes = (data?.userData?.aiQuizze || []).sort(
+        const sortedQuizzes = (data?.userData?.aiQuizzes || []).sort(
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt) // newest first
         );
+        
         setPreviousQuizzes(sortedQuizzes);
       }
     } catch (error) {
