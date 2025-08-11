@@ -25,6 +25,8 @@ export function ContextProvider({ children }) {
   const [isLoading, setIsLoading] = useState(false)
   const [practiceQuiz, setPracticeQuiz] = useState([]);
   const [aiQuiz, setAiQuiz] = useState(null);
+  const [userDetails, setUserDetails] = useState(null);
+
   useEffect(() => {
     const fetchUser = async () => {
       if (typeof window !== "undefined") {
@@ -84,6 +86,8 @@ export function ContextProvider({ children }) {
         aiQuiz,
         setAiQuiz,
         quizToStartObject: { selectQuizToStart, setSelectQuizToStart },
+        userDetails,
+        setUserDetails,
         // userObject: {user,setUser},
       }}
     >

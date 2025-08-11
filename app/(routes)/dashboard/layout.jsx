@@ -17,7 +17,7 @@ function DashboardLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [sidebarDrawerOpen, setSidebarDrawerOpen] = useState(false)
   const { username, email } = useGlobalContextProvider();
-  const { isLoading, setIsLoading } = useGlobalContextProvider()
+  const { isLoading, setIsLoading, userDetails } = useGlobalContextProvider()
   const [menuSelected, setMenuSelected] = useState(0)
   // const toggleSidebar = () => {
   //   setSidebarOpen((prev) => !prev);
@@ -65,9 +65,9 @@ function DashboardLayout({ children }) {
                       blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAU..." // tiny base64 blur image
                     />
 
-                   
+
                   </Link>
-                 
+
                 </div>
                 <nav className="flex-1 p-4 space-y-4">
                   {navLinks.map(({ label, href, icon }, idx) => (
@@ -89,16 +89,36 @@ function DashboardLayout({ children }) {
                   ))}
                 </nav>
                 <div className="p-4 border-t border-gray-800 space-y-2">
-                  <Link href={`/profile/${username}`} className="flex items-center gap-3 cursor-pointer bg-gradient-to-r from-slate-700 to-slate-900 dark:to-slate-850 hover:bg-gradient-to-r hover:from-slate-700 hover:to-slate-800 transition-colors duration-500 p-2 rounded-md">
-                    <User className="size-5 text-gray-200 dark:text-white" />
-                    <span className="text-gray-100">Profile</span>
+                  {/* Profile Link */}
+                  <Link
+                    href={`/profile/${username}`}
+                    className="flex items-center gap-3 cursor-pointer bg-gradient-to-r from-slate-700 to-slate-900 dark:to-slate-850 hover:from-slate-700 hover:to-slate-800 transition-all duration-300 p-2 rounded-md"
+                  >
+                    {userDetails?.profileImg ? (
+                      <div className="w-8 h-8 rounded-full overflow-hidden border border-gray-600 flex-shrink-0">
+                        <Image
+                          src={userDetails.profileImg}
+                          alt="user"
+                          width={32}
+                          height={32}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    ) : (
+                      <User className="size-6 text-gray-200 dark:text-white" />
+                    )}
+                    <span className="text-gray-100 font-medium">Profile</span>
                   </Link>
-                  <div onClick={handleLogout} className="flex items-center gap-3 cursor-pointer bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700
- p-2 rounded-md">
-                    <LogOut className="size-5 text-white" />
-                    <span className="text-white">Logout</span>
+                  {/* Logout Button */}
+                  <div
+                    onClick={handleLogout}
+                    className="flex items-center gap-3 cursor-pointer bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 transition-all duration-300 p-2 rounded-md"
+                  >
+                    <LogOut className="size-6 text-white" />
+                    <span className="text-white font-medium">Logout</span>
                   </div>
                 </div>
+
               </>
             )}
           </aside>
@@ -107,14 +127,14 @@ function DashboardLayout({ children }) {
           <aside className={`fixed top-0 left-0 h-screen w-64 bg-gray-900 z-40 transform transition-transform duration-300 ease-in-out ${sidebarDrawerOpen ? 'translate-x-0' : '-translate-x-full'} border-r border-gray-800 lg:hidden`}>
             <div className="flex items-center justify-between p-4 border-b border-gray-800">
               <div className="text-xl font-bold text-amber-500">
-              <Image
-                      src="/logo-1.png"
-                      alt="Eduprobe"
-                      width={180}
-                      height={150}
-                      placeholder="blur"
-                      blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAU..." // tiny base64 blur image
-                    />
+                <Image
+                  src="/logo-1.png"
+                  alt="Eduprobe"
+                  width={180}
+                  height={150}
+                  placeholder="blur"
+                  blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAU..." // tiny base64 blur image
+                />
               </div>
               <Button onClick={() => setSidebarDrawerOpen(false)} size="icon" className="bg-transparent hover:bg-gray-800">
                 <XIcon className="text-gray-300 size-5" />
@@ -131,7 +151,19 @@ function DashboardLayout({ children }) {
               </nav>
               <div className="p-4 border-t border-gray-800 space-y-2">
                 <Link href={`/profile/${username}`} className="flex items-center gap-3 cursor-pointer bg-gradient-to-r from-slate-700 to-slate-900 dark:to-slate-850 hover:bg-gradient-to-r hover:from-slate-700 hover:to-slate-800 transition-colors duration-500 p-2 rounded-md">
-                  <User className="size-5 text-gray-200 dark:text-gray-100" />
+                  {userDetails?.profileImg ? (
+                    <div className="w-8 h-8 rounded-full overflow-hidden border border-gray-600 flex-shrink-0">
+                      <Image
+                        src={userDetails.profileImg}
+                        alt="user"
+                        width={32}
+                        height={32}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <User className="size-6 text-gray-200 dark:text-white" />
+                  )}
                   <span className="text-gray-100">Profile</span>
                 </Link>
                 <div onClick={handleLogout} className="flex items-center gap-3 cursor-pointer bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700

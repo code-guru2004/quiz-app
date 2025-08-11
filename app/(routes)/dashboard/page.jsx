@@ -7,6 +7,7 @@ import {
   Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend,
   LineChart, Line, AreaChart, Area
 } from 'recharts';
+import useGlobalContextProvider from '@/app/_context/ContextApi';
 
 // Utility component for showing cards
 const DashboardCard = ({ title, value, icon, isDarkMode }) => (
@@ -31,6 +32,7 @@ const CustomTimeTooltip = ({ active, payload, isDarkMode }) => {
 };
 
 const UserDashboard = () => {
+  const {userDetails,setUserDetails} = useGlobalContextProvider();
   const [userData, setUserData] = useState(null);
   const [submittedQuiz, setSubmittedQuiz] = useState([]);
   const [email, setEmail] = useState('');
@@ -78,6 +80,7 @@ const UserDashboard = () => {
         const data = await res.json();
         const userInfo = data?.userData;
         if (userInfo) {
+          setUserDetails(userInfo);
           setSubmittedQuiz(userInfo.submitQuiz || []);
           setUserData(userInfo);
         }
