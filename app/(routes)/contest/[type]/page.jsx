@@ -144,7 +144,7 @@ export default function ContestTypePage() {
                         </div>
                     </div>
                 ) : (
-                    <div className="flex items-center justify-center p-10 md:p-12 bg-white dark:bg-gray-800 rounded-3xl shadow-lg mb-12">
+                    <div className="flex items-center justify-center p-8 md:p-12 bg-white dark:bg-gray-800 rounded-3xl shadow-lg mb-12">
                         <p className="text-gray-500 dark:text-gray-400 text-sm md:text-lg italic text-center">
                             No active contest available right now.<br/> Check back soon!
                         </p>
