@@ -17,8 +17,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Quizo",
-  description: "Quizo – Explore, answer, and master quizzes across categories.",
+  title: "Eduprobe",
+  description: "Eduprobe – Explore, answer, and master quizzes across categories.",
   keywords: ["about", "dashboard"],
 };
 
