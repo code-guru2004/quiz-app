@@ -31,7 +31,7 @@ const quizSubmitSchema = new mongoose.Schema({
   time:{
     type:Number
   },
-  quizMode: {
+  quizType: {
     type: String,
     required: true, 
   },

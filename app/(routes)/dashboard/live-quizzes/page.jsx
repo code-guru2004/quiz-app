@@ -18,7 +18,7 @@ function LiveQuiz() {
   const [popularQuiz, setPopularQuiz] = useState(null);
   useEffect(() => {
     setIsLoading(true);
-    const liveQuizArray = allQuiz.filter((quiz) => quiz.quizMode === 'Live Quiz');
+    const liveQuizArray = allQuiz.filter((quiz) => quiz.quizType === 'Live Quiz'); //🔴🔴🔴🔴🔴🔴
     setLiveQuizzes(liveQuizArray);
     setFilteredQuizzes(liveQuizArray);
     console.log(liveQuizArray);

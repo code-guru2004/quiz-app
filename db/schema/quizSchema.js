@@ -99,12 +99,6 @@ const quizSchema = new mongoose.Schema({
     type: [String],
     default: [],
   },
-  quizMode: {
-    type: String,
-    enum: ['Live Quiz', 'Practice Quiz'],
-    default: 'Live Quiz',
-    required: true, // optional but recommended to enforce it
-  },
   quizCategory: { // ✅ added field
     type: String,
     required: true,
@@ -123,6 +117,31 @@ const quizSchema = new mongoose.Schema({
   quizExpiry: {
     type: Date,
   },
+  quizType: { 
+    type: String, 
+    enum: [
+      'Live Quiz', 
+      'Practice Quiz', 
+      'AI Quiz', 
+      'Challenge', 
+      'Daily Quiz', 
+      'Weekly Quiz', 
+      'Monthly Quiz'
+    ], 
+    required: true,
+    default: 'Practice Quiz',
+  },
+  createdByAI: {
+    type: Boolean,
+    default: false
+  },
+  startDate: { // when quiz becomes available
+    type: Date
+  },
+  endDate: { // when quiz expires
+    type: Date
+  },
+
 });
 
 quizQuestionSchema.pre("validate", function (next) {

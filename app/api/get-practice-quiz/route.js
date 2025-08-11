@@ -6,7 +6,7 @@ export async function GET(request) {
     await dbConnect();
 
     try {
-        const quizData = await Quiz.find({ quizMode: 'Practice Quiz' });
+        const quizData = await Quiz.find({ quizType: 'Practice Quiz' }); //
         // console.log(quizData);
         if (!quizData) {
             return NextResponse.json(

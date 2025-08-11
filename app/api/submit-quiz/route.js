@@ -81,7 +81,7 @@ export async function POST(request) {
       rank: null,
       time: totaltime,
       quizCategory: quiz.quizCategory,
-      quizMode: quiz.quizMode,
+      quizType: quiz.quizType,
     });
 
     await quiz.save();

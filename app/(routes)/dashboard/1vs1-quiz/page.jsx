@@ -427,7 +427,7 @@ function ChallengePage() {
                   <TabsContent value="live-quiz" className="">
                     <div className="space-y-3 overflow-y-auto max-h-[45vh] pr-2">
                       {allQuiz
-                        .filter((quiz) => quiz.quizMode === "Live Quiz")
+                        .filter((quiz) => quiz.quizType === "Live Quiz")
                         .map((quiz) => (
                           <div
                             key={quiz._id}
@@ -455,7 +455,7 @@ function ChallengePage() {
                   <TabsContent value="practice-quiz" className="mt-4">
                     <div className="space-y-3 overflow-y-auto max-h-[50vh] pr-2">
                       {allQuiz
-                        .filter((quiz) => quiz.quizMode === "Practice Quiz")
+                        .filter((quiz) => quiz.quizType === "Practice Quiz")
                         .map((quiz) => (
                           <div
                             key={quiz._id}

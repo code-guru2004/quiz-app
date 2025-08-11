@@ -18,7 +18,7 @@ const PracticeProgressChart = () => {
 
   // Filter practice quizzes
   const practiceQuizzes = allQuiz.filter(
-    (quiz) => quiz.quizMode === 'Practice Quiz'
+    (quiz) => quiz.quizType === 'Practice Quiz'
   );
 
   // Count how many are submitted

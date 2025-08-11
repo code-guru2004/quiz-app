@@ -115,9 +115,9 @@ const UserDashboard = () => {
       categoryScores[sub.quizCategory].total += sub.quizScore;
       categoryScores[sub.quizCategory].count++;
 
-      if (!modeScores[sub.quizMode]) modeScores[sub.quizMode] = { total: 0, count: 0 };
-      modeScores[sub.quizMode].total += sub.quizScore;
-      modeScores[sub.quizMode].count++;
+      if (!modeScores[sub.quizType]) modeScores[sub.quizType] = { total: 0, count: 0 };
+      modeScores[sub.quizType].total += sub.quizScore;
+      modeScores[sub.quizType].count++;
 
       timeList.push({ title: sub.quizTitle, time: sub.time });
       rankList.push({ title: sub.quizTitle, rank: sub.rank });
@@ -322,7 +322,7 @@ const UserDashboard = () => {
                 >
                   <div className="font-semibold text-gray-800 dark:text-white">{quiz.quizTitle || 'Untitled'}</div>
                   <div className="text-sm text-gray-600 dark:text-gray-300">
-                    <span className="block">Mode: {quiz.quizMode}</span>
+                    <span className="block">Mode: {quiz.quizType}</span>
                     <span className="block">Category: {quiz.quizCategory}</span>
                     <span className="block font-bold text-gray-900 dark:text-white">Score: {quiz.quizScore}</span>
                     <span className="block text-xs text-gray-500 dark:text-gray-400">
@@ -355,7 +355,7 @@ const UserDashboard = () => {
                       className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700/30"
                     >
                       <td className="py-2 px-4 break-words max-w-[180px]">{quiz.quizTitle || 'Untitled'}</td>
-                      <td className="py-2 px-4">{quiz.quizMode}</td>
+                      <td className="py-2 px-4">{quiz.quizType}</td>
                       <td className="py-2 px-4">{quiz.quizCategory}</td>
                       <td className="py-2 px-4 font-bold text-gray-900 dark:text-white">{quiz.quizScore}</td>
                       <td className="py-2 px-4 text-xs sm:text-sm text-gray-500 dark:text-gray-400">
