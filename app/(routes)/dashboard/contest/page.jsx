@@ -6,7 +6,7 @@ export default function ContestPage() {
     {
       type: "daily",
       title: "Daily Quiz",
-      description: "A fresh challenge every day. 25 questions · 50 minutes",
+      description: "A fresh challenge every day. 15 questions · 30 minutes",
       icon: <Sun className="w-6 h-6" />,
       light: {
         bgGradient: "from-amber-50 to-orange-50",
@@ -26,7 +26,7 @@ export default function ContestPage() {
     {
       type: "weekly",
       title: "Weekly Quiz",
-      description: "Test yourself weekly. 30 questions · 60 minutes",
+      description: "Test yourself weekly. 20 questions · 40 minutes",
       icon: <Calendar className="w-6 h-6" />,
       light: {
         bgGradient: "from-blue-50 to-cyan-50",
@@ -46,7 +46,7 @@ export default function ContestPage() {
     {
       type: "monthly",
       title: "Monthly Quiz",
-      description: "Big challenge of the month. 50 questions · 100 minutes",
+      description: "Big challenge of the month. 25 questions · 50 minutes",
       icon: <Trophy className="w-6 h-6" />,
       light: {
         bgGradient: "from-purple-50 to-violet-50",
