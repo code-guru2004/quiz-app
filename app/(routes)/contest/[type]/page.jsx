@@ -4,6 +4,10 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { FaPlay, FaHistory, FaCalendarDay, FaCalendarWeek, FaCalendarAlt } from "react-icons/fa";
 import useGlobalContextProvider from "@/app/_context/ContextApi";
+import axios from "axios";
+import { BsFillPatchQuestionFill } from "react-icons/bs";
+import { PiSealQuestionBold } from "react-icons/pi";
+import { IoIosTimer } from "react-icons/io";
 
 const typeStyles = {
     daily: {
@@ -56,12 +60,13 @@ export default function ContestTypePage() {
         async function fetchQuizzes() {
             try {
                 setLoading(true);
-                const res = await fetch(`/api/quiz/scheduled-quizzes?type=${type}`);
-                const data = await res.json();
-
-                if (res.ok) {
+                const resp1 = await fetch(`/api/quiz/scheduled-quizzes?type=${type}`);
+                const data = await resp1.json();
+                const resp2 = await axios.get(`/api/quiz/previous-quiz?type=${type}`);
+                
+                if (resp1.ok || resp2.success) {
                     setActiveQuiz(data.quizzes[0] || null);
-                    setPastQuizzes(data.quizzes.slice(1));
+                    setPastQuizzes(resp2.data.quizzes);
                 }
             } catch (err) {
                 console.error("Error fetching quizzes:", err);
@@ -125,8 +130,8 @@ export default function ContestTypePage() {
                                 <h2 className="text-3xl font-bold mb-2">{activeQuiz.quizTitle}</h2>
                                 <p className="text-gray-50  mb-4 max-w-2xl">{activeQuiz.quizDescription}</p>
                                 <div className="flex items-center space-x-6 text-sm">
-                                    <span>{activeQuiz.quizQuestions.length} Questions</span>
-                                    <span>{activeQuiz.quizTime} Minutes</span>
+                                    <span className="flex justify-center items-center gap-1"><PiSealQuestionBold />{activeQuiz.quizQuestions.length} Questions</span>
+                                    <span className="flex justify-center items-center gap-1"><IoIosTimer /> {activeQuiz.quizTime} Minutes</span>
                                 </div>
                             </div>
                             <Link
