@@ -106,11 +106,11 @@ export default function ContestTypePage() {
                 {/* Header */}
                 <div className="flex items-center space-x-4 mb-2">
                     <div className={`text-4xl ${styles.text}`}>{getIcon(type)}</div>
-                    <h1 className="text-4xl md:text-5xl font-extrabold capitalize">
+                    <h1 className="text-3xl md:text-5xl font-extrabold capitalize">
                         {type} <span className={styles.text}>Contest</span>
                     </h1>
                 </div>
-                <p className="text-lg md:text-xl text-gray-600 dark:text-gray-400 mb-12">
+                <p className="text-base md:text-xl text-gray-600 dark:text-gray-400 mb-12">
                     {type === "daily" && "A fresh challenge to start your day!"}
                     {type === "weekly" && "Sharpen your skills with a new challenge every week."}
                     {type === "monthly" && "Take on the ultimate challenge and showcase your expertise!"}
