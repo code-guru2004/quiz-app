@@ -20,6 +20,7 @@ function DashboardLayout({ children }) {
   const { username, email } = useGlobalContextProvider();
   const { isLoading, setIsLoading, userDetails } = useGlobalContextProvider()
   const [menuSelected, setMenuSelected] = useState(0)
+  const [profileImage, setProfileImage] = useState(null)
   // const toggleSidebar = () => {
   //   setSidebarOpen((prev) => !prev);
   //   sidebarDrawerOpen((prev) => !prev)
@@ -27,6 +28,9 @@ function DashboardLayout({ children }) {
   useEffect(() => {
     setIsLoading(false)
   }, [])
+  useEffect(()=>{
+    setProfileImage(userDetails?.profileImg)
+  },[userDetails])
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -97,10 +101,10 @@ function DashboardLayout({ children }) {
                     href={`/profile/${username}`}
                     className="flex items-center gap-3 cursor-pointer bg-gradient-to-r from-slate-700 to-slate-900 dark:to-slate-850 hover:from-slate-700 hover:to-slate-800 transition-all duration-300 p-2 rounded-md"
                   >
-                    {userDetails?.profileImg ? (
+                    {profileImage ? (
                       <div className="w-8 h-8 rounded-full overflow-hidden border border-gray-600 flex-shrink-0">
                         <Image
-                          src={userDetails.profileImg}
+                          src={profileImage}
                           alt="user"
                           width={32}
                           height={32}
@@ -154,10 +158,10 @@ function DashboardLayout({ children }) {
               </nav>
               <div className="p-4 border-t border-gray-800 space-y-2">
                 <Link href={`/profile/${username}`} className="flex items-center gap-3 cursor-pointer bg-gradient-to-r from-slate-700 to-slate-900 dark:to-slate-850 hover:bg-gradient-to-r hover:from-slate-700 hover:to-slate-800 transition-colors duration-500 p-2 rounded-md">
-                  {userDetails?.profileImg ? (
+                  {profileImage ? (
                     <div className="w-8 h-8 rounded-full overflow-hidden border border-gray-600 flex-shrink-0">
                       <Image
-                        src={userDetails.profileImg}
+                        src={profileImage}
                         alt="user"
                         width={32}
                         height={32}
