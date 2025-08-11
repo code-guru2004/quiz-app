@@ -12,9 +12,9 @@ export async function GET(req) {
 
     const contestLevel = ["Easy", "Medium", "Hard"];
     const contestData = {
-      daily: { noOfQuestions: 25, time: 50, perQuestionTime: 2, level: contestLevel[Math.floor(Math.random() * contestLevel.length)] },
-      weekly: { noOfQuestions: 30, time: 60, perQuestionTime: 2, level: contestLevel[Math.floor(Math.random() * contestLevel.length)] },
-      monthly: { noOfQuestions: 50, time: 100, perQuestionTime: 2, level: contestLevel[Math.floor(Math.random() * contestLevel.length)] },
+      daily: { noOfQuestions: 15, time: 30, perQuestionTime: 2, level: contestLevel[Math.floor(Math.random() * contestLevel.length)] },
+      weekly: { noOfQuestions: 20, time: 40, perQuestionTime: 2, level: contestLevel[Math.floor(Math.random() * contestLevel.length)] },
+      monthly: { noOfQuestions: 25, time: 50, perQuestionTime: 2, level: contestLevel[Math.floor(Math.random() * contestLevel.length)] },
     };
 
     if (!["daily", "weekly", "monthly"].includes(type)) {
@@ -54,6 +54,7 @@ export async function GET(req) {
     const quiz = await Quiz.create({
       quizTitle: `${type.charAt(0).toUpperCase() + type.slice(1)} Quiz`,
       quizDescription: `Auto-generated ${type} quiz`,
+      quizIcon:20,
       quizTime: contestData[type].time,
       quizQuestions: quizData.quizQuestions,
       quizCategory: "Aptitude",

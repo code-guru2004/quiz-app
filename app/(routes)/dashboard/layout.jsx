@@ -12,6 +12,7 @@ import clsx from 'clsx';
 import ThemeToggle, { ModeToggle } from '@/components/shared/ModeToggle'
 import NotificationDropdown from '@/components/shared/NotificationDropdown'
 import Image from 'next/image'
+import { GiTrophyCup } from 'react-icons/gi'
 
 function DashboardLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(true)
@@ -39,6 +40,7 @@ function DashboardLayout({ children }) {
     { label: 'AI Quiz', href: '/dashboard/ai-quiz', icon: <Brain className="size-5" /> },
     { label: 'Preparation', href: '/dashboard/preparation', icon: <BookOpenText className="size-5" /> },
     { label: '1vs1 Challange', href: '/dashboard/1vs1-quiz', icon: <Swords className="size-5" /> },
+    { label: 'Contest', href: '/dashboard/contest', icon: <GiTrophyCup  className="size-5" /> },
   ]
 
   return (

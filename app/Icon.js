@@ -5,7 +5,7 @@ import { MdQuiz } from "react-icons/md";
 import { PiBrainDuotone, PiMathOperationsFill } from "react-icons/pi";
 import { SiMongodb, SiMysql, SiTypescript, SiWorldhealthorganization } from "react-icons/si";
 import { TbBrandCpp, TbMathSymbols } from "react-icons/tb";
-import { GiGiftOfKnowledge } from "react-icons/gi";
+import { GiGiftOfKnowledge, GiLaurelsTrophy } from "react-icons/gi";
 import { IoHardwareChipSharp } from "react-icons/io5";
 
 export const ICONS = [
@@ -29,4 +29,5 @@ export const ICONS = [
   { name: 'Knowledge', icon: <GiGiftOfKnowledge className="text-orange-500 text-2xl" /> },
   { name: 'Hardware', icon: <IoHardwareChipSharp className="text-gray-500 text-2xl" /> },
   { name: 'Database', icon: <FaDatabase className="text-blue-500 text-2xl" /> },
+  { name: 'Contest', icon: <GiLaurelsTrophy className="text-orange-500 text-2xl" /> },
 ];
