@@ -88,9 +88,9 @@ export async function POST(request) {
       userQuizSubmission.rank = userRank;
     }
 
+    const today = new Date();
     // ✅ Daily streak tracking
     if (quiz.quizType === "Daily Quiz") {
-      const today = new Date();
       today.setHours(0, 0, 0, 0);
 
       if (typeof user.dailyStreak !== "number") {

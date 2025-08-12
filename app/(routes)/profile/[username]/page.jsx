@@ -4,7 +4,7 @@ import useGlobalContextProvider from '@/app/_context/ContextApi';
 import { ICONS } from '@/app/Icon';
 import QuizStatsHeatmap from '@/components/shared/QuizStatsHeatmap';
 import axios from 'axios';
-import { ArrowLeft, CircleArrowLeft, Crown, Medal, Trophy, UserIcon, Award, Star, Zap, Lightning, CameraIcon, LoaderCircle } from 'lucide-react';
+import { ArrowLeft, CircleArrowLeft, Crown, Medal, Trophy, UserIcon, Award, Star, Zap, Lightning, CameraIcon, LoaderCircle, Flame } from 'lucide-react';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -18,6 +18,9 @@ import {
   Pie,
   Cell
 } from 'recharts';
+import { motion } from "framer-motion";
+
+
 
 const BADGE_DATA = {
   BEGINNER: { icon: <Medal size={16} />, color: 'bg-gray-300', text: '🌱 Newbie' },
@@ -33,7 +36,7 @@ const COLORS = ['#0088FE', '#00C49F'];
 export default function ProfilePage() {
   const params = useParams();
   const user_name = params.username;
-  const {username} = useGlobalContextProvider()
+  const { username } = useGlobalContextProvider()
   const [isLoading, setIsLoading] = useState(false);
   const [submittedQuiz, setSubmittedQuiz] = useState([]);
   const [email, setEmail] = useState(null);
@@ -74,9 +77,10 @@ export default function ProfilePage() {
 
       setEmail(userInfo.email);
       setYourUsername(userInfo.username);
-      setProfileImg(userInfo?.profileImg)
+      setProfileImg(userInfo?.profileImg);
+      setStreakDays(userInfo?.dailyStreak);
       setSubmittedQuiz(userInfo.submitQuiz);
-      setStreakDays(statsData.streakDays || 0);
+
       setCategoryStats(statsData.categoryStats || []);
       setTimeStats({ avgTime: statsData.data?.avgTime, fastestQuiz: statsData.data?.totalTime } || { avgTime: 0, fastestQuiz: 0 });
       setFriends(userInfo.friendList || []);
@@ -221,7 +225,7 @@ export default function ProfilePage() {
     //console.log(data.data.secure_url);
     try {
       const resp = await axios.patch("/api/user/update-profile-img", {
-        username : user_name,
+        username: user_name,
         profileImg: data.data.secure_url
       })
       if (resp) {
@@ -256,7 +260,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-700 to-green-800 text-gray-100 font-sans px-2 md:px-4 py-6 flex items-center justify-center">
+    <div className="min-h-screen bg-gray-50  text-gray-900  font-sans px-2 md:px-4 py-6 flex items-center justify-center">
       <Head>
         <title>{user_name}'s Profile - Quizo</title>
         <meta name="description" content={`View ${user_name}'s quiz performance and statistics.`} />
@@ -271,7 +275,7 @@ export default function ProfilePage() {
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white"></div>
         </div>
       ) : (
-        <div className="w-full max-w-7xl bg-white rounded-2xl shadow-2xl p-4 md:p-6 grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8 text-gray-900">
+        <div className="w-full max-w-7xl bg-gray-50 rounded-2xl  p-4 md:p-6 grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8 text-gray-900">
           {/* LEFT PANEL - Profile & Stats */}
           <div className="bg-gradient-to-br from-emerald-100 to-green-100 rounded-xl p-6 flex flex-col items-center text-center space-y-4 shadow-lg">
             <div className="relative">
@@ -306,7 +310,7 @@ export default function ProfilePage() {
 
                 {/* Hover Overlay with Camera Icon - Enhanced */}
                 {
-                  user_name === username&&(
+                  user_name === username && (
                     <div className="absolute inset-0 bg-gradient-to-br from-black/40 to-emerald-900/40 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center transition-opacity duration-300 z-30 gap-1">
                       <label className="cursor-pointer flex flex-col items-center">
                         <div className="bg-white/80 p-2 rounded-full mb-1">
@@ -331,10 +335,25 @@ export default function ProfilePage() {
                 }
               </div>
               {streakDays > 0 && (
-                <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-6 w-6 flex items-center justify-center shadow-md">
-                  {streakDays}
+                <div className="absolute -top-2 -right-2">
+                  <div className="relative">
+                    {/* Badge container */}
+                    <div className="relative bg-gradient-to-br from-orange-500 to-red-600 text-white rounded-full h-8 w-10 flex  items-center justify-center shadow-lg ring-2 ring-white dark:ring-gray-800">
+
+                      {/* Flame Icon */}
+                      <Flame className="w-4 h-4 text-white drop-shadow" />
+
+                      {/* Streak Number */}
+                      <span className="text-[10px] font-bold leading-none">
+                        {streakDays}
+                      </span>
+                    </div>
+
+                    <div className="absolute inset-0 rounded-full bg-orange-400 blur-lg opacity-30 -z-10" />
+                  </div>
                 </div>
               )}
+
             </div>
 
             <div className="flex flex-col items-center">
