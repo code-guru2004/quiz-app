@@ -51,7 +51,7 @@ const QuizCard = ({ quiz, isPopular }) => {
           </div>
           <span className="text-xs font-bold flex items-center bg-gradient-to-r from-pink-500 to-rose-500 text-white px-3 py-1.5 rounded-full shadow-md">
             <Zap className="w-3 h-3 mr-1 fill-white" />
-            {quiz.quizMode}
+            {quiz.quizType}
           </span>
         </div>
 

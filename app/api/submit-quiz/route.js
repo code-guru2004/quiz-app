@@ -27,7 +27,7 @@ export async function POST(request) {
       return NextResponse.json({ success: false, message: "Quiz not found" }, { status: 404 });
     }
 
-    // ✅ Check if user already submitted
+    // ✅ Check if user already submitted this quiz
     const submittedSubmission = quiz.userSubmissions?.find(
       (submission) => submission.email === email && submission.status === "submitted"
     );
@@ -39,7 +39,7 @@ export async function POST(request) {
       );
     }
 
-    // ✅ Check if user has a "started" submission
+    // ✅ Handle started submission if exists
     const startedSubmission = quiz.userSubmissions?.find(
       (submission) => submission.email === email && submission.status === "started"
     );
@@ -49,14 +49,12 @@ export async function POST(request) {
       : totaltime;
 
     if (startedSubmission) {
-      // ✅ Update the existing started submission
       startedSubmission.status = "submitted";
       startedSubmission.score = score;
       startedSubmission.submittedAt = new Date();
       startedSubmission.perQuestionTimes = perQuestionTimes;
       startedSubmission.selectedAnswers = [...selectedAnswers];
     } else {
-      // ✅ No started submission: push new submitted entry
       quiz.userSubmissions.push({
         email,
         username: user?.username,
@@ -68,46 +66,75 @@ export async function POST(request) {
       });
     }
 
-    // ✅ Update quiz minimum time
     quiz.minimumTime = minimumTime;
-    // 1. Get all submitted user submissions sorted by score descending, then time ascending
+
+    // ✅ Ranking logic
     const submittedUsers = quiz.userSubmissions
       .filter(sub => sub.status === "submitted")
       .sort((a, b) => {
-        // Sort by score descending
         if (b.score !== a.score) return b.score - a.score;
-        // If tie in score, sort by time ascending
-        return new Date(a.submittedAt).getTime() - new Date(b.submittedAt).getTime();
-        ;
+        return new Date(a.submittedAt) - new Date(b.submittedAt);
       });
 
-    // 2. Find the rank of current user
-    const userRank = submittedUsers.findIndex(sub => sub.email === email) + 1; // +1 because index is zero-based
+    const userRank = submittedUsers.findIndex(sub => sub.email === email) + 1;
 
-    // 3. Update the current user's rank in quiz.userSubmissions
     const currentSubmission = quiz.userSubmissions.find(sub => sub.email === email && sub.status === "submitted");
     if (currentSubmission) {
       currentSubmission.rank = userRank;
     }
 
-    // 4. Also update the rank in the user's submitQuiz entry (the last one just pushed)
     const userQuizSubmission = user.submitQuiz.find(sub => sub.quizId.toString() === quiz._id.toString());
     if (userQuizSubmission) {
       userQuizSubmission.rank = userRank;
     }
 
-    // ✅ Add submission to user record
-    user.submitQuiz.push({
-      quizId: quiz._id,
-      quizTitle: quiz.quizTitle,
-      quizIcon: quiz.quizIcon || 0,
-      quizScore: score,
-      quizTotalQuestions: quiz.quizQuestions?.length,
-      rank: userRank,
-      time: totaltime,
-      quizCategory: quiz.quizCategory,
-      quizType: quiz.quizType,
-    });
+    // ✅ Daily streak tracking
+    if (quiz.quizType === "Daily Quiz") {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      if (typeof user.dailyStreak !== "number") {
+        user.dailyStreak = 0; // initialize if missing
+      }
+
+      if (!user.lastDailyQuizDate) {
+        user.dailyStreak = 1;
+      } else {
+        const lastDaily = new Date(user.lastDailyQuizDate);
+        lastDaily.setHours(0, 0, 0, 0);
+
+        const diffDays = Math.floor((today - lastDaily) / (1000 * 60 * 60 * 24));
+
+        if (diffDays === 1) {
+          user.dailyStreak += 1;
+        } else if (diffDays > 1) {
+          user.dailyStreak = 1;
+        }
+        // diffDays === 0 → already done today (prevent duplicate below)
+      }
+
+      user.lastDailyQuizDate = today;
+    }
+
+    // ✅ Prevent pushing duplicate daily quiz submissions for today
+    const alreadySubmittedToday =
+      quiz.quizType === "Daily Quiz" &&
+      user.lastDailyQuizDate &&
+      new Date(user.lastDailyQuizDate).setHours(0, 0, 0, 0) === new Date().setHours(0, 0, 0, 0);
+
+    if (!(quiz.quizType === "Daily Quiz" && alreadySubmittedToday)) {
+      user.submitQuiz.push({
+        quizId: quiz._id,
+        quizTitle: quiz.quizTitle,
+        quizIcon: quiz.quizIcon || 0,
+        quizScore: score,
+        quizTotalQuestions: quiz.quizQuestions?.length,
+        rank: userRank,
+        time: totaltime,
+        quizCategory: quiz.quizCategory,
+        quizType: quiz.quizType,
+      });
+    }
 
     await quiz.save();
     await user.save();

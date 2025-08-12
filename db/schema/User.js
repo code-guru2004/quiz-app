@@ -152,6 +152,8 @@ const UserSchema = new mongoose.Schema({
     type: [FriendSchema],
     default: []
   },
+  dailyStreak: { type: Number, default: 0 },        
+  lastDailyQuizDate: { type: Date, default: null },
   createdAt:{
     type: Date,
     default: Date.now()
