@@ -89,7 +89,7 @@ const Dashboard = () => {
                     id: quiz._id,
                     title: quiz.quizTitle,
                     category: quiz.quizCategory,
-                    mode: quiz.quizMode,
+                    mode: quiz.quizType,
                     submissions: submissionsCount,
                     averageScore: parseFloat(avgScore),
                     averageCompletionTime: parseFloat(avgCompletionTime),
@@ -330,7 +330,7 @@ const Dashboard = () => {
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
                                             <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${quiz.mode === 'Live Quiz' ? 'bg-green-100 text-green-800' : 'bg-purple-100 text-purple-800'}`}>
-                                                {quiz?.quizMode}
+                                                {quiz?.quizType}
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
