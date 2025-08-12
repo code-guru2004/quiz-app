@@ -70,6 +70,31 @@ export async function POST(request) {
 
     // ✅ Update quiz minimum time
     quiz.minimumTime = minimumTime;
+    // 1. Get all submitted user submissions sorted by score descending, then time ascending
+    const submittedUsers = quiz.userSubmissions
+      .filter(sub => sub.status === "submitted")
+      .sort((a, b) => {
+        // Sort by score descending
+        if (b.score !== a.score) return b.score - a.score;
+        // If tie in score, sort by time ascending
+        return new Date(a.submittedAt).getTime() - new Date(b.submittedAt).getTime();
+        ;
+      });
+
+    // 2. Find the rank of current user
+    const userRank = submittedUsers.findIndex(sub => sub.email === email) + 1; // +1 because index is zero-based
+
+    // 3. Update the current user's rank in quiz.userSubmissions
+    const currentSubmission = quiz.userSubmissions.find(sub => sub.email === email && sub.status === "submitted");
+    if (currentSubmission) {
+      currentSubmission.rank = userRank;
+    }
+
+    // 4. Also update the rank in the user's submitQuiz entry (the last one just pushed)
+    const userQuizSubmission = user.submitQuiz.find(sub => sub.quizId.toString() === quiz._id.toString());
+    if (userQuizSubmission) {
+      userQuizSubmission.rank = userRank;
+    }
 
     // ✅ Add submission to user record
     user.submitQuiz.push({
@@ -78,7 +103,7 @@ export async function POST(request) {
       quizIcon: quiz.quizIcon || 0,
       quizScore: score,
       quizTotalQuestions: quiz.quizQuestions?.length,
-      rank: null,
+      rank: userRank,
       time: totaltime,
       quizCategory: quiz.quizCategory,
       quizType: quiz.quizType,
