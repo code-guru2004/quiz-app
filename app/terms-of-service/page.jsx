@@ -326,7 +326,7 @@ const TermsOfService = () => {
                     For questions about these Terms, please contact our support team.
                   </p>
                   <a
-                    href="mailto:quizoedtech@gmail.com"
+                    href="mailto:eduprobe.exam@gmail.com"
                     className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700"
                   >
                     Contact Support
