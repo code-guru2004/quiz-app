@@ -40,7 +40,7 @@ const LeaderboardPage = () => {
         const index = sorted.findIndex((s) => s.email === email);
         if (index !== -1) {
           setYourRankNo(index + 1);
-          await axios.patch("/api/save-rank", { quizId, rank: index + 1, email });
+        //  await axios.patch("/api/save-rank", { quizId, rank: index + 1, email });
         }
 
         setTopTen(sorted.slice(0, 10));
