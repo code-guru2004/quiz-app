@@ -242,7 +242,7 @@ export default function ContestTypePage() {
                                             </div>
                                             <div className="mt-auto pt-4">
                                                 <Link
-                                                    href={`/quiz-start/${quiz._id}/about`}
+                                                    href={`/quiz-start/${quiz._id}/leaderboard`}
                                                     className={`inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-lg border border-transparent ${styles.text} hover:${styles.accent} transition-colors`}
                                                 >
                                                     Attend Now
