@@ -68,7 +68,12 @@ export default function AIAttendPage() {
             correct: questions[currentIndex].correctAnswer
         };
         setUserAnswers(updated);
+        
     };
+    // useEffect(()=>{
+    //     console.log(userAnswers);
+        
+    // },[userAnswers]);
 
     const handleNext = () => {
         setIsAnimating(true);
@@ -81,6 +86,7 @@ export default function AIAttendPage() {
             setIsAnimating(false);
         }, 300);
         window.scrollTo({ top: 0, behavior: 'smooth' });
+        
     };
 
     const handlePrevious = () => {
@@ -303,6 +309,8 @@ export default function AIAttendPage() {
 
                                             {questions.map((q, idx) => {
                                                 const userAnswer = userAnswers[idx];
+                                                const correctOpt = q.correctAnswer;
+                                                
                                                 const isCorrect = userAnswer?.selected === userAnswer?.correct;
 
                                                 return (
@@ -336,7 +344,7 @@ export default function AIAttendPage() {
                                                                 const isUserSelected = userAnswer?.selected === letter;
                                                                 const isCorrectAnswer = userAnswer?.correct === letter;
                                                                 const isIncorrectSelection = isUserSelected && !isCorrectAnswer;
-
+                                                                
                                                                 return (
                                                                     <div
                                                                         key={i}
@@ -380,7 +388,7 @@ export default function AIAttendPage() {
                                                                     </div>
                                                                     <div>
                                                                         <p className="text-xs font-medium text-gray-500 dark:text-gray-400">Correct answer</p>
-                                                                        <p className="font-semibold">{userAnswer?.correct}</p>
+                                                                        <p className="font-semibold">{q.correctAnswer}</p>
                                                                     </div>
                                                                 </div>
 
