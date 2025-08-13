@@ -126,10 +126,17 @@ const QuizHomePage = () => {
             <div className="relative w-[280px] h-[280px] sm:w-[350px] sm:h-[350px] lg:w-[500px] lg:h-[500px]">
               <div className="absolute inset-0 bg-teal-500/10 rounded-full blur-xl animate-pulse"></div>
               <div className="relative z-10 flex flex-col items-center justify-center h-full">
-                <div className="w-full h-full bg-gradient-to-br from-teal-400 to-cyan-400 rounded-full flex items-center justify-center shadow-2xl">
-                  <div className="text-white text-center p-8">
-                    <Trophy className="w-16 h-16 mx-auto mb-4" />
-                    <h3 className="text-2xl font-bold">Become a Quiz Champion</h3>
+                <div className="w-full h-full   flex items-center justify-center ">
+                  <div className="text-center p-8">
+                    <Image
+                      src="/quiz-hero.png"
+                      alt="Eduprobe"
+                      width={250}
+                      height={250}
+                      placeholder="blur"
+                      blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAU..." // tiny base64 blur image
+                    />
+                    
                   </div>
                 </div>
               </div>
@@ -391,15 +398,15 @@ const QuizHomePage = () => {
           <div className="flex flex-col md:flex-row justify-between items-center mb-8">
             <Link href="/" className="block ml-4">
               <div className="flex items-center">
-                
+
                 <Image
-                src="/logo-1.png"
-                alt="Eduprobe"
-                width={180}
-                height={150}
-                placeholder="blur"
-                blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAU..." // tiny base64 blur image
-              />
+                  src="/logo-1.png"
+                  alt="Eduprobe"
+                  width={180}
+                  height={150}
+                  placeholder="blur"
+                  blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAU..." // tiny base64 blur image
+                />
               </div>
             </Link>
             <div className="flex flex-wrap justify-center space-x-3 md:space-x-6 text-sm">
