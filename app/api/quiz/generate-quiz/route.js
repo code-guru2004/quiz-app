@@ -11,6 +11,13 @@ export async function GET(req) {
     const type = searchParams.get("type");
 
     const contestLevel = ["Easy", "Medium", "Hard"];
+    const allDescription = {
+      daily: "Short, fast-paced quizzes refreshed daily to keep you sharp and consistent.",
+      weekly: "Weekly competitive challenges combining skill and strategy for mid-term leaderboard positions.",
+      monthly: "Long-form monthly tournaments featuring diverse topics, rewarding persistence and mastery."
+    }
+    
+    
     const contestData = {
       daily: { noOfQuestions: 15, time: 30, perQuestionTime: 2, level: contestLevel[Math.floor(Math.random() * contestLevel.length)] },
       weekly: { noOfQuestions: 20, time: 40, perQuestionTime: 2, level: contestLevel[Math.floor(Math.random() * contestLevel.length)] },
@@ -52,8 +59,8 @@ export async function GET(req) {
     }
 
     const quiz = await Quiz.create({
-      quizTitle: `${type.charAt(0).toUpperCase() + type.slice(1)} Quiz`,
-      quizDescription: `Auto-generated ${type} quiz`,
+      quizTitle: `${type.charAt(0).toUpperCase() + type.slice(1)} Contest`,
+      quizDescription: allDescription[type],
       quizIcon:20,
       quizTime: contestData[type].time,
       quizQuestions: quizData.quizQuestions,

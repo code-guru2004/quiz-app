@@ -18,6 +18,7 @@ const typeStyles = {
         text: "text-amber-600 dark:text-amber-400",
         accent: "bg-amber-100 dark:bg-amber-900/30",
         icon: <FaCalendarDay className="text-amber-500" />,
+        circle: "bg-orange-500"
     },
     weekly: {
         gradient: "bg-gradient-to-br from-teal-400 to-emerald-500",
@@ -25,6 +26,7 @@ const typeStyles = {
         text: "text-teal-600 dark:text-teal-400",
         accent: "bg-teal-100 dark:bg-teal-900/30",
         icon: <FaCalendarWeek className="text-teal-500" />,
+        circle: "bg-teal-600"
     },
     monthly: {
         gradient: "bg-gradient-to-br from-indigo-400 to-violet-500",
@@ -32,6 +34,7 @@ const typeStyles = {
         text: "text-indigo-600 dark:text-indigo-400",
         accent: "bg-indigo-100 dark:bg-indigo-900/30",
         icon: <FaCalendarAlt className="text-indigo-500" />,
+        circle: "bg-indigo-600"
     },
 };
 
@@ -141,7 +144,7 @@ export default function ContestTypePage() {
                     className="mb-16"
                 >
                     <h2 className="text-xl font-semibold mb-6 text-gray-700 dark:text-gray-300 flex items-center">
-                        <span className={`w-3 h-3 rounded-full mr-2 ${styles.text.replace('text', 'bg')}`}></span>
+                        <span className={`w-3 h-3 rounded-full mr-2 ${styles.circle}`}></span>
                         Current Contest
                     </h2>
                     
@@ -156,7 +159,7 @@ export default function ContestTypePage() {
                             <div className="p-8 md:p-10 text-white">
                                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
                                     <div className="space-y-4 max-w-2xl">
-                                        <h3 className="text-2xl md:text-3xl font-bold">{activeQuiz.quizTitle}</h3>
+                                        <h3 className="text-2xl md:text-3xl font-bold">{activeQuiz.quizTitle} - {pastQuizzes.length+1}</h3>
                                         <p className="text-white/90">{activeQuiz.quizDescription}</p>
                                         <div className="flex flex-wrap gap-4 text-sm">
                                             <div className="flex items-center space-x-2 bg-white/10 px-3 py-1.5 rounded-full">
@@ -230,7 +233,7 @@ export default function ContestTypePage() {
                                         <div className="p-6 flex-1 flex flex-col">
                                             <div className="mb-4">
                                                 <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">
-                                                    {quiz.quizTitle}
+                                                    {quiz.quizTitle}-{pastQuizzes.length - index}
                                                 </h3>
                                                 <p className="text-sm text-gray-500 dark:text-gray-400">
                                                     {new Date(quiz.startDate).toLocaleDateString('en-US', {
@@ -245,7 +248,7 @@ export default function ContestTypePage() {
                                                     href={`/quiz-start/${quiz._id}/leaderboard`}
                                                     className={`inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-lg border border-transparent ${styles.text} hover:${styles.accent} transition-colors`}
                                                 >
-                                                    Attend Now
+                                                    Leaderboard
                                                     <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                                                     </svg>
