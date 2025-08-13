@@ -5,7 +5,7 @@ export default function ContestPage() {
   const contests = [
     {
       type: "daily",
-      title: "Daily Quiz",
+      title: "Daily Contest",
       description: "A fresh challenge every day. 15 questions · 30 minutes",
       icon: <Sun className="w-6 h-6" />,
       light: {
@@ -25,7 +25,7 @@ export default function ContestPage() {
     },
     {
       type: "weekly",
-      title: "Weekly Quiz",
+      title: "Weekly Contest",
       description: "Test yourself weekly. 20 questions · 40 minutes",
       icon: <Calendar className="w-6 h-6" />,
       light: {
@@ -45,7 +45,7 @@ export default function ContestPage() {
     },
     {
       type: "monthly",
-      title: "Monthly Quiz",
+      title: "Monthly Contest",
       description: "Big challenge of the month. 25 questions · 50 minutes",
       icon: <Trophy className="w-6 h-6" />,
       light: {
