@@ -59,7 +59,7 @@ const Footer = () => {
 
         {/* Copyright */}
         <div className="mt-8 text-center text-sm text-gray-600">
-          &copy; {new Date().getFullYear()} Quizo. All rights reserved. v-1.21.0
+          &copy; {new Date().getFullYear()} Eduprobe. All rights reserved. v-1.21.0
         </div>
       </div>
     </footer>

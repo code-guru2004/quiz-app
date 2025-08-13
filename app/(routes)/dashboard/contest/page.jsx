@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, Trophy, Calendar, Sun } from "lucide-react";
+import { GoZap } from "react-icons/go";
 
 export default function ContestPage() {
   const contests = [
@@ -7,7 +8,7 @@ export default function ContestPage() {
       type: "daily",
       title: "Daily Contest",
       description: "A fresh challenge every day. 15 questions · 30 minutes",
-      icon: <Sun className="w-6 h-6" />,
+      icon: <GoZap className="w-6 h-6" />,
       light: {
         bgGradient: "from-amber-50 to-orange-50",
         borderColor: "border-orange-200",

@@ -327,7 +327,7 @@ const QuizHomePage = () => {
               {
                 name: "Alex Chen",
                 role: "University Student",
-                quote: "QuizMaster has truly revolutionized my learning approach. The AI quizzes are incredibly precise in pinpointing areas I need to focus on. Highly intuitive and engaging!",
+                quote: "Eduprobe has truly revolutionized my learning approach. The AI quizzes are incredibly precise in pinpointing areas I need to focus on. Highly intuitive and engaging!",
                 avatar: <div className="w-12 h-12 rounded-full bg-teal-100 flex items-center justify-center text-teal-600 font-bold">AC</div>
               },
               {
@@ -339,7 +339,7 @@ const QuizHomePage = () => {
               {
                 name: "Dr. David Lee",
                 role: "High School Teacher",
-                quote: "As an educator, I constantly seek engaging tools. QuizMaster's rich resource section and varied quiz types make it an invaluable asset for both my students and my own professional development.",
+                quote: "As an educator, I constantly seek engaging tools. Eduprobe's rich resource section and varied quiz types make it an invaluable asset for both my students and my own professional development.",
                 avatar: <div className="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 font-bold">DL</div>
               },
             ].map((testimonial, index) => (
@@ -391,11 +391,15 @@ const QuizHomePage = () => {
           <div className="flex flex-col md:flex-row justify-between items-center mb-8">
             <Link href="/" className="block ml-4">
               <div className="flex items-center">
-                <div className="relative w-8 h-8 mr-2">
-                  <div className="absolute inset-0 bg-cyan-400 rounded-full"></div>
-                  <div className="absolute inset-0 bg-teal-600 rounded-full transform rotate-45"></div>
-                </div>
-                <span className="text-xl font-bold text-white">QuizMaster</span>
+                
+                <Image
+                src="/logo-1.png"
+                alt="Eduprobe"
+                width={180}
+                height={150}
+                placeholder="blur"
+                blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAU..." // tiny base64 blur image
+              />
               </div>
             </Link>
             <div className="flex flex-wrap justify-center space-x-3 md:space-x-6 text-sm">
@@ -418,7 +422,7 @@ const QuizHomePage = () => {
             </div>
           </div>
           <p className="text-gray-400 text-xs mt-6">
-            &copy; {new Date().getFullYear()} QuizMaster. All rights reserved. Crafted with passion for knowledge.
+            &copy; {new Date().getFullYear()} Eduprobe. All rights reserved. Crafted with passion for knowledge.
           </p>
         </div>
       </footer>
