@@ -258,9 +258,30 @@ export default function ProfilePage() {
       setProfileUploadLoading(false)
     }
   }
+  if (isLoading) {
+    return (
+        <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
+            <div className="flex flex-col items-center">
+                <svg
+                    className="animate-spin h-10 w-10 text-blue-500 dark:text-blue-400"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none" viewBox="0 0 24 24"
+                >
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path
+                        className="opacity-75" fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.37 0 0 5.37 0 12h4zm2 5.29A7.96 7.96 0 014 12H0c0 
+          3.04 1.13 5.82 3 7.94l3-2.65z"
+                    />
+                </svg>
+                <p className="mt-4 text-gray-600 dark:text-gray-400">Loading profile...</p>
+            </div>
+        </div>
+    );
+}
 
   return (
-    <div className="min-h-screen bg-gray-50  text-gray-900  font-sans px-2 md:px-4 py-6 flex items-center justify-center">
+    <div className="min-h-screen bg-gray-50 text-gray-900  font-sans px-2 md:px-4 py-6 flex items-center justify-center">
       <Head>
         <title>{user_name}'s Profile - Quizo</title>
         <meta name="description" content={`View ${user_name}'s quiz performance and statistics.`} />
@@ -270,11 +291,7 @@ export default function ProfilePage() {
         <CircleArrowLeft className="text-green-500 w-8 h-8 md:w-10 md:h-10" />
       </Link>
 
-      {isLoading ? (
-        <div className="flex items-center justify-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white"></div>
-        </div>
-      ) : (
+      
         <div className="w-full max-w-7xl bg-gray-50 rounded-2xl  p-4 md:p-6 grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8 text-gray-900">
           {/* LEFT PANEL - Profile & Stats */}
           <div className="bg-gradient-to-br from-emerald-100 to-green-100 rounded-xl p-6 flex flex-col items-center text-center space-y-4 shadow-lg">
@@ -725,7 +742,7 @@ export default function ProfilePage() {
             </div>
           </div>
         </div>
-      )}
+      
     </div>
   );
 }
