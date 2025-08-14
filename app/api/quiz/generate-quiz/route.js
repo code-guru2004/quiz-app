@@ -10,7 +10,7 @@ export async function GET(req) {
     const { searchParams } = new URL(req.url);
     const type = searchParams.get("type");
 
-    const contestLevel = ["Easy", "Medium", "Hard"];
+    const contestLevel = ["Medium", "Hard","Very Hard"];
     const allDescription = {
       daily: "Short, fast-paced quizzes refreshed daily to keep you sharp and consistent.",
       weekly: "Weekly competitive challenges combining skill and strategy for mid-term leaderboard positions.",
