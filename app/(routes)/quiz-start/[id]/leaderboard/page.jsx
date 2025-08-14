@@ -32,6 +32,7 @@ const LeaderboardPage = () => {
   const [userRank, setUserRank] = useState(null);
   const [loading, setLoading] = useState(true);
   const [yourRankNo, setYourRankNo] = useState(null);
+  const [noOfQuestions, setnoOfQuestions] = useState(0);
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
@@ -50,6 +51,7 @@ const LeaderboardPage = () => {
         }
 
         setTopTen(sorted.slice(0, 10));
+        setnoOfQuestions(res.data?.noOfQuestions)
         const yourRank = sorted.find((s) => s.email === email);
         if (yourRank) setUserRank(yourRank);
       } catch (err) {
@@ -151,52 +153,72 @@ const LeaderboardPage = () => {
 
       {/* Leaderboard Table - Mobile responsive */}
       <div className="bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl shadow-md overflow-hidden">
-        <div className="grid grid-cols-12 bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-700 dark:to-purple-700 text-white p-2 sm:p-4 text-xs sm:text-sm font-semibold">
-          <div className="col-span-1 text-center">Rank</div>
-          <div className="col-span-8 md:col-span-9 ml-6">User</div>
-          <div className="col-span-3 md:col-span-2 text-right pr-2 sm:pr-4">Score</div>
+  {/* Header Row */}
+  <div className="grid grid-cols-12 bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-700 dark:to-purple-700 text-white p-3 sm:p-4 text-xs sm:text-sm font-semibold gap-4">
+    <div className="col-span-1 text-center">Rank</div>
+    <div className="col-span-6 md:col-span-7 ml-4 md:ml-8">User</div>
+    <div className="col-span-2 md:col-span-2 text-right">Accuracy</div>
+    <div className="col-span-3 md:col-span-2 text-right pr-4">Score</div>
+  </div>
+
+  {/* Table Rows */}
+  <div className="divide-y divide-gray-200 dark:divide-gray-700">
+    {topTen.length === 0 && (
+      <div className="p-4 text-center text-sm text-gray-500">
+        None attempted this test
+      </div>
+    )}
+    {topTen.map((user) => (
+      <div
+        key={user.email}
+        className={`grid grid-cols-12 items-center p-3 sm:p-4 transition-all gap-4 ${user.email === email ? "bg-blue-50 dark:bg-blue-900/30 border-l-4 border-blue-500" : "hover:bg-gray-50 dark:hover:bg-gray-700/50"}`}
+      >
+        {/* Rank Column */}
+        <div className="col-span-1 flex justify-center text-xs sm:text-sm">
+          {showRank(user.rank)}
         </div>
 
-        <div className="divide-y divide-gray-200 dark:divide-gray-700">
-          {topTen.length === 0 && (
-            <div className="p-4 text-center text-sm text-gray-500">
-              None attempted this test
-            </div>
-          )}
-          {topTen.map((user) => (
-            <div
-              key={user.email}
-              className={`grid grid-cols-12 items-center p-2 sm:p-4 transition-all ${user.email === email ? "bg-blue-50 dark:bg-blue-900/30 border-l-4 border-blue-500" : "hover:bg-gray-50 dark:hover:bg-gray-700/50"}`}
-            >
-              <div className="col-span-1 flex justify-center text-xs sm:text-sm">
-                {showRank(user.rank)}
-              </div>
-              <div className="col-span-8 md:col-span-9 flex items-center">
-                <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center ${user.rank === 1 ? "bg-yellow-100 dark:bg-yellow-900/50" : user.rank === 2 ? "bg-gray-100 dark:bg-gray-700" : user.rank === 3 ? "bg-orange-100 dark:bg-orange-900/50" : "bg-blue-100 dark:bg-blue-900/50"} mr-2 sm:mr-3`}>
-                  <span className={`text-xs sm:text-sm font-medium ${user.rank <= 3 ? "text-gray-900 dark:text-white" : "text-blue-600 dark:text-blue-300"}`}>
-                    {user.rank}
-                  </span>
-                </div>
-                <Link
-                  href={`/profile/${user.username}`}
-                  className="text-xs sm:text-sm font-medium text-gray-800 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 truncate group inline-flex items-center justify-center"
-                >
-                  <span>
-                    {user.username || user.email.split("@")[0]}{user.email === email && " (You)"}
-                  </span>
-                  <TbUserSearch className="size-5 opacity-0 translate-x-[-4px] transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0 text-cyan-400"/>
-                </Link>
-              </div>
-              <div className="col-span-3 md:col-span-2 text-right pr-2 sm:pr-4">
-                <span className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-200">
-                  {user.score}
-                </span>
-                <span className="text-xs text-gray-500 dark:text-gray-400 ml-1">pts</span>
-              </div>
-            </div>
-          ))}
+        {/* User Column */}
+        <div className="col-span-6 md:col-span-7 flex items-center">
+          <div className={`min-w-6 h-6 sm:min-w-8 sm:h-8 rounded-full flex items-center justify-center ${user.rank === 1 ? "bg-yellow-100 dark:bg-yellow-900/50" : user.rank === 2 ? "bg-gray-100 dark:bg-gray-700" : user.rank === 3 ? "bg-orange-100 dark:bg-orange-900/50" : "bg-blue-100 dark:bg-blue-900/50"} mr-3 sm:mr-4`}>
+            <span className={`text-xs sm:text-sm font-medium ${user.rank <= 3 ? "text-gray-900 dark:text-white" : "text-blue-600 dark:text-blue-300"}`}>
+              {user.rank}
+            </span>
+          </div>
+          <Link
+            href={`/profile/${user.username}`}
+            className="text-xs sm:text-sm font-medium text-gray-800 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 truncate group inline-flex items-center gap-1"
+          >
+            <span className="truncate">
+              {user.username || user.email.split("@")[0]}{user.email === email && " (You)"}
+            </span>
+            <TbUserSearch className="size-4 sm:size-5 opacity-0 translate-x-[-4px] transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0 text-cyan-400"/>
+          </Link>
+        </div>
+
+        {/* Accuracy Column */}
+        <div className="col-span-2 md:col-span-2 text-right">
+          <div className="flex items-center justify-end">
+            <span className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-200">
+              {(user.score/noOfQuestions).toFixed(3)}
+            </span>
+            <span className="text-xs text-gray-500 dark:text-gray-400 ml-1">%</span>
+          </div>
+        </div>
+
+        {/* Score Column */}
+        <div className="col-span-3 md:col-span-2 text-right pr-4">
+          <div className="flex items-center justify-end">
+            <span className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-200">
+              {user.score}
+            </span>
+            <span className="text-xs text-gray-500 dark:text-gray-400 ml-1">pts</span>
+          </div>
         </div>
       </div>
+    ))}
+  </div>
+</div>
 
       {/* Current User Rank (if not in top 10) - Mobile responsive */}
       {userRank && userRank.rank > 10 && (

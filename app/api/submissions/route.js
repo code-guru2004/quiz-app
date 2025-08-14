@@ -10,7 +10,7 @@ export async function POST(req) {
   try {
 
     const { quizId } = await req.json();
-    console.log(quizId);
+    // console.log(quizId);
     
     if (!quizId) {
       return NextResponse.json({ error: "Quiz ID is required." }, { status: 400 });
@@ -31,7 +31,7 @@ export async function POST(req) {
         return b.score - a.score;
       });
 
-    return NextResponse.json({ submissions: sortedSubmissions });
+    return NextResponse.json({ submissions: sortedSubmissions, noOfQuestions: quiz?.quizQuestions.length});
   } catch (error) {
     console.error("Error fetching leaderboard:", error);
     return NextResponse.json({ error: "Internal server error." }, { status: 500 });
