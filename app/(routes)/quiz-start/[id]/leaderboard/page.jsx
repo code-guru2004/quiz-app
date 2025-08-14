@@ -153,6 +153,13 @@ const LeaderboardPage = () => {
             </div>
 
             <div className="divide-y divide-gray-200 dark:divide-gray-700">
+              {
+                topTen.length===0&&(
+                  <div>
+                    None attempt this test
+                  </div>
+                )
+              }
               {topTen.map((user) => (
                 <div
                   key={user.email}

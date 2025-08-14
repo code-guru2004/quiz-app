@@ -16,8 +16,8 @@ export async function GET(req) {
       weekly: "Weekly competitive challenges combining skill and strategy for mid-term leaderboard positions.",
       monthly: "Long-form monthly tournaments featuring diverse topics, rewarding persistence and mastery."
     }
-    
-    
+
+
     const contestData = {
       daily: { noOfQuestions: 15, time: 30, perQuestionTime: 2, level: contestLevel[Math.floor(Math.random() * contestLevel.length)] },
       weekly: { noOfQuestions: 20, time: 40, perQuestionTime: 2, level: contestLevel[Math.floor(Math.random() * contestLevel.length)] },
@@ -29,12 +29,23 @@ export async function GET(req) {
     }
 
     // Prevent duplicate quizzes for the same period
+    // Always normalize startDate to the start of the day
     const startDate = new Date();
-    let endDate = new Date(startDate);
-    if (type === "daily") endDate.setDate(endDate.getDate() + 1);
-    if (type === "weekly") endDate.setDate(endDate.getDate() + 7);
-    if (type === "monthly") endDate.setMonth(endDate.getMonth() + 1);
+    startDate.setHours(0, 0, 0, 0); // Today at 00:00:00
 
+    // Clone startDate for endDate
+    let endDate = new Date(startDate);
+
+    if (type === "daily") {
+      endDate.setDate(endDate.getDate() + 1); // Tomorrow 00:00:00
+    }
+    if (type === "weekly") {
+      endDate.setDate(endDate.getDate() + 7); // Next week 00:00:00
+    }
+    if (type === "monthly") {
+      endDate.setMonth(endDate.getMonth() + 1); // Next month 00:00:00
+    }
+    
     const existing = await Quiz.findOne({
       quizType: `${type.charAt(0).toUpperCase() + type.slice(1)} Quiz`,
       startDate: { $lte: startDate },
@@ -61,7 +72,7 @@ export async function GET(req) {
     const quiz = await Quiz.create({
       quizTitle: `${type.charAt(0).toUpperCase() + type.slice(1)} Contest`,
       quizDescription: allDescription[type],
-      quizIcon:20,
+      quizIcon: 20,
       quizTime: contestData[type].time,
       quizQuestions: quizData.quizQuestions,
       quizCategory: "Aptitude",
