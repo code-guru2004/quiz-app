@@ -88,29 +88,36 @@ export async function POST(request) {
       userQuizSubmission.rank = userRank;
     }
 
-    const today = new Date();
     // ✅ Daily streak tracking
-    if (quiz.quizType === "Daily Quiz") {
-      today.setHours(0, 0, 0, 0);
+    const today = new Date();
 
+    // Always normalize to **UTC midnight**
+    today.setUTCHours(0, 0, 0, 0);
+
+    if (quiz.quizType === "Daily Quiz") {
       if (typeof user.dailyStreak !== "number") {
-        user.dailyStreak = 0; // initialize if missing
+        user.dailyStreak = 0;
       }
 
       if (!user.lastDailyQuizDate) {
+        // First time playing daily quiz
         user.dailyStreak = 1;
       } else {
         const lastDaily = new Date(user.lastDailyQuizDate);
-        lastDaily.setHours(0, 0, 0, 0);
+        lastDaily.setUTCHours(0, 0, 0, 0);
 
-        const diffDays = Math.floor((today - lastDaily) / (1000 * 60 * 60 * 24));
+        const diffDays = Math.floor(
+          (today - lastDaily) / (1000 * 60 * 60 * 24)
+        );
 
         if (diffDays === 1) {
+          // Consecutive day
           user.dailyStreak += 1;
         } else if (diffDays > 1) {
+          // Missed at least 1 day
           user.dailyStreak = 1;
         }
-        // diffDays === 0 → already done today (prevent duplicate below)
+        // diffDays === 0 means already attended today → do nothing
       }
 
       user.lastDailyQuizDate = today;
