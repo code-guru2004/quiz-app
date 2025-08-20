@@ -17,7 +17,8 @@ function QuizStart({ params }) {
   const quizId = actualParams.id;
   const { allQuiz, quizToStartObject } = useGlobalContextProvider();
   const { selectQuizToStart, setSelectQuizToStart } = quizToStartObject;
-
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  
   useEffect(()=>{
     async function fetchQuizData() {
       const resp = await axios.get(`/api/get-quiz-id/${quizId}`);

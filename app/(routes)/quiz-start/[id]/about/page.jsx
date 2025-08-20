@@ -90,28 +90,30 @@ const QuizAboutPage = () => {
         return await res.json();
     };
 
-    const startQuiz = async () => {
+    const startQuiz = () => {
         setIsLoading(true);
-        const { success } = await handleStartQuiz();
-
-        if (success && isSubmit) {
+        const resp = handleStartQuiz()
+        
+        if (resp && isSubmit) {
             router.push(`/quiz-start/${_id}/result`);
         } else {
             const quizUrl = `/quiz-start/${selectQuizToStart._id}`;
             const screenWidth = window.screen.width;
             const screenHeight = window.screen.height;
 
+            // Open in a new fullscreen-like window
             const quizWindow = window.open(
                 quizUrl,
                 "_blank",
                 `toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,fullscreen=yes,width=${screenWidth},height=${screenHeight}`
             );
 
+            // Fallback if popup was blocked
             if (!quizWindow) {
                 alert("Popup blocked! Please allow popups for this site.");
                 setIsLoading(false);
             }
-            setIsLoading(false);
+            setIsLoading(false)
         }
     };
 

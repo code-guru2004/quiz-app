@@ -51,7 +51,7 @@ function QuizStart({ params }) {
       const resp = await axios.get(`/api/get-quiz-id/${quizId}`);
       if (resp?.data.success === true) {
         const quizData = resp.data.quizData;
-        setSelectQuizToStart(null);
+        setSelectQuizToStart(quizData);
         setTimeLeft(quizData.quizTime * 60);
         setIsForceSubmit(false)
         //setFocusLossCount(0)
