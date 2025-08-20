@@ -181,11 +181,11 @@ export default function ContestTypePage() {
                                         <p className="text-white/90">{activeQuiz.quizDescription}</p>
                                         <div className="flex flex-wrap gap-4 text-sm">
                                             <div className="flex items-center space-x-2 bg-white/10 px-3 py-1.5 rounded-full">
-                                                <PiSealQuestionBold className="text-white/80" />
+                                                <PiSealQuestionBold className="text-white/80 size-5" />
                                                 <span>{activeQuiz.quizQuestions.length} Questions</span>
                                             </div>
                                             <div className="flex items-center space-x-2 bg-white/10 px-3 py-1.5 rounded-full">
-                                                <IoIosTimer className="text-white/80" />
+                                                <IoIosTimer className="text-white/80 size-5" />
                                                 <span>{activeQuiz.quizTime} Minutes</span>
                                             </div>
                                         </div>
