@@ -192,7 +192,7 @@ export default function ContestTypePage() {
                                     </div>
                                     {
                                         isAttendActiveQuiz ? (
-                                            <div className="flex flex-row lg:flex-row gap-2 items-center justify-center">
+                                            <div className="flex flex-col lg:flex-row gap-2 items-center justify-center">
                                                 <Link
                                                     href={`/quiz-start/${activeQuiz._id}/leaderboard`}
                                                     className="flex items-center space-x-2 px-6 py-3 bg-white font-bold rounded-lg shadow-md hover:bg-gray-100 text-gray-900 transition-all hover:scale-102"

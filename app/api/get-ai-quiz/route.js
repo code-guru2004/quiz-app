@@ -29,6 +29,8 @@ This seed ensures that even repeated requests with the same parameters generate 
 5. You can provide 3 to 5 choices per question.
 6. Randomize the order of options for each question.
 7. Always provide a clear and detailed explanation. If the content contains mathematical terms or equations, break it into multiple steps instead of writing it in a single line.
+8. Ensure that all questions, answers, and explanations are accurate. Do not provide any incorrect information.
+
 Use this format:
 \`\`\`json
 {
