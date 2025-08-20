@@ -10,6 +10,8 @@ import { PiSealQuestionBold } from "react-icons/pi";
 import { IoIosTimer } from "react-icons/io";
 import { motion } from "framer-motion";
 import { FaRankingStar } from "react-icons/fa6";
+import { IoCheckmarkDoneCircle } from "react-icons/io5";
+import DownloadQuizPDF from "@/components/shared/DownloadQuizPDF";
 
 const typeStyles = {
     daily: {
@@ -48,30 +50,30 @@ export default function ContestTypePage() {
     const [activeQuiz, setActiveQuiz] = useState(null);
     const [pastQuizzes, setPastQuizzes] = useState([]);
     const [loading, setLoading] = useState(true);
-    const { quizToStartObject,email } = useGlobalContextProvider();
-    const { setSelectQuizToStart  } = quizToStartObject;
+    const { quizToStartObject, email } = useGlobalContextProvider();
+    const { setSelectQuizToStart } = quizToStartObject;
     const [isAttendActiveQuiz, setIsAttendActiveQuiz] = useState(false)
 
     const styles = typeStyles[type] || typeStyles.daily;
-    
+
     useEffect(() => {
         async function fetchQuizzes() {
             try {
                 setLoading(true);
-                
+
                 // Fetch in parallel
                 const [resp1, resp2] = await Promise.all([
                     fetch(`/api/quiz/scheduled-quizzes?type=${type}`),
                     axios.get(`/api/quiz/previous-quiz?type=${type}`)
                 ]);
-                
+
                 if (!resp1.ok) throw new Error("Failed to fetch scheduled quizzes");
                 if (resp2.status !== 200) throw new Error("Failed to fetch previous quizzes");
-                
+
                 const data1 = await resp1.json();
                 setActiveQuiz(data1.quizzes[0] || null);
                 setPastQuizzes(resp2.data.quizzes || []);
-                
+
             } catch (err) {
                 console.error("Error fetching quizzes:", err);
             } finally {
@@ -80,13 +82,13 @@ export default function ContestTypePage() {
         }
         fetchQuizzes();
     }, [type]);
-    
-    useEffect(()=>{
-        if(!activeQuiz) return;
-    
-        const hasSubmitted  = activeQuiz.userSubmissions.some((submission)=>submission.email===email);
-        setIsAttendActiveQuiz(hasSubmitted )
-    },[activeQuiz,email])
+
+    useEffect(() => {
+        if (!activeQuiz) return;
+
+        const hasSubmitted = activeQuiz.userSubmissions.some((submission) => submission.email === email);
+        setIsAttendActiveQuiz(hasSubmitted)
+    }, [activeQuiz, email])
     if (loading) {
         return (
             <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -113,7 +115,7 @@ export default function ContestTypePage() {
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 {/* Header */}
-                <motion.div 
+                <motion.div
                     initial="hidden"
                     animate="visible"
                     variants={fadeIn}
@@ -147,19 +149,35 @@ export default function ContestTypePage() {
                         <span className={`w-3 h-3 rounded-full mr-2 ${styles.circle}`}></span>
                         Current Contest
                     </h2>
-                    
+
                     {activeQuiz ? (
-                        <div 
+                        <div
                             className={`relative overflow-hidden rounded-2xl shadow-xl ${styles.gradient} dark:${styles.darkGradient}`}
                             onClick={() => setSelectQuizToStart(activeQuiz)}
                         >
-                            <div className="absolute top-4 right-4 bg-white/20 backdrop-blur-sm text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-                                Live Now
+                            <div className="absolute top-1 lg:top-4 right-4 flex items-center gap-2">
+                                {/* PDF Download Icon */}
+                                <div className="lg:block hidden">
+                                    <DownloadQuizPDF quiz={activeQuiz} isAttendActiveQuiz={isAttendActiveQuiz}/>
+                                </div>
+                                
+                                
+
+                                {/* Live Now Badge */}
+                                <div className="bg-white/20 backdrop-blur-sm text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                                    Live Now
+                                </div>
                             </div>
+
                             <div className="p-8 md:p-10 text-white">
                                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
                                     <div className="space-y-4 max-w-2xl">
-                                        <h3 className="text-2xl md:text-3xl font-bold">{activeQuiz.quizTitle} - {pastQuizzes.length+1}</h3>
+                                        <div className="flex items-center justify-between ">
+                                            <h3 className="text-2xl md:text-3xl font-bold">{activeQuiz.quizTitle} - {pastQuizzes.length + 1}</h3>
+                                            <div className="block lg:hidden">
+                                                <DownloadQuizPDF quiz={activeQuiz} isAttendActiveQuiz={isAttendActiveQuiz} />
+                                            </div>
+                                        </div>
                                         <p className="text-white/90">{activeQuiz.quizDescription}</p>
                                         <div className="flex flex-wrap gap-4 text-sm">
                                             <div className="flex items-center space-x-2 bg-white/10 px-3 py-1.5 rounded-full">
@@ -173,25 +191,33 @@ export default function ContestTypePage() {
                                         </div>
                                     </div>
                                     {
-                                        isAttendActiveQuiz?(
+                                        isAttendActiveQuiz ? (
+                                            <div className="flex flex-row lg:flex-row gap-2 items-center justify-center">
+                                                <Link
+                                                    href={`/quiz-start/${activeQuiz._id}/leaderboard`}
+                                                    className="flex items-center space-x-2 px-6 py-3 bg-white font-bold rounded-lg shadow-md hover:bg-gray-100 text-gray-900 transition-all hover:scale-102"
+                                                >
+                                                    <FaRankingStar className="text-current" />
+                                                    <span>Leaderboard</span>
+                                                </Link>
+                                                <Link
+                                                    href={`/quiz-start/${activeQuiz._id}/result`}
+                                                    className="flex items-center space-x-2 px-6 py-3 bg-green-200 font-bold rounded-lg shadow-md hover:bg-green-100 text-gray-900 transition-all hover:scale-102"
+                                                >
+                                                    <IoCheckmarkDoneCircle className="text-green-600 size-6" />
+                                                    <span>Result</span>
+                                                </Link>
+                                            </div>
+                                        ) : (
                                             <Link
-                                            href={`/quiz-start/${activeQuiz._id}/leaderboard`}
-                                            className="flex items-center space-x-2 px-6 py-3 bg-white font-bold rounded-lg shadow-md hover:bg-gray-100 text-gray-900 transition-all hover:scale-105"
-                                        >
-                                            <FaRankingStar className="text-current"/>
-                                            <span>Leaderboard</span>
-                                        </Link>
-                                        ):(
-                                            <Link
-                                            href={`/quiz-start/${activeQuiz._id}/about`}
-                                            className="flex items-center space-x-2 px-6 py-3 bg-white font-bold rounded-lg shadow-md hover:bg-gray-100 text-gray-900 transition-all hover:scale-105"
-                                        >
-                                            <FaPlay className="text-current" />
-                                            <span>Start Contest</span>
-                                        </Link>
+                                                href={`/quiz-start/${activeQuiz._id}/about`}
+                                                className="flex items-center space-x-2 px-6 py-3 bg-white font-bold rounded-lg shadow-md hover:bg-gray-100 text-gray-900 transition-all hover:scale-105"
+                                            >
+                                                <FaPlay className="text-current" />
+                                                <span>Start Contest</span>
+                                            </Link>
                                         )
                                     }
-                                   
                                 </div>
                             </div>
                         </div>
@@ -232,9 +258,12 @@ export default function ContestTypePage() {
                                         <div className={`h-2 ${styles.gradient} dark:${styles.darkGradient}`}></div>
                                         <div className="p-6 flex-1 flex flex-col">
                                             <div className="mb-4">
-                                                <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">
-                                                    {quiz.quizTitle}-{pastQuizzes.length - index}
-                                                </h3>
+                                                <div className="flex items-center justify-between gap-2">
+                                                    <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">
+                                                        {quiz.quizTitle}-{pastQuizzes.length - index}
+                                                    </h3>
+                                                    <DownloadQuizPDF quiz={quiz} isAttendActiveQuiz={true}/>
+                                                </div>
                                                 <p className="text-sm text-gray-500 dark:text-gray-400">
                                                     {new Date(quiz.startDate).toLocaleDateString('en-US', {
                                                         year: 'numeric',
@@ -253,6 +282,7 @@ export default function ContestTypePage() {
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                                                     </svg>
                                                 </Link>
+                                                
                                             </div>
                                         </div>
                                     </div>

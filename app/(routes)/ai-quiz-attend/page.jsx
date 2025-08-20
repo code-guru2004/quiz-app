@@ -7,6 +7,7 @@ import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import toast from 'react-hot-toast';
 import ThemeToggle from '@/components/shared/ModeToggle';
+import DownloadQuizPDF from '@/components/shared/DownloadQuizPDF';
 
 export default function AIAttendPage() {
     const { aiQuiz, email } = useGlobalContextProvider();
@@ -68,11 +69,11 @@ export default function AIAttendPage() {
             correct: questions[currentIndex].correctAnswer
         };
         setUserAnswers(updated);
-        
+
     };
     // useEffect(()=>{
     //     console.log(userAnswers);
-        
+
     // },[userAnswers]);
 
     const handleNext = () => {
@@ -86,7 +87,7 @@ export default function AIAttendPage() {
             setIsAnimating(false);
         }, 300);
         window.scrollTo({ top: 0, behavior: 'smooth' });
-        
+
     };
 
     const handlePrevious = () => {
@@ -190,7 +191,7 @@ export default function AIAttendPage() {
             <div className='fixed top-6 right-6 z-50'>
                 <ThemeToggle />
             </div>
-            
+
             {/* Floating Time Display */}
             {!showScore && (
                 <div className="fixed top-6 left-1/2 transform -translate-x-1/2 bg-white dark:bg-gray-800 shadow-lg rounded-full px-6 py-2 z-50 flex items-center border border-gray-200 dark:border-gray-700 backdrop-blur-sm">
@@ -236,15 +237,14 @@ export default function AIAttendPage() {
                                         <button
                                             key={idx}
                                             onClick={() => jumpTo(idx)}
-                                            className={`relative rounded-lg p-2 font-medium transition-all transform hover:scale-105 ${
-                                                currentIndex === idx
+                                            className={`relative rounded-lg p-2 font-medium transition-all transform hover:scale-105 ${currentIndex === idx
                                                     ? 'bg-gradient-to-br from-blue-500 to-indigo-500 text-white shadow-lg'
                                                     : markForReview.includes(idx)
                                                         ? 'bg-gradient-to-br from-amber-400 to-amber-500 text-white shadow-md'
                                                         : userAnswers[idx]
                                                             ? 'bg-gradient-to-br from-emerald-400 to-emerald-500 text-white shadow'
                                                             : 'bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-500'
-                                            }`}
+                                                }`}
                                         >
                                             Q{idx + 1}
                                             {markForReview.includes(idx) && (
@@ -310,25 +310,23 @@ export default function AIAttendPage() {
                                             {questions.map((q, idx) => {
                                                 const userAnswer = userAnswers[idx];
                                                 const correctOpt = q.correctAnswer;
-                                                
+
                                                 const isCorrect = userAnswer?.selected === userAnswer?.correct;
 
                                                 return (
                                                     <div
                                                         key={idx}
-                                                        className={`relative p-6 rounded-2xl shadow-sm border transition-all duration-300 hover:shadow-md ${
-                                                            isCorrect
+                                                        className={`relative p-6 rounded-2xl shadow-sm border transition-all duration-300 hover:shadow-md ${isCorrect
                                                                 ? 'border-emerald-200/80 bg-gradient-to-br from-emerald-50/50 to-white dark:from-emerald-900/10 dark:to-gray-900 dark:border-emerald-800/50'
                                                                 : 'border-rose-200/80 bg-gradient-to-br from-rose-50/50 to-white dark:from-rose-900/10 dark:to-gray-900 dark:border-rose-800/50'
-                                                        }`}
+                                                            }`}
                                                     >
                                                         {/* Question content */}
                                                         <div className="flex items-start mb-5">
-                                                            <div className={`flex-shrink-0 mr-4 flex items-center justify-center w-10 h-10 rounded-lg ${
-                                                                isCorrect
+                                                            <div className={`flex-shrink-0 mr-4 flex items-center justify-center w-10 h-10 rounded-lg ${isCorrect
                                                                     ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/80 dark:text-emerald-100'
                                                                     : 'bg-rose-100 text-rose-800 dark:bg-rose-900/80 dark:text-rose-100'
-                                                            }`}>
+                                                                }`}>
                                                                 <span className="font-bold text-lg">{idx + 1}</span>
                                                             </div>
                                                             <h3 className="text-lg md:text-xl font-semibold text-gray-800 dark:text-gray-100 pt-1">
@@ -344,26 +342,24 @@ export default function AIAttendPage() {
                                                                 const isUserSelected = userAnswer?.selected === letter;
                                                                 const isCorrectAnswer = userAnswer?.correct === letter;
                                                                 const isIncorrectSelection = isUserSelected && !isCorrectAnswer;
-                                                                
+
                                                                 return (
                                                                     <div
                                                                         key={i}
-                                                                        className={`w-full text-left p-3 rounded-xl border-2 font-medium transition-all duration-200 ${
-                                                                            isCorrectAnswer
+                                                                        className={`w-full text-left p-3 rounded-xl border-2 font-medium transition-all duration-200 ${isCorrectAnswer
                                                                                 ? 'bg-emerald-50 border-emerald-400 text-emerald-900 dark:bg-emerald-900/40 dark:border-emerald-600 dark:text-emerald-100 shadow-emerald-100 dark:shadow-emerald-900/20 shadow-sm'
                                                                                 : isIncorrectSelection
                                                                                     ? 'bg-rose-50 border-rose-400 text-rose-900 dark:bg-rose-900/40 dark:border-rose-600 dark:text-rose-100 shadow-rose-100 dark:shadow-rose-900/20 shadow-sm'
                                                                                     : 'bg-white dark:bg-gray-800/50 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700/30'
-                                                                        }`}
+                                                                            }`}
                                                                     >
                                                                         <div className="flex">
-                                                                            <span className={`flex-shrink-0 inline-flex items-center justify-center w-6 h-6 mr-3 mt-0.5 rounded ${
-                                                                                isCorrectAnswer
+                                                                            <span className={`flex-shrink-0 inline-flex items-center justify-center w-6 h-6 mr-3 mt-0.5 rounded ${isCorrectAnswer
                                                                                     ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-800 dark:text-emerald-100'
                                                                                     : isIncorrectSelection
                                                                                         ? 'bg-rose-100 text-rose-800 dark:bg-rose-800 dark:text-rose-100'
                                                                                         : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300'
-                                                                            }`}>
+                                                                                }`}>
                                                                                 {letter}
                                                                             </span>
                                                                             <span className="break-words">{optionText}</span>
@@ -376,14 +372,12 @@ export default function AIAttendPage() {
                                                         {/* Feedback */}
                                                         <div className="mt-6 ml-14 space-y-3">
                                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                                                <div className={`flex items-center p-3 rounded-lg border ${
-                                                                    isCorrect
+                                                                <div className={`flex items-center p-3 rounded-lg border ${isCorrect
                                                                         ? 'border-emerald-200 bg-emerald-50/50 text-emerald-800 dark:border-emerald-800/50 dark:bg-emerald-900/20 dark:text-emerald-100'
                                                                         : 'border-rose-200 bg-rose-50/50 text-rose-800 dark:border-rose-800/50 dark:bg-rose-900/20 dark:text-rose-100'
-                                                                }`}>
-                                                                    <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mr-3 ${
-                                                                        isCorrect ? 'bg-emerald-100 dark:bg-emerald-800' : 'bg-rose-100 dark:bg-rose-800'
                                                                     }`}>
+                                                                    <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mr-3 ${isCorrect ? 'bg-emerald-100 dark:bg-emerald-800' : 'bg-rose-100 dark:bg-rose-800'
+                                                                        }`}>
                                                                         ✅
                                                                     </div>
                                                                     <div>
@@ -392,14 +386,12 @@ export default function AIAttendPage() {
                                                                     </div>
                                                                 </div>
 
-                                                                <div className={`flex items-center p-3 rounded-lg border ${
-                                                                    isCorrect
+                                                                <div className={`flex items-center p-3 rounded-lg border ${isCorrect
                                                                         ? 'border-emerald-200 bg-emerald-50/50 text-emerald-800 dark:border-emerald-800/50 dark:bg-emerald-900/20 dark:text-emerald-100'
                                                                         : 'border-rose-200 bg-rose-50/50 text-rose-800 dark:border-rose-800/50 dark:bg-rose-900/20 dark:text-rose-100'
-                                                                }`}>
-                                                                    <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mr-3 ${
-                                                                        isCorrect ? 'bg-emerald-100 dark:bg-emerald-800' : 'bg-rose-100 dark:bg-rose-800'
                                                                     }`}>
+                                                                    <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mr-3 ${isCorrect ? 'bg-emerald-100 dark:bg-emerald-800' : 'bg-rose-100 dark:bg-rose-800'
+                                                                        }`}>
                                                                         🧑
                                                                     </div>
                                                                     <div>
@@ -427,6 +419,12 @@ export default function AIAttendPage() {
                                                     </div>
                                                 );
                                             })}
+                                            <div className="flex flex-col items-center justify-center gap-3 p-4 bg-gray-50 rounded-xl shadow-sm">
+                                                <h2 className="text-lg font-semibold text-gray-800">
+                                                    Download PDF of this AI Quiz
+                                                </h2>
+                                                <DownloadQuizPDF quiz={aiQuiz} isAttendActiveQuiz={true} />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -470,18 +468,16 @@ export default function AIAttendPage() {
                                                     <button
                                                         key={idx}
                                                         onClick={() => handleOptionSelect(letter)}
-                                                        className={`w-full text-left px-5 py-4 rounded-xl border-2 font-medium transition-all duration-200 ${
-                                                            isSelected
+                                                        className={`w-full text-left px-5 py-4 rounded-xl border-2 font-medium transition-all duration-200 ${isSelected
                                                                 ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-400 text-blue-800 dark:text-blue-100 shadow-sm'
                                                                 : 'bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:border-blue-300 dark:hover:border-blue-500 hover:bg-blue-50/50 dark:hover:bg-gray-700'
-                                                        }`}
+                                                            }`}
                                                     >
                                                         <div className="flex items-center">
-                                                            <span className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mr-4 transition-all ${
-                                                                isSelected
+                                                            <span className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mr-4 transition-all ${isSelected
                                                                     ? 'bg-blue-500 text-white scale-110'
                                                                     : 'bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300'
-                                                            }`}>
+                                                                }`}>
                                                                 {letter}
                                                             </span>
                                                             <span>{optionText}</span>
@@ -500,11 +496,10 @@ export default function AIAttendPage() {
                                                     ? handleRemoveMarkForReview()
                                                     : handleAddMarkForReview()
                                             }
-                                            className={`px-6 py-3 rounded-xl shadow font-medium transition-all transform hover:scale-105 ${
-                                                markForReview.includes(currentIndex)
+                                            className={`px-6 py-3 rounded-xl shadow font-medium transition-all transform hover:scale-105 ${markForReview.includes(currentIndex)
                                                     ? 'bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white'
                                                     : 'bg-amber-100 hover:bg-amber-200 text-amber-900 dark:bg-amber-700 dark:text-white'
-                                            }`}
+                                                }`}
                                         >
                                             {markForReview.includes(currentIndex) ? (
                                                 <span className="flex items-center">
@@ -537,11 +532,10 @@ export default function AIAttendPage() {
                                             <button
                                                 onClick={handleNext}
                                                 disabled={userAnswers[currentIndex] === undefined}
-                                                className={`flex items-center px-6 py-3 rounded-xl shadow transition-all transform hover:scale-105 disabled:opacity-50 disabled:hover:scale-100 ${
-                                                    currentIndex === total - 1
+                                                className={`flex items-center px-6 py-3 rounded-xl shadow transition-all transform hover:scale-105 disabled:opacity-50 disabled:hover:scale-100 ${currentIndex === total - 1
                                                         ? 'bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white'
                                                         : 'bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white'
-                                                }`}
+                                                    }`}
                                             >
                                                 {currentIndex === total - 1 ? (
                                                     <>

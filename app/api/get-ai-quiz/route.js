@@ -28,7 +28,7 @@ This seed ensures that even repeated requests with the same parameters generate 
 4. Vary difficulty, phrasing, and use-case examples. No repeating previous structure or options.
 5. You can provide 3 to 5 choices per question.
 6. Randomize the order of options for each question.
-7. Also provide a brief explanation
+7. Always provide a clear and detailed explanation. If the content contains mathematical terms or equations, break it into multiple steps instead of writing it in a single line.
 Use this format:
 \`\`\`json
 {

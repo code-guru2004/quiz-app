@@ -26,6 +26,7 @@
     "dotenv": "^17.2.1",
     "framer-motion": "^12.19.2",
     "jsonwebtoken": "^9.0.2",
+    "jspdf": "^3.0.1",
     "jwt-decode": "^4.0.0",
     "lottie-react": "^2.4.1",
     "lucide-react": "^0.487.0",
