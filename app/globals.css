@@ -296,3 +296,26 @@ body {
   @apply bg-white dark:bg-gray-900;
   transition: background-color 0.3s ease;
 }
+
+
+
+
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes gradient-border {
+  to {
+    --angle: 360deg;
+  }
+}
+
+.animate-gradient-border {
+  background: conic-gradient(from var(--angle), #3b82f6, #9333ea, #f59e0b, #3b82f6);
+  animation: gradient-border 4s linear infinite;
+  border-radius: inherit;
+  padding: 2px; /* border thickness */
+}
+

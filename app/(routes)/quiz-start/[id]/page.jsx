@@ -51,7 +51,7 @@ function QuizStart({ params }) {
       const resp = await axios.get(`/api/get-quiz-id/${quizId}`);
       if (resp?.data.success === true) {
         const quizData = resp.data.quizData;
-        setSelectQuizToStart(quizData);
+        setSelectQuizToStart(null);
         setTimeLeft(quizData.quizTime * 60);
         setIsForceSubmit(false)
         //setFocusLossCount(0)
@@ -102,20 +102,33 @@ function QuizStart({ params }) {
         progress: undefined,
         theme: "colored",
         transition: Bounce,
-        });
+      });
     }
     if (focusLossCount === 4) {
       setIsForceSubmit(true)
     }
   }, [focusLossCount])
   return (
-    <div className="flex flex-col px-4 md:px-24 mt-[35px]">
+    <div className="flex flex-col px-1 md:px-24 mt-[35px]">
       {selectQuizToStart === null ? (
-        <div className="h-svh flex flex-col gap-2 items-center justify-center">
-          <div>
-            <LoaderCircle className="size-16 animate-spin" />
+        <div className="h-svh flex flex-col gap-2 items-center justify-center w-full">
+          <div className="flex items-center justify-center min-h-screen  ">
+            <div className="flex flex-col items-center">
+              <svg
+                className="animate-spin h-10 w-10 text-blue-500 dark:text-blue-400"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none" viewBox="0 0 24 24"
+              >
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path
+                  className="opacity-75" fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.37 0 0 5.37 0 12h4zm2 5.29A7.96 7.96 0 014 12H0c0 
+          3.04 1.13 5.82 3 7.94l3-2.65z"
+                />
+              </svg>
+              <p className="mt-4 text-gray-600 dark:text-gray-400">Loading Test...</p>
+            </div>
           </div>
-          <h2 className="text-xl font-bold ">Please wait...</h2>
 
         </div>
       ) : (

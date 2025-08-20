@@ -10,7 +10,7 @@ export async function GET(req) {
     const { searchParams } = new URL(req.url);
     const type = searchParams.get("type");
 
-    const contestLevel = ["Medium", "Hard","Very Hard"];
+    const contestLevel = ["Medium", "Hard", "Very Hard"];
     const allDescription = {
       daily: "Short, fast-paced quizzes refreshed daily to keep you sharp and consistent.",
       weekly: "Weekly competitive challenges combining skill and strategy for mid-term leaderboard positions.",
@@ -31,21 +31,24 @@ export async function GET(req) {
     // Prevent duplicate quizzes for the same period
     // Always normalize startDate to the start of the day
     const startDate = new Date();
-    startDate.setHours(0, 0, 0, 0); // Today at 00:00:00
+    startDate.setUTCHours(0, 0, 0, 0); // Today at 00:00:00 UTC
 
-    // Clone startDate for endDate
     let endDate = new Date(startDate);
 
     if (type === "daily") {
-      endDate.setDate(endDate.getDate() + 1); // Tomorrow 00:00:00
+      endDate.setUTCHours(23, 59, 59, 999); // Today at 23:59:59.999 UTC
     }
     if (type === "weekly") {
-      endDate.setDate(endDate.getDate() + 7); // Next week 00:00:00
+      endDate.setUTCDate(endDate.getUTCDate() + 6); // add 6 days ahead
+      endDate.setUTCHours(23, 59, 59, 999);        // end of that day
     }
     if (type === "monthly") {
-      endDate.setMonth(endDate.getMonth() + 1); // Next month 00:00:00
+      endDate.setUTCMonth(endDate.getUTCMonth() + 1); // first day of next month
+      endDate.setUTCHours(0, 0, 0, 0);
+      endDate.setUTCMilliseconds(endDate.getUTCMilliseconds() - 1); // go back 1 ms
     }
     
+
     const existing = await Quiz.findOne({
       quizType: `${type.charAt(0).toUpperCase() + type.slice(1)} Quiz`,
       startDate: { $lte: startDate },

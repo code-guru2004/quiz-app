@@ -197,7 +197,7 @@ function QuizStartQuestions({ timeLeft, setTimeLeft, isForceSubmit }) {
       <div className=" mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden">
         <div className="flex flex-col-reverse w-full lg:flex-row">
           {/* Main quiz content */}
-          <div className="lg:w-full p-4 sm:p-6 md:p-8">
+          <div className="lg:w-full p-2.5  md:p-8">
             {quizCompleted ? (
               <div className="flex flex-col items-center justify-center gap-8 text-center">
                 <Image

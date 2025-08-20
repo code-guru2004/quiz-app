@@ -19,6 +19,7 @@ import {
   Cell
 } from 'recharts';
 import { motion } from "framer-motion";
+import { GiEmptyWoodBucket } from 'react-icons/gi';
 
 
 
@@ -441,7 +442,7 @@ export default function ProfilePage() {
           </div>
 
           {/* Friends List */}
-          {friends.length > 0 && (
+          {friends.length > 0 && user_name === username && (
             <div className="w-full mt-4">
               <h3 className="text-sm font-semibold text-emerald-800 mb-2">Quiz Friends👪</h3>
               <div className="flex flex-wrap justify-center gap-2">
@@ -466,34 +467,50 @@ export default function ProfilePage() {
           {/* Performance Overview */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Score History Chart */}
+
             <div className="bg-gray-50 p-4 md:p-6 rounded-xl shadow-md">
               <h3 className="text-lg md:text-xl font-semibold text-emerald-800 mb-3">Score History</h3>
-              <div className="h-60">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={scoreHistoryData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                    <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#4a5568' }} />
-                    <YAxis domain={[0, 100]} tick={{ fontSize: 12, fill: '#4a5568' }} />
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: 'white',
-                        borderRadius: '0.5rem',
-                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-                        border: 'none'
-                      }}
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="score"
-                      stroke="#059669"
-                      strokeWidth={3}
-                      dot={{ r: 4 }}
-                      activeDot={{ r: 6, stroke: '#065f46' }}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
+              {
+                scoreHistoryData.length > 0 ? (
+                  <div className="h-60">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart data={scoreHistoryData}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                        <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#4a5568' }} />
+                        <YAxis domain={[0, 100]} tick={{ fontSize: 12, fill: '#4a5568' }} />
+                        <Tooltip
+                          contentStyle={{
+                            backgroundColor: 'white',
+                            borderRadius: '0.5rem',
+                            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                            border: 'none'
+                          }}
+                        />
+                        <Line
+                          type="monotone"
+                          dataKey="score"
+                          stroke="#059669"
+                          strokeWidth={3}
+                          dot={{ r: 4 }}
+                          activeDot={{ r: 6, stroke: '#065f46' }}
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                ) : (
+                  <div className='h-full w-full flex flex-col py-10 items-center text-gray-600'>
+                    <GiEmptyWoodBucket/>
+                    <span>
+                      You still not attend any quiz
+                    </span>
+                  </div>
+                )
+
+
+              }
+
             </div>
+
 
             {/* Category Performance Radar */}
             <div className="bg-gray-50 p-4 md:p-6 rounded-xl shadow-md">
