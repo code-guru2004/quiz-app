@@ -37,7 +37,7 @@ export default function Hero() {
                             className="md:w-1/2 mb-12 md:mb-0 px-5 lg:px-2"
                         >
                             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-6">
-                                Test Your Knowledge with <span className="text-blue-600">QuizMaster Pro</span>
+                                Test Your Knowledge with <span className="text-blue-600">Eduprobe</span>
                             </h1>
                             <p className="text-lg text-gray-600 mb-8 w-full ">
                                 The ultimate platform for live quizzes, practice tests, and competitive challenges.

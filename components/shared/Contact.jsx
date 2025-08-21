@@ -25,7 +25,7 @@ const socialLinks = [
   {
     title: "Linkedin",
     icon: <FaLinkedin className="size-7 text-blue-600" />,
-    link: "https://twitter.com",
+    link: "https://linkedin.com",
   },
 ];
 export default function Contact() {
@@ -170,8 +170,8 @@ export default function Contact() {
                                     </div>
                                     <div>
                                         <h4 className="font-medium text-gray-900 mb-1">Email</h4>
-                                        <p className="text-gray-600">support@quizmasterpro.com</p>
-                                        <p className="text-gray-600">business@quizmasterpro.com</p>
+                                        <p className="text-gray-600">eduprobe.exam@gmail.com</p>
+                                       
                                     </div>
                                 </div>
 
@@ -181,8 +181,8 @@ export default function Contact() {
                                     </div>
                                     <div>
                                         <h4 className="font-medium text-gray-900 mb-1">Phone</h4>
-                                        <p className="text-gray-600">+1 (555) 123-4567</p>
-                                        <p className="text-gray-600">Mon-Fri, 9am-5pm EST</p>
+                                        <p className="text-gray-600">+91 9088813015</p>
+                                        <p className="text-gray-600">Mon-Fri, 9am-5pm IST</p>
                                     </div>
                                 </div>
 
@@ -192,8 +192,8 @@ export default function Contact() {
                                     </div>
                                     <div>
                                         <h4 className="font-medium text-gray-900 mb-1">Address</h4>
-                                        <p className="text-gray-600">123 Knowledge Street</p>
-                                        <p className="text-gray-600">Boston, MA 02108, USA</p>
+                                        <p className="text-gray-600">244, AJC Bose Road, Kolkata</p>
+                                        <p className="text-gray-600">West Bengal, India</p>
                                     </div>
                                 </div>
                             </div>
