@@ -80,7 +80,7 @@ export default function QuizInputPage() {
     ];
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-white dark:bg-slate-900 px-4 py-8 w-full" >
+        <div className="min-h-screen flex items-center justify-center bg-white dark:bg-slate-900 lg:px-4 py-8 w-full" >
             <div className="w-full max-w-md">
                 <div className="text-center mb-8">
                     <h1 className="text-2xl lg:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400  flex items-center justify-center gap-2">

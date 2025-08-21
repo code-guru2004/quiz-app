@@ -29,7 +29,7 @@ export default function Hero() {
         <section className="relative py-16 md:py-24 bg-gradient-to-br from-blue-50 to-purple-50">
             <div className="container mx-auto px-4">
                 <div className="flex flex-col  items-center">
-                    <div className='flex flex-col md:flex-row items-center justify-between'>
+                    <div className='flex flex-col md:flex-row items-center justify-between lg:px-32'>
                         <motion.div
                             initial={{ opacity: 0, x: -50 }}
                             animate={{ opacity: 1, x: 0 }}
