@@ -319,3 +319,35 @@ body {
   padding: 2px; /* border thickness */
 }
 
+
+/* Code snippets highlight */
+.question {
+  font-size: 16px;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+.question pre {
+  background-color: #1e1e1e; /* Dark background */
+  color: #f8f8f2;            /* Light text */
+  padding: 12px;
+  border-radius: 4px;
+  overflow-x: auto;          /* Horizontal scroll if needed */
+  font-size: 14px;
+  white-space: pre-wrap;     /* Wrap text for smaller screens */
+  word-wrap: break-word;
+  width: 100%;
+  margin-top: 5px;
+}
+
+/* Make it more compact on mobile */
+@media (max-width: 600px) {
+  .question {
+    font-size: 14px;
+  }
+  .question pre {
+    font-size: 13px;
+    padding: 10px;
+  }
+}
+
