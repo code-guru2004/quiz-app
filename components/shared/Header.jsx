@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { useState } from 'react'
 import { FaBars, FaTimes, FaUser } from 'react-icons/fa'
-
+import { VscLightbulbSparkle } from "react-icons/vsc";
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
@@ -26,9 +26,9 @@ export default function Header() {
               transition={{ duration: 0.5 }}
               className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg p-2"
             >
-              <span className="text-white font-bold text-xl">QM</span>
+              <span className="text-white font-bold text-xl"><VscLightbulbSparkle /></span>
             </motion.div>
-            <span className="text-xl font-bold text-gray-800">QuizMaster Pro</span>
+            <span className="text-xl font-bold text-gray-800">Eduprobe</span>
           </Link>
 
           <div className="hidden md:flex items-center space-x-8">
@@ -49,13 +49,13 @@ export default function Header() {
 
             <div className="flex items-center space-x-4">
               <Link
-                href="/login"
+                href="/sign-in"
                 className="px-4 py-2 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors font-medium"
               >
                 Log in
               </Link>
               <Link
-                href="/signup"
+                href="/sign-up"
                 className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors font-medium"
               >
                 Sign up
@@ -95,14 +95,14 @@ export default function Header() {
                 <li className="pt-4 border-t border-gray-200">
                   <div className="flex flex-col space-y-4">
                     <Link
-                      href="/login"
+                      href="/sign-in"
                       className="px-4 py-2 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors font-medium text-center"
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       Log in
                     </Link>
                     <Link
-                      href="/signup"
+                      href="/sign-up"
                       className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors font-medium text-center"
                       onClick={() => setMobileMenuOpen(false)}
                     >

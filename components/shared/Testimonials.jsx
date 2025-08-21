@@ -1,6 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import Link from 'next/link'
 import { FaQuoteLeft } from 'react-icons/fa'
 
 export default function Testimonials() {
@@ -90,9 +91,9 @@ export default function Testimonials() {
             Thousands of users from students to professionals are using QuizMaster Pro to test their
             knowledge and learn something new every day.
           </p>
-          <button className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors">
+          <Link href={'sign-up'} className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors">
             Join Now - It's Free
-          </button>
+          </Link>
         </motion.div>
       </div>
     </section>

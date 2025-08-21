@@ -1,6 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import Link from 'next/link'
 import {
     FaLightbulb,
     FaUserFriends,
@@ -118,9 +119,9 @@ export default function Features() {
                                 Join thousands of users who are improving their knowledge daily with QuizMaster Pro.
                             </p>
                             <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-                                <button className="px-6 py-3 bg-white text-blue-600 rounded-lg font-medium hover:bg-gray-100 transition-colors flex items-center justify-center">
-                                    Start Free Trial
-                                </button>
+                                <Link href={'/dashboard/1vs1-quiz'} className="px-6 py-3 bg-white text-blue-600 rounded-lg font-medium hover:bg-gray-100 transition-colors flex items-center justify-center">
+                                    Challenge Now
+                                </Link>
                                 <button className="px-6 py-3 bg-transparent border border-white text-white rounded-lg font-medium hover:bg-white hover:text-blue-600 transition-colors flex items-center justify-center">
                                     Learn More
                                 </button>
@@ -178,7 +179,7 @@ export default function Features() {
                                             className="mt-6"
                                         >
                                             <button className="w-full py-2.5 rounded-lg font-medium bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:from-blue-600 hover:to-purple-600 transition-all shadow-md">
-                                                View Full Leaderboard
+                                                Complete with others
                                             </button>
                                         </motion.div>
                                     </div>

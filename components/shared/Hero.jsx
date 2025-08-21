@@ -62,7 +62,7 @@ export default function Hero() {
                     </div>
                     <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
                             <Link
-                                href="/signup"
+                                href="/dashboard"
                                 className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center justify-center"
                             >
                                 Get Started <FaArrowRight className="ml-2" />

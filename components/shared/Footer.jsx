@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import Link from 'next/link'
 import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaYoutube } from 'react-icons/fa'
 
@@ -16,17 +17,15 @@ export default function Footer() {
       title: 'Company',
       items: [
         { name: 'About Us', href: '#' },
-        { name: 'Careers', href: '#' },
-        { name: 'Blog', href: '#' },
-        { name: 'Press', href: '#' },
+        { name: 'Careers', href: '/contact' },
       ],
     },
     {
       title: 'Legal',
       items: [
-        { name: 'Privacy Policy', href: '#' },
-        { name: 'Terms of Service', href: '#' },
-        { name: 'Cookie Policy', href: '#' },
+        { name: 'Privacy Policy', href: '/privacy-policy' },
+        { name: 'Terms of Service', href: '/terms-of-service' },
+        { name: 'Cookie Policy', href: '/terms-of-service' },
       ],
     },
     {
@@ -53,10 +52,14 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row justify-between mb-12">
           <div className="mb-8 md:mb-0 md:w-1/3">
             <Link href="/" className="flex items-center space-x-2 mb-4">
-              <span className="bg-gradient-to-r from-blue-400 to-purple-600 rounded-lg p-2">
-                <span className="text-white font-bold text-xl">QM</span>
-              </span>
-              <span className="text-xl font-bold">QuizMaster Pro</span>
+              <Image
+                src="/logo-1.png"
+                alt="Eduprobe"
+                width={180}
+                height={150}
+                placeholder="blur"
+                blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAU..." // tiny base64 blur image
+              />
             </Link>
             <p className="text-gray-400 mb-6">
               The ultimate platform for testing your knowledge and competing with others.
@@ -74,7 +77,7 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:w-2/3">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:w-2/3 lg:px-6">
             {links.map((section, index) => (
               <div key={index}>
                 <h3 className="text-lg font-semibold mb-4">{section.title}</h3>
