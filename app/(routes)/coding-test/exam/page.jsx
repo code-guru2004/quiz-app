@@ -8,6 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 import toast from 'react-hot-toast';
 import ThemeToggle from '@/components/shared/ModeToggle';
 import DownloadQuizPDF from '@/components/shared/DownloadQuizPDF';
+import CodePDF from '@/components/shared/CodePDF';
 
 export default function AIAttendPage() {
     const { aiQuiz, email } = useGlobalContextProvider();
@@ -131,7 +132,7 @@ export default function AIAttendPage() {
                 progress: undefined,
                 theme: "colored",
                 transition: Bounce,
-                });
+            });
         } catch (error) {
             toast.error("Failed to submit quiz", {
                 position: 'top-center',
@@ -248,6 +249,7 @@ export default function AIAttendPage() {
 
                         {/* Main Content */}
                         <div className={`flex-1 p-1 lg:p-6 transition-opacity duration-300 ${isAnimating ? 'opacity-50' : 'opacity-100'}`}>
+                            {/* Time alert */}
                             {showTimeAlert && (
                                 <div className="mb-6 p-4 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-white font-bold shadow-lg animate-pulse">
                                     <div className="flex items-center justify-center">
@@ -260,6 +262,7 @@ export default function AIAttendPage() {
                             )}
 
                             {showScore ? (
+                                // Show the score and Questiona nd answer
                                 <div className="text-center py-10">
                                     <div className="max-w-2xl mx-auto">
                                         <div className="relative mb-10">
@@ -312,7 +315,8 @@ export default function AIAttendPage() {
                                                             }`}
                                                     >
                                                         {/* Question content */}
-                                                        <div className="flex items-start mb-5">
+                                                        {/* Like Question Number and Question */}
+                                                        <div className="flex flex-col lg:flex-row items-start  mb-5">
                                                             <div className={`flex-shrink-0 mr-4 flex items-center justify-center w-10 h-10 rounded-lg ${isCorrect
                                                                 ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/80 dark:text-emerald-100'
                                                                 : 'bg-rose-100 text-rose-800 dark:bg-rose-900/80 dark:text-rose-100'
@@ -320,7 +324,7 @@ export default function AIAttendPage() {
                                                                 <span className="font-bold text-lg">{idx + 1}</span>
                                                             </div>
                                                             <div
-                                                                className="mb-3 text-gray-800 dark:text-gray-100"
+                                                                className="mb-3 w-full text-left"
                                                                 dangerouslySetInnerHTML={{ __html: q.mainQuestion }}
                                                             />
                                                         </div>
@@ -353,7 +357,11 @@ export default function AIAttendPage() {
                                                                                 }`}>
                                                                                 {letter}
                                                                             </span>
-                                                                            <span className="break-words">{optionText}</span>
+                                                                            
+                                                                            <div
+                                                                                className="mb-3 w-full flex flex-col"
+                                                                                dangerouslySetInnerHTML={{ __html: optionText }}
+                                                                            />
                                                                         </div>
                                                                     </div>
                                                                 );
@@ -361,7 +369,7 @@ export default function AIAttendPage() {
                                                         </div>
 
                                                         {/* Feedback */}
-                                                        <div className="mt-6 ml-14 space-y-3">
+                                                        <div className="mt-6 lg:ml-14 space-y-3">
                                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                                                 <div className={`flex items-center p-3 rounded-lg border ${isCorrect
                                                                     ? 'border-emerald-200 bg-emerald-50/50 text-emerald-800 dark:border-emerald-800/50 dark:bg-emerald-900/20 dark:text-emerald-100'
@@ -403,7 +411,11 @@ export default function AIAttendPage() {
                                                                         </svg>
                                                                         <h4 className="font-medium text-blue-800 dark:text-blue-200">Explanation</h4>
                                                                     </div>
-                                                                    <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">{q.explanation}</p>
+
+                                                                    <div
+                                                                        className="mb-3 w-full text-left"
+                                                                        dangerouslySetInnerHTML={{ __html: q.explanation }}
+                                                                    />
                                                                 </div>
                                                             )}
                                                         </div>
@@ -414,7 +426,8 @@ export default function AIAttendPage() {
                                                 <h2 className="text-lg font-semibold text-gray-800">
                                                     Download PDF of this AI Quiz
                                                 </h2>
-                                                <DownloadQuizPDF quiz={aiQuiz} isAttendActiveQuiz={true} />
+                                                {/* <DownloadQuizPDF quiz={aiQuiz} isAttendActiveQuiz={true} /> */}
+                                                {/* <CodePDF quiz={aiQuiz}/> */}
                                             </div>
                                         </div>
                                     </div>
