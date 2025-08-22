@@ -227,8 +227,8 @@ function DashboardLayout({ children }) {
                 <div className="ml-1 flex relative items-center gap-3">
                   <div className="flex items-center gap-2 lg:hidden px-3 py-1.5 rounded-full 
                 bg-white/20 backdrop-blur-md shadow-md border border-white/30">
-                    <GiTwoCoins className="text-yellow-400 w-5 h-5 drop-shadow-sm" />
-                    <span className="font-bold text-yellow-200 drop-shadow">{credits}</span>
+                    <GiTwoCoins className="text-yellow-600 dark:text-yellow-400 w-5 h-5 drop-shadow-sm" />
+                    <span className="font-bold text-amber-900 dark:text-yellow-200 drop-shadow">{credits}</span>
                   </div>
 
                   <ThemeToggle />
