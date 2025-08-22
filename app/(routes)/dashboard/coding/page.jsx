@@ -288,7 +288,7 @@ export default function QuizInputPage() {
                             <div className="flex flex-col items-center ">
                                 <span>Generate Quiz</span> 
                                 <p className="flex items-center gap-1 text-yellow-500 text-xs">
-                                    Cedits: <GiTwoCoins  className="text-yellow-500 size-4"/> 1
+                                    Credit: <GiTwoCoins  className="text-yellow-500 size-4"/> 1
                                 </p>
 
                             </div>
