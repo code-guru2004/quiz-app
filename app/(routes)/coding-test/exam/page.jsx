@@ -26,7 +26,7 @@ export default function AIAttendPage() {
 
     useEffect(() => {
         if (!aiQuiz) {
-            router.replace('/coding-test/request');
+            router.replace('/dashboard/coding');
         } else {
             setTimeLeft(aiQuiz.totalTime * 60);
         }
@@ -427,7 +427,7 @@ export default function AIAttendPage() {
                                                     Download PDF of this AI Quiz
                                                 </h2> */}
                                                 {/* <DownloadQuizPDF quiz={aiQuiz} isAttendActiveQuiz={true} /> */}
-                                                {/* <CodePDF quiz={aiQuiz}/> */}
+                                                <CodePDF quiz={aiQuiz}/>
                                             </div>
                                         </div>
                                     </div>

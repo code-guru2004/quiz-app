@@ -152,12 +152,23 @@ const UserSchema = new mongoose.Schema({
     type: [FriendSchema],
     default: []
   },
-  dailyStreak: { type: Number, default: 0 },        
-  lastDailyQuizDate: { type: Date, default: null },
+  dailyStreak: { 
+    type: Number, 
+    default: 0 
+  },        
+  lastDailyQuizDate: { 
+    type: Date, 
+    default: null 
+  },
   createdAt:{
     type: Date,
     default: Date.now()
+  },
+  aiRemainingUses: {
+    type: Number,
+    default: 5, // user can use AI 5 times initially
   }
+  
 });
 
 export default mongoose.models.User || mongoose.model('User', UserSchema);

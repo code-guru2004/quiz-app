@@ -38,10 +38,10 @@ export default function QuizInputPage() {
         }
         
         setLoading(true);
-        console.log(formData);
+        //console.log(formData);
         
         try {
-            const res = await fetch("/api/ai-quiz/test", { // It is the upgraded version of gemini --- Still is development
+            const res = await fetch("/api/ai-quiz/get-ai-code", { // It is the upgraded version of gemini --- Still is development
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData),
