@@ -73,6 +73,7 @@ function ChallengePage() {
       toast.error("Please select a friend and a quiz");
       return;
     }
+  
     try {
       // Step 1: Create the challenge
       const challengeRes = await axios.post('/api/create-challenge', {
@@ -81,36 +82,49 @@ function ChallengePage() {
         testTopic: selectedQuiz.quizTitle || selectedQuiz.category,
         questions: selectedQuiz.quizQuestions, // must match your schema
       });
+  
       if (challengeRes.data.success && challengeRes.data.challengeId) {
         setAttendedChallenges(prev => [
           challengeRes.data.newChallenge,
           ...prev
-        ])
-        // Step 2: Notify the opponent (optional, based on your app logic)
-        const notifyRes = await handleNotify(
-          selectedFriend.username,
-          challengeRes.data.challengeId
-        );
-        if (notifyRes?.data?.success && notifyRes?.data?.newChallenge) {
-          toast.success(`Challenge sent to ${selectedFriend.username} for ${selectedQuiz.quizTitle}`);
-
-          setSelectedFriend(null);
-          setSelectedQuiz(null);
-        } else {
-          // Fallback: Challenge created, but notify failed
-          toast.success(`Challenge created for ${selectedFriend.username}, but notification failed.`);
+        ]);
+  
+        // Step 2: Send email notification to opponent
+        try {
+          const emailRes = await axios.post('/api/email/send-challenge-mail', {
+            challengerEmail: email, // your email
+            opponentEmail: selectedFriend.email, // opponent email
+            topic: selectedQuiz.quizTitle || selectedQuiz.quizCategory,
+            joinLink: `https://eduprobe-exam.vercel.app/dashboard/1vs1-quiz` // link to join
+          });
+  
+          if (emailRes.data.success) {
+            toast.success(`Challenge sent to ${selectedFriend.username} for ${selectedQuiz.quizTitle}`);
+          } else {
+            toast.warn(`Challenge created, but email failed: ${emailRes.data.error}`);
+          }
+        } catch (emailErr) {
+          console.error("Email Error:", emailErr);
+          toast.warn("Challenge created, but failed to send email notification.");
         }
+  
+        // Reset selections
+        setSelectedFriend(null);
+        setSelectedQuiz(null);
+  
       } else {
         toast.error("Challenge creation failed.");
       }
+  
     } catch (err) {
       console.error("Challenge Error:", err);
       toast.error("Failed to create challenge.");
     } finally {
-      setQuizDrawerOpen(false)
+      setQuizDrawerOpen(false);
       setIsDrawerOpen(false); // close outer drawer
     }
   };
+  
 
   useEffect(() => {
     const submittedIds = attendedChallenges

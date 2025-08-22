@@ -1,7 +1,38 @@
 import { dbConnect } from "@/db/dbConnect";
 import Quiz from "@/db/schema/quizSchema";
+import User from "@/db/schema/User";
+import { transporter } from "@/lib/nodemailer";
 import axios from "axios";
 import { NextResponse } from "next/server";
+
+const sendContestNotification = async (type,totalQuestions,totalTime,level) => {
+  try {
+    const users = await User.find({}, "email");
+    const emails = users.map(u => u.email);
+
+    const joinLink = `https://eduprobe-exam.vercel.app/contest/${type}`;
+    const html = `
+      <h2>New ${type} Contest!</h2>
+      <ul>
+        <li>Questions: ${totalQuestions}</li>
+        <li>Time: ${totalTime} min</li>
+        <li>Difficulty: ${level}</li>
+      </ul>
+      <a href="${joinLink}" style="padding: 10px 15px; background: #1d4ed8; color: #fff; text-decoration: none; border-radius: 5px;">Join Contest</a>
+    `;
+
+    await transporter.sendMail({
+      from: `"EduProbe" <${process.env.SMTP_USER}>`,
+      bcc: emails.join(","),
+      subject: `New ${type} Contest Available!`,
+      html,
+    });
+
+    console.log(`✅ Sent contest notification to ${emails.length} users`);
+  } catch (err) {
+    console.error("❌ Failed to send contest notification:", err);
+  }
+};
 
 export async function GET(req) {
   try {
@@ -43,9 +74,7 @@ export async function GET(req) {
       endDate.setUTCHours(23, 59, 59, 999);        // end of that day
     }
     if (type === "monthly") {
-      endDate.setUTCMonth(endDate.getUTCMonth() + 1); // first day of next month
-      endDate.setUTCHours(0, 0, 0, 0);
-      endDate.setUTCMilliseconds(endDate.getUTCMilliseconds() - 1); // go back 1 ms
+      endDate = new Date(Date.UTC(startDate.getUTCFullYear(), startDate.getUTCMonth() + 1, 0, 23, 59, 59, 999));
     }
     
 
@@ -85,6 +114,14 @@ export async function GET(req) {
       endDate,
       isPublish: true,
     });
+
+    // send mail to all users
+    await sendContestNotification(
+      type, 
+      contestData[type].noOfQuestions, 
+      contestData[type].time, 
+      contestData[type].level
+    );
 
     console.log(`✅ Generated ${type} quiz (${contestData[type].level}, ${contestData[type].noOfQuestions} Qs) at ${new Date().toISOString()}`);
     return NextResponse.json({ success: true, quiz }, { status: 201 });
