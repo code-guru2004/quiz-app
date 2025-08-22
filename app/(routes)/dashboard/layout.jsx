@@ -173,8 +173,8 @@ function DashboardLayout({ children }) {
                 <XIcon className="text-gray-300 size-5" />
               </Button>
             </div>
-            <div className='flex flex-col justify-between h-[90%]'>
-              <nav className="p-4 space-y-4">
+            <div className='flex flex-col justify-between h-[80%]'>
+              <nav className="p-4 space-y-3">
                 {navLinks.map(({ label, href, icon }) => (
                   <Link key={label} href={href} className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-800 text-white transition" onClick={() => setSidebarDrawerOpen(false)}>
                     {icon}
