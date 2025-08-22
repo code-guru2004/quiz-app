@@ -10,6 +10,7 @@ import { jwtDecode } from 'jwt-decode';
 import { LuCircleFadingPlus, LuClock, LuBookOpen, LuZap, LuChevronLeft, LuChevronRight } from "react-icons/lu";
 import { FiAward, FiBarChart2, FiHardDrive, FiCpu } from "react-icons/fi";
 import { GiTwoCoins } from 'react-icons/gi';
+import { AiOutlineFieldNumber } from 'react-icons/ai';
 
 export default function AIQuizDashboard() {
   const router = useRouter();
@@ -167,6 +168,7 @@ export default function AIQuizDashboard() {
                 {/* Total Questions */}
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <AiOutlineFieldNumber className="inline mr-2 w-4 h-4" />
                     Number of Questions
                   </label>
                   <div className="flex items-center gap-4">

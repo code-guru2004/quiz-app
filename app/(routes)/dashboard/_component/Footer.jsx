@@ -49,7 +49,7 @@ const Footer = () => {
               <a href="https://www.linkedin.com/in/nayan-das2004/" target="_blank" rel="noopener noreferrer">
                 <FaLinkedin className="text-xl hover:text-green-600" />
               </a>
-              <a href="nayanhetc61@gmail.com">
+              <a href="/contact">
                 <FaEnvelope className="text-xl hover:text-green-600" />
               </a>
             </div>
