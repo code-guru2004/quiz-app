@@ -219,7 +219,7 @@ export default function QuizInputPage() {
                                 name="totalQuestions"
                                 value={formData.totalQuestions}
                                 onChange={handleChange}
-                                min="1"
+                                min="3"
                                 max="20"
                                 className="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                             />
