@@ -1,5 +1,6 @@
-import dbConnect from "@/lib/dbConnect";
-import User from "@/models/User";
+import { dbConnect } from "@/db/dbConnect";
+import User from "@/db/schema/User";
+
 
 // ✅ Reset function
 async function resetCredits() {
