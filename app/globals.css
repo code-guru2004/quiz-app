@@ -322,7 +322,7 @@ body {
 
 /* Code snippets highlight */
 .question {
-  font-size: 16px;
+  font-size: 120px;
   line-height: 1.5;
   margin-bottom: 1rem;
   /* display: flex;
@@ -345,7 +345,7 @@ body {
 /* Make it more compact on mobile */
 @media (max-width: 600px) {
   .question {
-    font-size: 14px;
+    font-size: 16px;
   }
   .question pre {
     font-size: 13px;

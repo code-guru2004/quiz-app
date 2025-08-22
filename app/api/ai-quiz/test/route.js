@@ -40,6 +40,7 @@ ${topicLine}- Programming Language: ${languageGuess}
 - 🚫 Absolutely **no comments** in the code (no //, /* */, #, or <!-- -->). The code must only contain pure logic or expressions.
 - Avoid generic concept questions (like "Which DS is LIFO?").
 - Avoid giving code in options of question.
+- Do not use generaic questiones.
 
 ### Your Task:
 1. Write a brief quizDescription summarizing what the quiz covers in 2–3 sentences.

@@ -423,9 +423,9 @@ export default function AIAttendPage() {
                                                 );
                                             })}
                                             <div className="flex flex-col items-center justify-center gap-3 p-4 bg-gray-50 rounded-xl shadow-sm">
-                                                <h2 className="text-lg font-semibold text-gray-800">
+                                                {/* <h2 className="text-lg font-semibold text-gray-800">
                                                     Download PDF of this AI Quiz
-                                                </h2>
+                                                </h2> */}
                                                 {/* <DownloadQuizPDF quiz={aiQuiz} isAttendActiveQuiz={true} /> */}
                                                 {/* <CodePDF quiz={aiQuiz}/> */}
                                             </div>
