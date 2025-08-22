@@ -6,9 +6,9 @@ export async function POST(req) {
     await dbConnect();
     try {
         const { username, friend } = await req.json();
-        console.log(username);
+        // console.log(username);
 
-        console.log(friend);
+        // console.log(friend);
         const user = await User.findOne({ username });
         if (!user) {
             return NextResponse.json({

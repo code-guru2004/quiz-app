@@ -1,8 +1,17 @@
+import User from "@/db/schema/User";
 import { chatSession } from "@/lib/GenAi";
+import { NextResponse } from "next/server";
 
 
 export async function POST(req) {
-  const { topic, difficulty, totalQuestions, timePerQuestion, languageGuess } = await req.json();
+  const { topic, difficulty, totalQuestions, timePerQuestion, languageGuess,email } = await req.json();
+  if(!email){
+    return NextResponse.json({ success: false, message: "Unauthorizrd Access to server." }, { status: 404 });
+  }
+  const user = await User.findOne({ email });
+  if(user.aiRemainingUses <= 0){
+    return NextResponse.json({ success: false, message: "AI usage limit reached. Come back next day." }, { status: 400 });
+  }
 
   const totalTime = totalQuestions * timePerQuestion;
   const randomSeed = Math.random().toString(36).substring(2, 10); // adds randomness to prompt
@@ -87,7 +96,10 @@ console.log(prompt);
     // clean JSON if wrapped in ```json ... ```
     const jsonText = text.replace(/```json|```/g, "");
     const quizData = JSON.parse(jsonText);
-
+    // Update ai usage
+    user.aiRemainingUses -= 1;
+    await user.save();
+    
     return Response.json({
       success: true,
       message: "AI quiz generated successfully",

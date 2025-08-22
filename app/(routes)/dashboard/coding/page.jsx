@@ -6,8 +6,11 @@ import { FaJs, FaPython, FaJava, FaCode, FaDatabase } from "react-icons/fa";
 import { SiC, SiCplusplus } from "react-icons/si";
 import { TbBrain, TbClock, TbNumber, TbCategory, TbBrandCSharp, TbStars, TbRocket } from "react-icons/tb";
 import { RiCodeAiFill } from "react-icons/ri";
+import { Bounce, toast } from "react-toastify";
+import { GiTwoCoins } from "react-icons/gi";
 
 export default function QuizInputPage() {
+  
     const [formData, setFormData] = useState({
         quizType: "advanced", // "beginner" or "advanced"
         topic: "",
@@ -16,7 +19,7 @@ export default function QuizInputPage() {
         timePerQuestion: 1,
         languageGuess: "javascript",
     });
-    const { aiQuiz, setAiQuiz } = useGlobalContextProvider()
+    const { email ,aiQuiz, setAiQuiz } = useGlobalContextProvider()
     const [loading, setLoading] = useState(false);
     const router = useRouter();
 
@@ -29,8 +32,22 @@ export default function QuizInputPage() {
     }, [formData])
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
         
+        e.preventDefault();
+        if(!email){
+            toast.error('You are not logged in.', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+                transition: Bounce,
+                });
+                router.push("/sign-in");
+        }
         // Validate form - if beginner, topic is required
         if (formData.quizType === "beginner" && !formData.topic.trim()) {
             alert("Please enter a topic for the beginner quiz");
@@ -41,16 +58,32 @@ export default function QuizInputPage() {
         //console.log(formData);
         
         try {
-            const res = await fetch("/api/ai-quiz/get-ai-code", { // It is the upgraded version of gemini --- Still is development
+            const res = await fetch("/api/ai-quiz/get-ai-code", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData),
-            });
+                body: JSON.stringify({
+                  ...formData,     // keep your existing form data
+                  email, // 👈 add user email here
+                }),
+              });
+              
 
             const data = await res.json();
-            if (data?.quiz) {
+            if (data?.success && data?.quiz) {
                 setAiQuiz(data?.quiz);
                 router.push("/coding-test/exam");
+            }else{
+                toast.warn(data.message, {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: false,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                    transition: Bounce,
+                    });
             }
         } catch (error) {
             console.error("Error fetching quiz:", error);
@@ -240,7 +273,13 @@ export default function QuizInputPage() {
                                 Generating Quiz...
                             </>
                         ) : (
-                            "Generate Quiz"
+                            <div className="flex flex-col items-center ">
+                                <span>Generate Quiz</span> 
+                                <p className="flex items-center gap-1 text-yellow-500">
+                                    <GiTwoCoins  className="text-yellow-500 size-4"/> 1
+                                </p>
+
+                            </div>
                         )}
                     </button>
                 </form>
