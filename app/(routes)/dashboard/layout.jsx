@@ -15,12 +15,13 @@ import Image from 'next/image'
 import { GiTrophyCup, GiTwoCoins } from 'react-icons/gi'
 import { RiCodeAiFill } from 'react-icons/ri'
 import CreditProgressBar from '@/components/shared/CreditsProgressbar'
+import axios from 'axios'
 
 function DashboardLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [sidebarDrawerOpen, setSidebarDrawerOpen] = useState(false)
   const { username, email } = useGlobalContextProvider();
-  const { isLoading, setIsLoading, userDetails,credits } = useGlobalContextProvider()
+  const { isLoading, setIsLoading, userDetails,credits,setCredits } = useGlobalContextProvider()
   const [menuSelected, setMenuSelected] = useState(0)
   const [profileImage, setProfileImage] = useState(null)
   // const toggleSidebar = () => {
@@ -31,8 +32,27 @@ function DashboardLayout({ children }) {
     setIsLoading(false)
   }, [])
   useEffect(() => {
-    setProfileImage(userDetails?.profileImg)
-  }, [userDetails])
+    let isMounted = true;
+  
+    const fetchDetails = async () => {
+      try {
+        const resp = await axios.get(`/api/user/get-credits?email=${email}`);
+        if (resp.data.success && isMounted) {
+          setProfileImage(resp.data?.image);
+          setCredits(resp.data?.credits);
+          console.log(resp.data?.credits);
+          
+        }
+      } catch (error) {
+        console.error("Failed to fetch credits:", error);
+      }
+    };
+  
+    if (email) fetchDetails();
+  
+    return () => { isMounted = false; };
+  }, [email]);
+  
 
   const handleLogout = () => {
     localStorage.removeItem('token');

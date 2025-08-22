@@ -27,9 +27,9 @@ export default function QuizInputPage() {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    useEffect(() => {
-        console.log(formData);
-    }, [formData])
+    // useEffect(() => {
+    //     console.log(formData);
+    // }, [formData])
 
     const handleSubmit = async (e) => {
         

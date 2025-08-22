@@ -26,7 +26,7 @@ export function ContextProvider({ children }) {
   const [practiceQuiz, setPracticeQuiz] = useState([]);
   const [aiQuiz, setAiQuiz] = useState(null);
   const [userDetails, setUserDetails] = useState(null);
-  const [credits, setCredits] = useState(5);
+  const [credits, setCredits] = useState(0);
 
   useEffect(() => {
     const fetchUser = async () => {

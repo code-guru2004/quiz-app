@@ -84,6 +84,7 @@ const UserDashboard = () => {
           setSubmittedQuiz(userInfo.submitQuiz || []);
           setUserData(userInfo);
           setCredits(userInfo.aiRemainingUses);
+          
         }
       } catch (e) {
         setError('Failed to fetch user data.');

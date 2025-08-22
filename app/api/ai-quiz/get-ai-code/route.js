@@ -87,7 +87,7 @@ ${topicLine}- Programming Language: ${languageGuess}
 
 Return only valid JSON. Do not include markdown or any explanation text outside the JSON.
 `;
-console.log(prompt);
+
 
   try {
     const aiResponse = await chatSession.sendMessage(prompt);
@@ -106,7 +106,7 @@ console.log(prompt);
       quiz: quizData,
     });
   } catch (error) {
-    console.error("AI Quiz Generation Error:", error);
+    // console.error("AI Quiz Generation Error:", error);
 
     return Response.json({
       success: false,
