@@ -1,9 +1,0 @@
-{
-    "crons": [
-      {
-        "path": "/api/ai-quiz/reset-ai-credits",
-        "schedule": "*/10 * * * *"
-      }
-    ]
-  }
-  

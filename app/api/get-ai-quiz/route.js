@@ -1,7 +1,17 @@
+import User from "@/db/schema/User";
 import { chatSession } from "@/lib/GenAi";
+import { NextResponse } from "next/server";
 
 export async function POST(req) {
-  const { category, difficulty, totalQuestions, timePerQuestion } = await req.json();
+  const { category, difficulty, totalQuestions, timePerQuestion, email } = await req.json();
+if(!email){
+    return NextResponse.json({ success: false, message: "Unauthorizrd Access to server." }, { status: 404 });
+  }
+  const user = await User.findOne({ email });
+  if(user.aiRemainingUses <= 0){
+    return NextResponse.json({ success: false, message: "AI usage limit reached. Come back next day." }, { status: 400 });
+  }
+
 
   const totalTime = totalQuestions * timePerQuestion;
 
@@ -63,7 +73,9 @@ Return only valid JSON. Do not include markdown or any explanation text.
     const text = await aiResponse.response.text();
     const jsonText = text.replace(/```json|```/g, '');
     const quizData = JSON.parse(jsonText);
-
+    
+    user.aiRemainingUses -= 1 ;
+    await user.save();
 
     return Response.json({
       success: true,

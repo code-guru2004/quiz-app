@@ -12,14 +12,15 @@ import clsx from 'clsx';
 import ThemeToggle, { ModeToggle } from '@/components/shared/ModeToggle'
 import NotificationDropdown from '@/components/shared/NotificationDropdown'
 import Image from 'next/image'
-import { GiTrophyCup } from 'react-icons/gi'
+import { GiTrophyCup, GiTwoCoins } from 'react-icons/gi'
 import { RiCodeAiFill } from 'react-icons/ri'
+import CreditProgressBar from '@/components/shared/CreditsProgressbar'
 
 function DashboardLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [sidebarDrawerOpen, setSidebarDrawerOpen] = useState(false)
   const { username, email } = useGlobalContextProvider();
-  const { isLoading, setIsLoading, userDetails } = useGlobalContextProvider()
+  const { isLoading, setIsLoading, userDetails,credits } = useGlobalContextProvider()
   const [menuSelected, setMenuSelected] = useState(0)
   const [profileImage, setProfileImage] = useState(null)
   // const toggleSidebar = () => {
@@ -29,9 +30,9 @@ function DashboardLayout({ children }) {
   useEffect(() => {
     setIsLoading(false)
   }, [])
-  useEffect(()=>{
+  useEffect(() => {
     setProfileImage(userDetails?.profileImg)
-  },[userDetails])
+  }, [userDetails])
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -48,7 +49,7 @@ function DashboardLayout({ children }) {
     { label: 'Coding Test', href: '/dashboard/coding', icon: <RiCodeAiFill className="size-5" /> },
     { label: 'Preparation', href: '/dashboard/preparation', icon: <BookOpenText className="size-5" /> },
   ];
-  
+
 
   return (
     <>
@@ -97,6 +98,9 @@ function DashboardLayout({ children }) {
 
                   ))}
                 </nav>
+                <div>
+                  <CreditProgressBar currentCredits={2} />
+                </div>
                 <div className="p-4 border-t border-gray-800 space-y-2">
                   {/* Profile Link */}
                   <Link
@@ -220,7 +224,13 @@ function DashboardLayout({ children }) {
                   </Link>
                 </div>
 
-                <div className="ml-1 flex relative items-center gap-4">
+                <div className="ml-1 flex relative items-center gap-3">
+                  <div className="flex items-center gap-2 lg:hidden px-3 py-1.5 rounded-full 
+                bg-white/20 backdrop-blur-md shadow-md border border-white/30">
+                    <GiTwoCoins className="text-yellow-400 w-5 h-5 drop-shadow-sm" />
+                    <span className="font-bold text-yellow-200 drop-shadow">{credits}</span>
+                  </div>
+
                   <ThemeToggle />
                   <NotificationDropdown />
                 </div>

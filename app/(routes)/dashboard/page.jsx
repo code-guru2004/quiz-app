@@ -32,7 +32,7 @@ const CustomTimeTooltip = ({ active, payload, isDarkMode }) => {
 };
 
 const UserDashboard = () => {
-  const {userDetails,setUserDetails} = useGlobalContextProvider();
+  const {userDetails,setUserDetails,setCredits} = useGlobalContextProvider();
   const [userData, setUserData] = useState(null);
   const [submittedQuiz, setSubmittedQuiz] = useState([]);
   const [email, setEmail] = useState('');
@@ -83,6 +83,7 @@ const UserDashboard = () => {
           setUserDetails(userInfo);
           setSubmittedQuiz(userInfo.submitQuiz || []);
           setUserData(userInfo);
+          setCredits(userInfo.aiRemainingUses);
         }
       } catch (e) {
         setError('Failed to fetch user data.');

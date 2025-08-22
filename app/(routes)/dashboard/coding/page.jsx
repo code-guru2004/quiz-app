@@ -19,7 +19,7 @@ export default function QuizInputPage() {
         timePerQuestion: 1,
         languageGuess: "javascript",
     });
-    const { email ,aiQuiz, setAiQuiz } = useGlobalContextProvider()
+    const { email ,aiQuiz, setAiQuiz,setCredits } = useGlobalContextProvider()
     const [loading, setLoading] = useState(false);
     const router = useRouter();
 
@@ -72,6 +72,18 @@ export default function QuizInputPage() {
             if (data?.success && data?.quiz) {
                 setAiQuiz(data?.quiz);
                 router.push("/coding-test/exam");
+                setCredits(prev=>prev-1);
+                toast.success('You are reditecting to exam page', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: false,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                    transition: Bounce,
+                    });
             }else{
                 toast.warn(data.message, {
                     position: "top-right",

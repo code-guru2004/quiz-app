@@ -9,10 +9,11 @@ import toast from 'react-hot-toast';
 import { jwtDecode } from 'jwt-decode';
 import { LuCircleFadingPlus, LuClock, LuBookOpen, LuZap, LuChevronLeft, LuChevronRight } from "react-icons/lu";
 import { FiAward, FiBarChart2, FiHardDrive, FiCpu } from "react-icons/fi";
+import { GiTwoCoins } from 'react-icons/gi';
 
 export default function AIQuizDashboard() {
   const router = useRouter();
-  const { setAiQuiz } = useGlobalContextProvider();
+  const { setAiQuiz, setCredits,email } = useGlobalContextProvider();
   const [category, setCategory] = useState('');
   const [difficulty, setDifficulty] = useState('');
   const [totalQuestions, setTotalQuestions] = useState(5);
@@ -24,19 +25,19 @@ export default function AIQuizDashboard() {
     try {
       const res = await fetch(`/api/get-user?username=${username}`);
       const data = await res.json();
-  
+
       if (data) {
         const sortedQuizzes = (data?.userData?.aiQuizzes || []).sort(
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt) // newest first
         );
-        
+
         setPreviousQuizzes(sortedQuizzes);
       }
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
   };
-  
+
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -70,11 +71,13 @@ export default function AIQuizDashboard() {
         category,
         difficulty,
         totalQuestions,
-        timePerQuestion
+        timePerQuestion,
+        email
       });
 
       if (resp?.data?.quiz) {
         setAiQuiz(resp.data.quiz);
+        setCredits(prev => prev - 1);
         router.push('/ai-quiz-attend');
       }
     } catch (error) {
@@ -222,13 +225,24 @@ export default function AIQuizDashboard() {
                     Generating...
                   </span>
                 ) : (
-                  <span className="flex items-center justify-center gap-2">
-                    <LuZap className="w-5 h-5" />
-                    Generate Quiz
-                  </span>
+                  <div className='flex flex-col items-center'>
+                    <span className="flex items-center justify-center gap-2">
+                      <LuZap className="w-5 h-5" />
+                      Generate Quiz
+                    </span>
+
+                  </div>
                 )}
               </button>
             </form>
+            <p className="w-full flex items-center justify-center gap-2 text-yellow-500 text-sm font-medium">
+              <span>You have to spend</span>
+              <span className="flex items-center gap-1">
+                <GiTwoCoins className="text-yellow-500 w-4 h-4" />
+                1
+              </span>
+            </p>
+
           </DialogContent>
         </Dialog>
       </div>
