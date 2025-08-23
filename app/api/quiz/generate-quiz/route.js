@@ -12,14 +12,42 @@ const sendContestNotification = async (type,totalQuestions,totalTime,level) => {
 
     const joinLink = `https://eduprobe-exam.vercel.app/contest/${type}`;
     const html = `
-      <h2>New ${type} Contest!</h2>
-      <ul>
-        <li>Questions: ${totalQuestions}</li>
-        <li>Time: ${totalTime} min</li>
-        <li>Difficulty: ${level}</li>
-      </ul>
-      <a href="${joinLink}" style="padding: 10px 15px; background: #1d4ed8; color: #fff; text-decoration: none; border-radius: 5px;">Join Contest</a>
-    `;
+  <div style="font-family: Arial, sans-serif; background-color: #f9fafb; padding: 20px;">
+    <div style="max-width: 600px; margin: auto; background: #ffffff; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 25px;">
+      <h2 style="text-align: center; color: #1d4ed8; margin-bottom: 20px;">
+        🚀 New ${type} Contest!
+      </h2>
+      <p style="font-size: 15px; color: #374151; text-align: center; margin-bottom: 20px;">
+        Get ready to challenge yourself in our brand new contest. Here are the details:
+      </p>
+
+      <table style="width: 100%; border-collapse: collapse; margin-bottom: 25px;">
+        <tr>
+          <td style="padding: 10px; border-bottom: 1px solid #e5e7eb;"><strong>Questions</strong></td>
+          <td style="padding: 10px; border-bottom: 1px solid #e5e7eb; text-align: right;">${totalQuestions}</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border-bottom: 1px solid #e5e7eb;"><strong>Time</strong></td>
+          <td style="padding: 10px; border-bottom: 1px solid #e5e7eb; text-align: right;">${totalTime} min</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px;"><strong>Difficulty</strong></td>
+          <td style="padding: 10px; text-align: right;">${level}</td>
+        </tr>
+      </table>
+      <div style="text-align: center;">
+        <a href="${joinLink}" style="display: inline-block; padding: 12px 20px; background: #1d4ed8; color: #ffffff; text-decoration: none; border-radius: 8px; font-size: 16px; font-weight: bold;">
+          🔗 Join Contest
+        </a>
+      </div>
+      <p style="margin-top: 30px; font-size: 12px; color: #6b7280; text-align: center;">
+        You are receiving this email because you subscribed to contest updates.<br/>
+        If you don’t want these emails, you can ignore or unsubscribe.
+      </p>
+    </div>
+  </div>
+`;
+
 
     await transporter.sendMail({
       from: `"EduProbe" <${process.env.SMTP_USER}>`,
