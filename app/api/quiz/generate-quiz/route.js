@@ -94,6 +94,7 @@ export async function GET(req) {
       difficulty: contestData[type].level,
       totalQuestions: contestData[type].noOfQuestions,
       timePerQuestion: contestData[type].perQuestionTime,
+      email: "nayan010das@gmail.com",
     });
 
     const quizData = resp.data.quiz;
