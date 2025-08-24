@@ -21,7 +21,7 @@ function ChallengePage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [friendList, setFriendList] = useState([]);
-  const { username, allQuiz, setCredits, email } = useGlobalContextProvider();
+  const { username, allQuiz, setCredits, email,setAiQuiz } = useGlobalContextProvider();
   const [selectedFriend, setSelectedFriend] = useState(null);
   const [quizDrawerOpen, setQuizDrawerOpen] = useState(false); // NEW STATE
   const [selectedQuiz, setSelectedQuiz] = useState(null); // optional
@@ -171,7 +171,7 @@ function ChallengePage() {
           `/api/challenge/attended?user=${username}&page=${page}&limit=${LIMIT}`
         );
         const data = await res.json();
-        console.log(data);
+       // console.log(data);
 
         if (data.success) {
           setAttendedChallenges(data.challenges);
@@ -204,7 +204,7 @@ function ChallengePage() {
       });
 
       if (resp?.data?.quiz) {
-        console.log(resp.data.quiz);
+        //console.log(resp.data.quiz);
 
         setAiQuiz(resp.data.quiz);
 
@@ -265,7 +265,7 @@ function ChallengePage() {
       return;
     }
     if (isGetAiQuiz === true) {
-      console.log("clicked");
+      //console.log("clicked");
 
       toast.warn('You have already generated a Quiz', {
         position: "top-right",
@@ -314,7 +314,7 @@ function ChallengePage() {
           transition: Bounce,
         });
 
-        console.log(resp.data.quiz);
+       // console.log(resp.data.quiz);
         setSelectedQuiz(resp.data.quiz);
         setIsGetAiQuiz(true)
       }

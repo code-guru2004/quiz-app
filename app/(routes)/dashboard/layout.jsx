@@ -40,7 +40,7 @@ function DashboardLayout({ children }) {
         if (resp.data.success && isMounted) {
           setProfileImage(resp.data?.image);
           setCredits(resp.data?.credits);
-          console.log(resp.data?.credits);
+          //console.log(resp.data?.credits);
           
         }
       } catch (error) {

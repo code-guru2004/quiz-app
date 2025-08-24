@@ -35,7 +35,7 @@ export default function ChallengePlayPage() {
         }
 
         setQuestions(data.challenge.questions);
-        console.log(data.challenge.questions);
+        //console.log(data.challenge.questions);
 
         setAnswers(new Array(data.challenge.questions.length).fill(null));
       } catch (err) {
