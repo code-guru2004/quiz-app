@@ -3,6 +3,7 @@
 
 import useGlobalContextProvider from "@/app/_context/ContextApi";
 import axios from "axios";
+import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Bounce, toast } from "react-toastify";
@@ -10,31 +11,42 @@ import { Bounce, toast } from "react-toastify";
 export default function AcceptChallengePage() {
   const { id } = useParams();
   const router = useRouter();
-  const {email} = useGlobalContextProvider();
+  const { email, username } = useGlobalContextProvider();
   const [challengeData, setChallengeData] = useState(null);
   const [fromUser, setFromUser] = useState(null);
   const [toUser, setToUser] = useState(null);
   const [topic, setTopic] = useState(null);
   const [totalQuestions, setTotalQuestions] = useState(null);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   useEffect(() => {
     async function fetchChallenge() {
       try {
         const resp = await axios.get(`/api/challenge/get-challenge/${id}`);
         const respData = resp?.data;
-        if (respData.success && respData.challenge) {
+        if (respData.success ) {
           setChallengeData(respData.challenge);
           setFromUser(respData.challenge.fromUser);
           setToUser(respData.challenge.toUser);
           setTopic(respData.challenge.topic);
           setTotalQuestions(respData.challenge.questions.length);
+          const hasSubmitted = respData.challenge.responses.some((resp) => resp.user === username);
+          
+          console.log(username);
+          
+          setIsSubmitted(hasSubmitted);
         } else {
-          toast.error("Challenge not found", {
+          toast('🦄 Wow so easy!', {
             position: "top-right",
             autoClose: 5000,
-            theme: "colored",
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
             transition: Bounce,
-          });
+            });
         }
       } catch (err) {
         toast.error("Failed to load challenge", {
@@ -46,10 +58,10 @@ export default function AcceptChallengePage() {
       }
     }
     fetchChallenge();
-  }, [id]);
+  }, [id,username]);
 
   const handleReject = async (challengeId) => {
-    if(email !== toUser){
+    if (username !== toUser) {
       toast('Unauthorized Access', {
         position: "top-right",
         autoClose: 5000,
@@ -60,7 +72,7 @@ export default function AcceptChallengePage() {
         progress: undefined,
         theme: "light",
         transition: Bounce,
-        });
+      });
       return;
     }
     try {
@@ -77,7 +89,7 @@ export default function AcceptChallengePage() {
   };
 
   const handleAccept = async (challengeId) => {
-    if(email !== toUser){
+    if (username !== toUser) {
       toast('Unauthorized Access', {
         position: "top-right",
         autoClose: 5000,
@@ -88,7 +100,7 @@ export default function AcceptChallengePage() {
         progress: undefined,
         theme: "light",
         transition: Bounce,
-        });
+      });
       return;
     }
     try {
@@ -133,29 +145,28 @@ export default function AcceptChallengePage() {
           <p>
             <span className="font-semibold">Status:</span>{" "}
             <span
-              className={`${
-                challengeData.status === "accepted"
-                  ? "text-green-600"
-                  : challengeData.status === "rejected"
+              className={`${challengeData.status === "accepted"
+                ? "text-green-600"
+                : challengeData.status === "rejected"
                   ? "text-red-600"
                   : "text-yellow-600"
-              } font-semibold`}
+                } font-semibold`}
             >
               {challengeData.status || "pending"}
             </span>
           </p>
         </div>
 
-        {challengeData.status === "pending" && (
+        {username === toUser && challengeData.status === "pending" && (
           <div className="space-y-3">
             <button
-              onClick={() => handleReject(challengeData._id)}
+              onClick={() => handleReject(challengeData.challengeId)}
               className="w-full py-3 px-4 rounded-xl bg-red-600 hover:bg-red-700 text-white font-medium transition"
             >
               Reject Challenge
             </button>
             <button
-              onClick={() => handleAccept(challengeData._id)}
+              onClick={() => handleAccept(challengeData.challengeId)}
               className="w-full py-3 px-4 rounded-xl bg-green-600 hover:bg-green-700 text-white font-medium transition"
             >
               Accept Challenge
@@ -163,13 +174,46 @@ export default function AcceptChallengePage() {
           </div>
         )}
 
-        {challengeData.status === "accepted" && (
-          <p className="text-green-600 font-semibold mt-4">✅ You accepted the challenge!</p>
+        {username === toUser && challengeData.status === "accepted" && (
+          <div className="mt-6 text-center">
+            <p className="text-green-600 font-semibold mb-4">
+              ✅ You accepted the challenge!
+            </p>
+            {
+              isSubmitted ? (
+                <Link
+                  href={`/challenge-result/${challengeData.challengeId}`} // Use challenge _id
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                >
+                  View Result
+                </Link>
+              ) : (
+                <Link
+                  href={`/challenge-quiz/${challengeData.challengeId}`} // Use challenge _id
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                >
+                  Attend Challenge
+                </Link>
+              )
+            }
+
+          </div>
         )}
 
-        {challengeData.status === "rejected" && (
-          <p className="text-red-600 font-semibold mt-4">❌ You rejected the challenge.</p>
+        {username === toUser && challengeData.status === "rejected" && (
+          <div className="mt-6 text-center">
+            <p className="text-red-600 font-semibold mb-4">
+              ❌ You rejected the challenge.
+            </p>
+            <Link
+              href="/dashboard"
+              className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition"
+            >
+              Go to Dashboard
+            </Link>
+          </div>
         )}
+
 
         <p className="text-xs text-gray-400 mt-6">
           By accepting, you’ll be redirected to the challenge quiz.
