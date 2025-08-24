@@ -6,6 +6,8 @@ import axios from "axios";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { FaUserSecret } from "react-icons/fa";
+import { FaPersonRifle } from "react-icons/fa6";
 import { Bounce, toast } from "react-toastify";
 
 export default function AcceptChallengePage() {
@@ -43,7 +45,7 @@ export default function AcceptChallengePage() {
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
-            theme: "light",
+            theme: "colored",
             transition: Bounce,
           });
         }
@@ -71,7 +73,7 @@ export default function AcceptChallengePage() {
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-        theme: "light",
+        theme: "colored",
         transition: Bounce,
       });
       return;
@@ -100,7 +102,7 @@ export default function AcceptChallengePage() {
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-        theme: "light",
+        theme: "colored",
         transition: Bounce,
       });
       return;
@@ -121,23 +123,23 @@ export default function AcceptChallengePage() {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
-        <div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-4"></div>
-        <p className="text-gray-600">Loading challenge details...</p>
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-indigo-950 p-6">
+        <div className="w-16 h-16 border-4 border-indigo-600 dark:border-indigo-400 border-t-transparent rounded-full animate-spin mb-4"></div>
+        <p className="text-gray-600 dark:text-gray-300">Loading challenge details...</p>
       </div>
     );
   }
 
   if (!challengeData) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
-        <div className="max-w-md w-full bg-white shadow-xl rounded-2xl p-8 text-center">
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-indigo-950 p-6">
+        <div className="max-w-md w-full bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-8 text-center">
           <div className="text-red-500 text-5xl mb-4">⚠️</div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">Challenge Not Found</h2>
-          <p className="text-gray-600 mb-6">The challenge you're looking for doesn't exist or may have been removed.</p>
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">Challenge Not Found</h2>
+          <p className="text-gray-600 dark:text-gray-300 mb-6">The challenge you're looking for doesn't exist or may have been removed.</p>
           <Link
             href="/dashboard"
-            className="inline-block px-6 py-3 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors"
+            className="inline-block px-6 py-3 bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white font-medium rounded-lg transition-colors"
           >
             Return to Dashboard
           </Link>
@@ -149,22 +151,22 @@ export default function AcceptChallengePage() {
   return (
     <>
       {username !== toUser ? (
-        <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
-          <div className="max-w-md w-full bg-white shadow-xl rounded-2xl p-8 text-center">
+        <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-indigo-950 p-6">
+          <div className="max-w-md w-full bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-8 text-center">
             <div className="text-red-500 text-5xl mb-4">🚫</div>
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">Unauthorized Access</h2>
-            <p className="text-gray-600 mb-6">You are not allowed to view this challenge.</p>
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">Unauthorized Access</h2>
+            <p className="text-gray-600 dark:text-gray-300 mb-6">You are not allowed to view this challenge.</p>
             <Link
               href="/dashboard"
-              className="inline-block px-6 py-3 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors"
+              className="inline-block px-6 py-3 bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white font-medium rounded-lg transition-colors"
             >
               Return to Dashboard
             </Link>
           </div>
         </div>
       ) : (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
-          <div className="max-w-md w-full bg-white shadow-xl rounded-2xl overflow-hidden">
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-indigo-950 p-6">
+          <div className="max-w-md w-full bg-white dark:bg-gray-800 shadow-xl rounded-2xl overflow-hidden">
             <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-6 text-white text-center">
               <h1 className="text-2xl font-bold mb-2">You've Been Challenged! 🏆</h1>
               <p className="opacity-90">Prove your knowledge and claim victory!</p>
@@ -173,45 +175,45 @@ export default function AcceptChallengePage() {
             <div className="p-6">
               <div className="flex items-center justify-center mb-6">
                 <div className="flex flex-col items-center">
-                  <div className="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center mb-2">
-                    <span className="font-semibold text-indigo-600">{fromUser?.charAt(0) || "U"}</span>
+                  <div className="w-12 h-12 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center mb-2">
+                    <span className="font-semibold text-indigo-600 dark:text-indigo-300"><FaPersonRifle className="size-5"/></span>
                   </div>
-                  <span className="font-medium text-gray-700">{fromUser || "Unknown User"}</span>
+                  <span className="font-medium text-gray-700 dark:text-gray-200">{fromUser || "Unknown User"}</span>
                 </div>
                 
                 <div className="mx-4 flex flex-col items-center">
-                  <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center">
-                    <span className="text-red-500 font-bold">VS</span>
+                  <div className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900 flex items-center justify-center">
+                    <span className="text-red-500 dark:text-red-300 font-bold">VS</span>
                   </div>
-                  <div className="h-0.5 w-16 bg-gray-300 my-2"></div>
+                  <div className="h-0.5 w-16 bg-gray-300 dark:bg-gray-600 my-2"></div>
                 </div>
                 
                 <div className="flex flex-col items-center">
-                  <div className="w-12 h-12 rounded-full bg-pink-100 flex items-center justify-center mb-2">
-                    <span className="font-semibold text-pink-600">{toUser?.charAt(0) || "Y"}</span>
+                  <div className="w-12 h-12 rounded-full bg-pink-100 dark:bg-pink-900 flex items-center justify-center mb-2">
+                    <span className="font-semibold text-pink-600 dark:text-pink-300"><FaUserSecret className="size-5"/></span>
                   </div>
-                  <span className="font-medium text-gray-700">You</span>
+                  <span className="font-medium text-gray-700 dark:text-gray-200">You</span>
                 </div>
               </div>
 
-              <div className="bg-gray-50 p-5 rounded-xl mb-6">
+              <div className="bg-gray-50 dark:bg-gray-700 p-5 rounded-xl mb-6">
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-white p-3 rounded-lg shadow-sm">
-                    <p className="text-xs text-gray-500 uppercase">Topic</p>
-                    <p className="font-semibold">{topic || "N/A"}</p>
+                  <div className="bg-white dark:bg-gray-600 p-3 rounded-lg shadow-sm">
+                    <p className="text-xs text-gray-500 dark:text-gray-300 uppercase">Topic</p>
+                    <p className="font-semibold dark:text-white">{topic || "N/A"}</p>
                   </div>
-                  <div className="bg-white p-3 rounded-lg shadow-sm">
-                    <p className="text-xs text-gray-500 uppercase">Questions</p>
-                    <p className="font-semibold">{totalQuestions || 0}</p>
+                  <div className="bg-white dark:bg-gray-600 p-3 rounded-lg shadow-sm">
+                    <p className="text-xs text-gray-500 dark:text-gray-300 uppercase">Questions</p>
+                    <p className="font-semibold dark:text-white">{totalQuestions || 0}</p>
                   </div>
                 </div>
                 
-                <div className="mt-4 bg-white p-3 rounded-lg shadow-sm">
-                  <p className="text-xs text-gray-500 uppercase">Status</p>
-                  <p className={`font-semibold ${
-                    challengeData.status === "accepted" ? "text-green-600" :
-                    challengeData.status === "rejected" ? "text-red-600" :
-                    "text-yellow-600"
+                <div className="mt-4 bg-white dark:bg-gray-600 p-3 rounded-lg shadow-sm">
+                  <p className="text-xs text-gray-500 dark:text-gray-300 uppercase text-center">Status</p>
+                  <p className={`font-semibold text-center ${
+                    challengeData.status === "accepted" ? "text-green-600 dark:text-green-400" :
+                    challengeData.status === "rejected" ? "text-red-600 dark:text-red-400" :
+                    "text-yellow-600 dark:text-yellow-400"
                   }`}>
                     {challengeData.status?.charAt(0).toUpperCase() + challengeData.status?.slice(1) || "Pending"}
                   </p>
@@ -237,7 +239,7 @@ export default function AcceptChallengePage() {
 
               {username === toUser && challengeData.status === "accepted" && (
                 <div className="text-center">
-                  <div className="bg-green-100 text-green-700 p-4 rounded-xl mb-6">
+                  <div className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 p-4 rounded-xl mb-6">
                     <p className="font-semibold">✅ You accepted the challenge!</p>
                     <p className="text-sm mt-1">Time to show your skills!</p>
                   </div>
@@ -261,7 +263,7 @@ export default function AcceptChallengePage() {
 
               {username === toUser && challengeData.status === "rejected" && (
                 <div className="text-center">
-                  <div className="bg-red-100 text-red-700 p-4 rounded-xl mb-6">
+                  <div className="bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 p-4 rounded-xl mb-6">
                     <p className="font-semibold">❌ You rejected the challenge.</p>
                     <p className="text-sm mt-1">Maybe next time!</p>
                   </div>
@@ -274,7 +276,7 @@ export default function AcceptChallengePage() {
                 </div>
               )}
 
-              <p className="text-xs text-gray-400 mt-6 text-center">
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-6 text-center">
                 By accepting, you'll be redirected to the challenge quiz.
               </p>
             </div>
