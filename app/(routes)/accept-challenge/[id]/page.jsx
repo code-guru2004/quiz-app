@@ -165,7 +165,7 @@ export default function AcceptChallengePage() {
           </div>
         </div>
       ) : (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-indigo-950 p-6">
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-indigo-950 py-4 px-1 lg:p-6">
           <div className="max-w-md w-full bg-white dark:bg-gray-800 shadow-xl rounded-2xl overflow-hidden">
             <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-6 text-white text-center">
               <h1 className="text-2xl font-bold mb-2">You've Been Challenged! 🏆</h1>

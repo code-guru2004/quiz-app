@@ -94,12 +94,12 @@ function ChallengePage() {
           const emailRes = await axios.post('/api/email/send-challenge-mail', {
             challengerEmail: email, // your email
             opponentEmail: selectedFriend.email, // opponent email
-            topic: selectedQuiz.quizTitle || selectedQuiz.quizCategory,
+            topic: selectedQuiz.quizTitle || selectedQuiz.quizCategory || topic,
             joinLink: `https://eduprobe-exam.vercel.app/accept-challenge/${challengeRes.data.challengeId}` // link to join
           });
   
           if (emailRes.data.success) {
-            toast.success(`Challenge sent to ${selectedFriend.username} for ${selectedQuiz.quizTitle}`);
+            toast.success(`Challenge sent to ${selectedFriend.username} for ${challengeRes.data.topic}`);
           } else {
             toast.warn(`Challenge created, but email failed: ${emailRes.data.error}`);
           }
@@ -122,6 +122,7 @@ function ChallengePage() {
     } finally {
       setQuizDrawerOpen(false);
       setIsDrawerOpen(false); // close outer drawer
+      setTopic("");
     }
   };
   
