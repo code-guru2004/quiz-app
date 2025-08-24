@@ -1,6 +1,7 @@
 // app/challenges/[id]/accept/page.jsx
 "use client";
 
+import useGlobalContextProvider from "@/app/_context/ContextApi";
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -9,6 +10,7 @@ import { Bounce, toast } from "react-toastify";
 export default function AcceptChallengePage() {
   const { id } = useParams();
   const router = useRouter();
+  const {email} = useGlobalContextProvider();
   const [challengeData, setChallengeData] = useState(null);
   const [fromUser, setFromUser] = useState(null);
   const [toUser, setToUser] = useState(null);
@@ -47,6 +49,20 @@ export default function AcceptChallengePage() {
   }, [id]);
 
   const handleReject = async (challengeId) => {
+    if(email !== toUser){
+      toast('Unauthorized Access', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+        });
+      return;
+    }
     try {
       const resp = await axios.patch("/api/challenge/reject", { challengeId });
       if (resp.data.success) {
@@ -61,6 +77,20 @@ export default function AcceptChallengePage() {
   };
 
   const handleAccept = async (challengeId) => {
+    if(email !== toUser){
+      toast('Unauthorized Access', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+        });
+      return;
+    }
     try {
       const resp = await axios.patch(`/api/challenge/accept`, { challengeId });
       if (resp.data.success) {
