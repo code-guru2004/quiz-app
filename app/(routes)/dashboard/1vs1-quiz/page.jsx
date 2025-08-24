@@ -95,7 +95,7 @@ function ChallengePage() {
             challengerEmail: email, // your email
             opponentEmail: selectedFriend.email, // opponent email
             topic: selectedQuiz.quizTitle || selectedQuiz.quizCategory,
-            joinLink: `https://eduprobe-exam.vercel.app/dashboard/1vs1-quiz` // link to join
+            joinLink: `https://eduprobe-exam.vercel.app/accept-challenge/${challengeRes.data.challengeId}` // link to join
           });
   
           if (emailRes.data.success) {

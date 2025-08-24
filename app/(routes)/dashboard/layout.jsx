@@ -66,7 +66,7 @@ function DashboardLayout({ children }) {
     { label: 'AI Quiz', href: '/dashboard/ai-quiz', icon: <Brain className="size-5" /> },
     { label: '1vs1 Challenge', href: '/dashboard/1vs1-quiz', icon: <Swords className="size-5" /> },
     { label: 'Scheduled Contest', href: '/dashboard/contest', icon: <GiTrophyCup className="size-5" /> },
-    { label: 'Coding Test', href: '/dashboard/coding', icon: <RiCodeAiFill className="size-5" /> },
+    { label: 'Snippet Quest', href: '/dashboard/coding', icon: <RiCodeAiFill className="size-5" /> },
     { label: 'Preparation', href: '/dashboard/preparation', icon: <BookOpenText className="size-5" /> },
   ];
 
