@@ -99,7 +99,7 @@ function ChallengePage() {
           });
   
           if (emailRes.data.success) {
-            toast.success(`Challenge sent to ${selectedFriend.username} for ${challengeRes.data.topic}`);
+            toast.success(`Challenge sent to ${selectedFriend.username} for ${selectedQuiz.quizTitle || topic}`);
           } else {
             toast.warn(`Challenge created, but email failed: ${emailRes.data.error}`);
           }
@@ -187,6 +187,7 @@ function ChallengePage() {
       fetchAttended();
     }
   }, [username, page]);
+
   async function handleGetAiQuiz(e) {
     e.preventDefault(); // Prevent page reload
     setIsLoading(true)
@@ -201,7 +202,8 @@ function ChallengePage() {
         category,
         difficulty,
         totalQuestions,
-        timePerQuestion
+        timePerQuestion,
+        email
       });
 
       if (resp?.data?.quiz) {

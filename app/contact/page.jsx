@@ -59,7 +59,7 @@ const ContactForm = () => {
 
         try {
             // Replace with your actual API endpoint
-            const response = await fetch('/api/contact', {
+            const response = await fetch('/api/email/send-feedback-email', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -131,7 +131,7 @@ const ContactForm = () => {
                                     </div>
                                     <div className="ml-4">
                                         <h3 className="text-lg font-medium text-gray-900 dark:text-white">Email</h3>
-                                        <p className="text-gray-600 dark:text-gray-300 text-sm">eduprobe.exam@gmail.com</p>
+                                        <p className="text-gray-600 dark:text-gray-300 text-sm">eduprobe.team@gmail.com</p>
                                     </div>
                                 </div>
                             </div>
@@ -334,7 +334,7 @@ const ContactForm = () => {
                                         I agree to the{' '}
                                         <a
                                             href="/privacy-policy"
-                                            className="text-indigo-600 hover:text-indigo-500"
+                                            className="text-indigo-500 hover:text-indigo-500"
                                         >
                                             Privacy Policy
                                         </a>

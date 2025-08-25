@@ -5,6 +5,7 @@ import { FaEnvelope, FaPhone, FaMapMarkerAlt, FaLinkedin } from 'react-icons/fa'
 import { useForm } from 'react-hook-form'
 import { FaFacebook, FaGithub, FaTwitter } from "react-icons/fa";
 import Link from 'next/link';
+import { useState } from 'react';
 
 const socialLinks = [
   {
@@ -29,19 +30,90 @@ const socialLinks = [
   },
 ];
 export default function Contact() {
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-        reset,
-    } = useForm()
-
-    const onSubmit = (data) => {
-        console.log(data)
-        // Here you would typically send the data to your backend
-        alert('Thank you for your message! We will get back to you soon.')
-        reset()
-    }
+    const [formData, setFormData] = useState({
+            firstName: '',
+            lastName: '',
+            email: '',
+            subject: '',
+            message: '',
+            consent: false
+        });
+    
+        const [errors, setErrors] = useState({});
+        const [isSubmitting, setIsSubmitting] = useState(false);
+        const [submitStatus, setSubmitStatus] = useState(null);
+    
+        const validateForm = () => {
+            const newErrors = {};
+    
+            if (!formData.firstName.trim()) newErrors.firstName = 'First name is required';
+            if (!formData.lastName.trim()) newErrors.lastName = 'Last name is required';
+    
+            if (!formData.email.trim()) {
+                newErrors.email = 'Email is required';
+            } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(formData.email)) {
+                newErrors.email = 'Invalid email address';
+            }
+    
+            if (!formData.subject) newErrors.subject = 'Please select a subject';
+            if (!formData.message.trim()) {
+                newErrors.message = 'Message is required';
+            } else if (formData.message.trim().length < 10) {
+                newErrors.message = 'Message must be at least 10 characters';
+            }
+    
+            if (!formData.consent) newErrors.consent = 'You must agree to our privacy policy';
+    
+            setErrors(newErrors);
+            return Object.keys(newErrors).length === 0;
+        };
+    
+        const handleChange = (e) => {
+            const { name, value, type, checked } = e.target;
+            setFormData(prev => ({
+                ...prev,
+                [name]: type === 'checkbox' ? checked : value
+            }));
+        };
+    
+        const handleSubmit = async (e) => {
+            e.preventDefault();
+    
+            if (!validateForm()) return;
+    
+            setIsSubmitting(true);
+            setSubmitStatus(null);
+    
+            try {
+                // Replace with your actual API endpoint
+                const response = await fetch('/api/email/send-feedback-email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData),
+                });
+    
+                if (response.ok) {
+                    setSubmitStatus({ type: 'success', message: 'Your message has been sent successfully!' });
+                    // Reset form
+                    setFormData({
+                        firstName: '',
+                        lastName: '',
+                        email: '',
+                        subject: '',
+                        message: '',
+                        consent: false
+                    });
+                } else {
+                    throw new Error('Submission failed');
+                }
+            } catch (error) {
+                setSubmitStatus({ type: 'error', message: 'There was an error submitting your message. Please try again.' });
+            } finally {
+                setIsSubmitting(false);
+            }
+        };
 
     return (
         <section id="contact" className="py-16 md:py-24 bg-gray-50">
@@ -73,20 +145,42 @@ export default function Contact() {
                             <h3 className="text-xl font-bold text-gray-900 mb-6">
                                 Send us a message
                             </h3>
-                            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                            <form onSubmit={handleSubmit} className="space-y-6">
                                 <div>
-                                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                                        Your Name
+                                    <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
+                                        Your First Name
                                     </label>
                                     <input
                                         type="text"
-                                        id="name"
-                                        {...register('name', { required: 'Name is required' })}
-                                        className={`w-full px-4 py-2 rounded-lg border ${errors.name ? 'border-red-500' : 'border-gray-300'
+                                        id="firstName"
+                                        name="firstName"
+                                        value={formData.firstName}
+                                        onChange={handleChange}
+                                        autoComplete="given-name"
+                                        
+                                        className={`w-full px-4 py-2 rounded-lg border ${errors.firstName ? 'border-red-500' : 'border-gray-300'
                                             } focus:outline-none focus:ring-2 focus:ring-blue-500`}
                                     />
-                                    {errors.name && (
-                                        <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
+                                    {errors.firstName && (
+                                                <p className="mt-2 text-sm text-red-600">{errors.firstName}</p>
+                                    )}
+                                </div>
+                                <div>
+                                    <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">
+                                        Your Last Name
+                                    </label>
+                                    <input
+                                         type="text"
+                                         id="lastName"
+                                         name="lastName"
+                                         value={formData.lastName}
+                                         onChange={handleChange}
+                                         autoComplete="family-name"
+                                        className={`w-full px-4 py-2 rounded-lg border ${errors.lastName ? 'border-red-500' : 'border-gray-300'
+                                            } focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                                    />
+                                    {errors.firstName && (
+                                                <p className="mt-2 text-sm text-red-600">{errors.lastName}</p>
                                     )}
                                 </div>
 
@@ -95,20 +189,17 @@ export default function Contact() {
                                         Email Address
                                     </label>
                                     <input
-                                        type="email"
                                         id="email"
-                                        {...register('email', {
-                                            required: 'Email is required',
-                                            pattern: {
-                                                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                                                message: 'Invalid email address',
-                                            },
-                                        })}
+                                        name="email"
+                                        type="email"
+                                        value={formData.email}
+                                        onChange={handleChange}
+                                        autoComplete="email"
                                         className={`w-full px-4 py-2 rounded-lg border ${errors.email ? 'border-red-500' : 'border-gray-300'
                                             } focus:outline-none focus:ring-2 focus:ring-blue-500`}
                                     />
                                     {errors.email && (
-                                        <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
+                                        <p className="mt-1 text-sm text-red-600">{errors.email}</p>
                                     )}
                                 </div>
 
@@ -117,14 +208,17 @@ export default function Contact() {
                                         Subject
                                     </label>
                                     <input
-                                        type="text"
                                         id="subject"
-                                        {...register('subject', { required: 'Subject is required' })}
+                                        name="subject"
+                                        type="text"
+                                        value={formData.subject}
+                                        onChange={handleChange}
+                                       
                                         className={`w-full px-4 py-2 rounded-lg border ${errors.subject ? 'border-red-500' : 'border-gray-300'
                                             } focus:outline-none focus:ring-2 focus:ring-blue-500`}
                                     />
                                     {errors.subject && (
-                                        <p className="mt-1 text-sm text-red-600">{errors.subject.message}</p>
+                                        <p className="mt-1 text-sm text-red-600">{errors.subject}</p>
                                     )}
                                 </div>
 
@@ -133,9 +227,11 @@ export default function Contact() {
                                         Message
                                     </label>
                                     <textarea
-                                        id="message"
-                                        rows="4"
-                                        {...register('message', { required: 'Message is required' })}
+                                       id="message"
+                                       name="message"
+                                       rows={4}
+                                       value={formData.message}
+                                       onChange={handleChange}
                                         className={`w-full px-4 py-2 rounded-lg border ${errors.message ? 'border-red-500' : 'border-gray-300'
                                             } focus:outline-none focus:ring-2 focus:ring-blue-500`}
                                     ></textarea>
@@ -144,12 +240,43 @@ export default function Contact() {
                                     )}
                                 </div>
 
-                                <button
-                                    type="submit"
-                                    className="w-full py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
-                                >
-                                    Send Message
-                                </button>
+                                {/* Submit Button */}
+                                <div className="pt-2">
+                                    <button
+                                        type="submit"
+                                        disabled={isSubmitting}
+                                        className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${isSubmitting ? 'opacity-75 cursor-not-allowed' : ''
+                                            }`}
+                                    >
+                                        {isSubmitting ? (
+                                            <>
+                                                <svg
+                                                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                >
+                                                    <circle
+                                                        className="opacity-25"
+                                                        cx="12"
+                                                        cy="12"
+                                                        r="10"
+                                                        stroke="currentColor"
+                                                        strokeWidth="4"
+                                                    ></circle>
+                                                    <path
+                                                        className="opacity-75"
+                                                        fill="currentColor"
+                                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                                    ></path>
+                                                </svg>
+                                                Sending...
+                                            </>
+                                        ) : (
+                                            'Send message'
+                                        )}
+                                    </button>
+                                </div>
                             </form>
                         </div>
                     </motion.div>

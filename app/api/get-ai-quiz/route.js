@@ -4,11 +4,16 @@ import { NextResponse } from "next/server";
 
 export async function POST(req) {
   const { category, difficulty, totalQuestions, timePerQuestion, email } = await req.json();
+  console.log(category, difficulty, totalQuestions, timePerQuestion, email);
+  
 if(!email){
     return NextResponse.json({ success: false, message: "Unauthorizrd Access to server." }, { status: 404 });
   }
   const user = await User.findOne({ email });
-  if(user.aiRemainingUses <= 0){
+  // console.log(user);
+  
+  if(user?.aiRemainingUses <= 0){
+    
     return NextResponse.json({ success: false, message: "AI usage limit reached. Come back next day." }, { status: 400 });
   }
 
@@ -77,7 +82,7 @@ Return only valid JSON. Do not include markdown or any explanation text.
     user.aiRemainingUses -= 1 ;
     await user.save();
 
-    return Response.json({
+    return NextResponse.json({
       success: true,
       message: "AI quiz generated successfully",
       quiz: quizData,
@@ -85,7 +90,7 @@ Return only valid JSON. Do not include markdown or any explanation text.
   } catch (error) {
     console.error("AI Quiz Generation Error:", error);
 
-    return Response.json({
+    return NextResponse.json({
       success: false,
       message: "Failed to generate AI quiz",
       error: error.message,
