@@ -6,7 +6,6 @@ import useGlobalContextProvider from "@/app/_context/ContextApi";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import axios from "axios";
-import FloatingEmail from "@/components/shared/FloatingEmail";
 import { Bounce, toast } from "react-toastify";
 import Lottie from "lottie-react";
 import { LoaderCircle } from "lucide-react";
@@ -138,8 +137,8 @@ function QuizStart({ params }) {
           </div>
           <div className="mt-10 w-full flex items-center justify-center">
             <QuizStartQuestions timeLeft={timeLeft} setTimeLeft={setTimeLeft} isForceSubmit={isForceSubmit} />
+            
           </div>
-          <FloatingEmail email={email} />
         </>
       )}
     </div>

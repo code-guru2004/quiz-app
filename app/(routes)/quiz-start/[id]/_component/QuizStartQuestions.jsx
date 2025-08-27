@@ -1,5 +1,7 @@
 "use client";
 import useGlobalContextProvider from "@/app/_context/ContextApi";
+import Watermark from "@/components/shared/FloatingEmail";
+
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import axios from "axios";
 import Image from "next/image";
@@ -339,6 +341,7 @@ function QuizStartQuestions({ timeLeft, setTimeLeft, isForceSubmit }) {
                 </div>
               </>
             )}
+            
           </div>
 
           {/* Desktop Question Navigation */}
@@ -393,7 +396,7 @@ function QuizStartQuestions({ timeLeft, setTimeLeft, isForceSubmit }) {
             </div>
           )}
         </div>
-
+        
         {/* Submission Confirmation Dialog */}
         <Dialog open={wantSubmitted} onOpenChange={() => setWantSubmitted(prev => !prev)}>
           <DialogContent className="bg-white dark:bg-gray-900 max-w-md">
@@ -427,8 +430,10 @@ function QuizStartQuestions({ timeLeft, setTimeLeft, isForceSubmit }) {
                 </button>
               </div>
             </DialogHeader>
+            
           </DialogContent>
         </Dialog>
+      {email && <Watermark email={email}/>}
       </div>
     </div>
   );

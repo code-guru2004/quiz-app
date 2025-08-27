@@ -149,7 +149,7 @@ export default function AIAttendPage() {
     };
 
     const handleRestart = () => {
-        router.push('/coding-test/request');
+        router.push('/dashboard/coding');
     };
 
     const handleAddMarkForReview = () => {
