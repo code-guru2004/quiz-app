@@ -1,10 +1,10 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { RiMailForbidFill } from "react-icons/ri";
 
-export default function UnsubscribePage() {
+function UnsubscribePage() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
 
@@ -127,6 +127,16 @@ export default function UnsubscribePage() {
           <p>If you change your mind, you can resubscribe anytime through your account settings.</p>
         </div>
       </div>
+    </div>
+  );
+}
+
+export default function UnsubscribePageClient() {
+  return (
+    <div>
+      <Suspense fallback={<p>Loading...</p>}>
+        <UnsubscribePage />
+      </Suspense>
     </div>
   );
 }
