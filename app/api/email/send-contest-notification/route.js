@@ -2,11 +2,14 @@ import { NextResponse } from 'next/server';
 import { transporter } from '@/lib/nodemailer';
 import User from '@/db/schema/User';
 import jwt from 'jsonwebtoken';
+import { dbConnect } from '@/db/dbConnect';
 
 export async function POST(req) {
   try {
     const { contestType, noOfQuestions, time, difficulty, joinLink } = await req.json();
 
+    await dbConnect();
+    
     if (!contestType || !noOfQuestions || !time || !difficulty || !joinLink) {
       return NextResponse.json({ success: false, error: 'Missing required fields' });
     }
