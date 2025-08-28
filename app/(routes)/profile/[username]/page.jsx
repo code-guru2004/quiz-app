@@ -4,7 +4,7 @@ import useGlobalContextProvider from '@/app/_context/ContextApi';
 import { ICONS } from '@/app/Icon';
 import QuizStatsHeatmap from '@/components/shared/QuizStatsHeatmap';
 import axios from 'axios';
-import { ArrowLeft, CircleArrowLeft, Crown, Medal, Trophy, UserIcon, Award, Star, Zap, Lightning, CameraIcon, LoaderCircle, Flame } from 'lucide-react';
+import { ArrowLeft, CircleArrowLeft, Crown, Medal, Trophy, UserIcon, Award, Star, Zap, CameraIcon, LoaderCircle, Flame } from 'lucide-react';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -18,8 +18,7 @@ import {
   Pie,
   Cell
 } from 'recharts';
-import { motion } from "framer-motion";
-import { GiEmptyWoodBucket } from 'react-icons/gi';
+import { GiEmptyWoodBucket, GiLightningDissipation } from 'react-icons/gi';
 
 
 
@@ -29,7 +28,7 @@ const BADGE_DATA = {
   ADVANCED: { icon: <Award size={16} />, color: 'bg-purple-300', text: '🏆 Quiz Master' },
   EXPERT: { icon: <Crown size={16} />, color: 'bg-yellow-300', text: '👑 Quiz Legend' },
   FAST: { icon: <Zap size={16} />, color: 'bg-orange-300', text: '⚡ Speed Demon' },
-  ACCURATE: { icon: <Lightning size={16} />, color: 'bg-green-300', text: '🎯 Precision Pro' }
+  ACCURATE: { icon: <GiLightningDissipation size={16} />, color: 'bg-green-300', text: '🎯 Precision Pro' }
 };
 const COLORS = ['#0088FE', '#00C49F'];
 
