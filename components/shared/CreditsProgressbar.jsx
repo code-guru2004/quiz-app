@@ -1,3 +1,4 @@
+'use client'
 import useGlobalContextProvider from '@/app/_context/ContextApi';
 import { useEffect, useState } from 'react';
 
@@ -26,8 +27,8 @@ const CreditProgressBar = ({ currentCredits, maxCredits = 5 }) => {
     <div className="w-full max-w-md mx-auto px-6  rounded-2xl mb-2">
       <div className="flex justify-between items-center mb-1">
         <h3 className="font-semibold text-xs dark:text-gray-300 text-gray-600">Your Credits</h3>
-        <span className="text-xs font-medium dark:text-gray-300 text-gray-700">
-          {credits} / {maxCredits}
+        <span className="text-xs font-medium dark:text-yellow-300 text-gray-700 flex items-center">
+          Credit Left: {credits} 
         </span>
       </div>
       

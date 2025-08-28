@@ -167,8 +167,8 @@ const UserSchema = new mongoose.Schema({
   aiRemainingUses: {
     type: Number,
     default: 5, // user can use AI 5 times initially
-  }
-  
+  },
+  subscribed: { type: Boolean, default: true },
 });
 
 export default mongoose.models.User || mongoose.model('User', UserSchema);

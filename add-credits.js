@@ -13,12 +13,12 @@ async function updateUsers() {
     const res = await User.updateMany(
       {
         $or: [
-          { aiRemainingUses: { $exists: false } },
-          { aiRemainingUses: null },
-          { aiRemainingUses: "" },
+          { subscribed: { $exists: false } },
+          { subscribed: null },
+          
         ],
       },
-      { $set: { aiRemainingUses: 5 } }
+      { $set: { subscribed: true } }
     );
 
     console.log(`✅ ${res.modifiedCount} users updated`);
