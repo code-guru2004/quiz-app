@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FaClock, FaExclamationTriangle, FaListAlt } from "react-icons/fa";
 import { BsPatchCheckFill, BsPatchQuestion } from "react-icons/bs";
@@ -13,15 +13,106 @@ import { GiDuration } from "react-icons/gi";
 import { TbListDetails } from "react-icons/tb";
 import Link from "next/link";
 import { MdOutlineSystemSecurityUpdateWarning } from "react-icons/md";
+import axios from "axios";
 
-const QuizAboutPage = () => {
+const QuizAboutPage = ({params}) => {
     const router = useRouter();
-    const [isLoading, setIsLoading] = useState(false);
+    const actualParams = use(params);
+    const quizId = actualParams.id;
+    const [isLoading, setIsLoading] = useState(true);
     const [isSubmit, setIsSubmit] = useState(false);
+    const [readMore, setReadMore] = useState(false);
     const { email, quizToStartObject, username } = useGlobalContextProvider();
-    const { selectQuizToStart } = quizToStartObject;
-
-    if (!selectQuizToStart) {
+    
+    useEffect(() => {
+        if(!quizId){
+            router.replace("/dashboard");
+            setIsLoading(true);
+            return;
+        }
+        
+        setIsLoading(true);
+        const fetchQuizData = async () => {
+            try {
+                const resp = await axios.get(`/api/get-quiz-id/${quizId}`);
+                const data = resp.data;
+                console.log(data);
+                
+                if (data?.success === true) {
+                    const quizData = data.quizData;
+                    quizToStartObject.setSelectQuizToStart(quizData);
+                } else {
+                    toast.error("Quiz not found", {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: false,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "light",
+                        transition: Bounce,
+                    });
+                    router.replace("/dashboard");
+                }
+            } catch (error) {
+                console.error("Error fetching quiz:", error);
+                toast.error("Failed to load quiz", {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: false,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                    transition: Bounce,
+                });
+                router.replace("/dashboard");
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchQuizData();
+    }, [quizId,router]);
+    
+    // Check for user submissions
+    useEffect(() => {
+        if (quizToStartObject.selectQuizToStart?.userSubmissions && email) {
+            const hasUserSubmitted = quizToStartObject.selectQuizToStart.userSubmissions?.some(
+                (submission) => submission?.email === email
+            );
+            if (hasUserSubmitted) {
+                setIsSubmit(true);
+                toast.success('You can view your result', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: false,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                    transition: Bounce,
+                });
+            }
+        }
+    }, [quizToStartObject.selectQuizToStart, email]);
+    
+    // Show loading state
+    if (isLoading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
+                    <p className="mt-4 text-gray-600 dark:text-gray-300">Loading quiz details...</p>
+                </div>
+            </div>
+        );
+    }
+    
+    // Show no quiz state
+    if (!isLoading && !quizToStartObject.selectQuizToStart ) {
         return (
             <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 px-4">
                 <div className="max-w-md text-center p-8 rounded-2xl bg-white dark:bg-gray-800 shadow-xl">
@@ -39,46 +130,17 @@ const QuizAboutPage = () => {
                     <button
                         onClick={() => {
                             router.replace("/dashboard");
-                            setIsLoading(true);
                         }}
                         className="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 w-full font-medium"
                     >
-                        {isLoading ? (
-                            <span className="flex items-center justify-center">
-                                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg>
-                                Redirecting...
-                            </span>
-                        ) : "Browse Quizzes"}
+                        Browse Quizzes
                     </button>
                 </div>
             </div>
         );
     }
 
-    const { _id, quizTitle, quizTime, quizDescription, quizIcon, quizQuestions, userSubmissions } = selectQuizToStart;
-
-    useEffect(() => {
-        const hasUserSubmitted = userSubmissions?.some(
-            (submission) => submission?.email === email
-        );
-        if (hasUserSubmitted) {
-            setIsSubmit(true);
-            toast.success('You can view your result', {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: false,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-                transition: Bounce,
-            });
-        }
-    }, []);
+    const { _id, quizTitle, quizTime, quizDescription, quizIcon, quizQuestions, userSubmissions } = quizToStartObject.selectQuizToStart;
 
     const handleStartQuiz = async () => {
         const res = await fetch('/api/quiz/start-quiz', {
@@ -92,38 +154,43 @@ const QuizAboutPage = () => {
         return await res.json();
     };
 
-    const startQuiz = () => {
+    const startQuiz = async () => {
         setIsLoading(true);
-        const resp = handleStartQuiz()
-        
-        if (resp && isSubmit) {
-            router.push(`/quiz-start/${_id}/result`);
-        } else {
-            const quizUrl = `/quiz-start/${selectQuizToStart._id}`;
-            const screenWidth = window.screen.width;
-            const screenHeight = window.screen.height;
+        try {
+            const resp = await handleStartQuiz();
+            
+            if (resp && isSubmit) {
+                router.push(`/quiz-start/${_id}/result`);
+            } else {
+                const quizUrl = `/quiz-start/${quizToStartObject.selectQuizToStart._id}`;
+                const screenWidth = window.screen.width;
+                const screenHeight = window.screen.height;
 
-            // Open in a new fullscreen-like window
-            const quizWindow = window.open(
-                quizUrl,
-                "_blank",
-                `toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,fullscreen=yes,width=${screenWidth},height=${screenHeight}`
-            );
+                // Open in a new fullscreen-like window
+                const quizWindow = window.open(
+                    quizUrl,
+                    "_blank",
+                    `toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,fullscreen=yes,width=${screenWidth},height=${screenHeight}`
+                );
 
-            // Fallback if popup was blocked
-            if (!quizWindow) {
-                alert("Popup blocked! Please allow popups for this site.");
-                setIsLoading(false);
+                // Fallback if popup was blocked
+                if (!quizWindow) {
+                    alert("Popup blocked! Please allow popups for this site.");
+                    setIsLoading(false);
+                }
             }
-            setIsLoading(false)
+        } catch (error) {
+            console.error("Error starting quiz:", error);
+            toast.error("Failed to start quiz");
+        } finally {
+            setIsLoading(false);
         }
     };
 
-    const [readMore, setReadMore] = useState(false);
     const toggleReadMore = () => setReadMore(!readMore);
 
     const MAX_LENGTH = 500;
-    const description = selectQuizToStart.quizDescription || "";
+    const description = quizToStartObject.selectQuizToStart.quizDescription || "";
     const shouldTruncate = description.length > MAX_LENGTH;
     const visibleText = readMore ? description : description.slice(0, MAX_LENGTH);
 
@@ -143,20 +210,20 @@ const QuizAboutPage = () => {
 
                                     {/* Icon */}
                                     <span className="relative text-2xl text-blue-600 dark:text-blue-400">
-                                        {ICONS[selectQuizToStart.quizIcon].icon}
+                                        {ICONS[quizToStartObject.selectQuizToStart.quizIcon]?.icon || ICONS.default?.icon}
                                     </span>
                                 </div>
 
                                 <div>
                                     <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                                        {selectQuizToStart.quizTitle}
+                                        {quizToStartObject.selectQuizToStart.quizTitle}
                                     </h1>
                                     <div className="flex flex-wrap gap-2">
                                         <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                                            {selectQuizToStart.quizQuestions.length} Questions
+                                            {quizToStartObject.selectQuizToStart.quizQuestions?.length || 0} Questions
                                         </span>
                                         <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200">
-                                            {selectQuizToStart.quizTime} Minutes
+                                            {quizToStartObject.selectQuizToStart.quizTime || 0} Minutes
                                         </span>
                                     </div>
                                 </div>
@@ -177,9 +244,9 @@ const QuizAboutPage = () => {
 
                             <div className="mb-8">
                                 <LikeDislike
-                                    quizId={selectQuizToStart._id}
-                                    initialLikes={selectQuizToStart.quizLikes}
-                                    initialDislikes={selectQuizToStart.quizDislikes}
+                                    quizId={quizToStartObject.selectQuizToStart._id}
+                                    initialLikes={quizToStartObject.selectQuizToStart.quizLikes}
+                                    initialDislikes={quizToStartObject.selectQuizToStart.quizDislikes}
                                     email={email}
                                 />
                             </div>
@@ -241,7 +308,7 @@ const QuizAboutPage = () => {
                                                     Duration
                                                 </p>
                                                 <p className="text-xl font-semibold text-orange-700 dark:text-orange-200">
-                                                    {selectQuizToStart.quizTime} min
+                                                    {quizToStartObject.selectQuizToStart.quizTime || 0} min
                                                 </p>
                                             </div>
                                         </div>
@@ -254,7 +321,7 @@ const QuizAboutPage = () => {
                                                     Questions
                                                 </p>
                                                 <p className="text-xl font-semibold text-green-900 dark:text-green-100">
-                                                    {selectQuizToStart.quizQuestions.length}
+                                                    {quizToStartObject.selectQuizToStart.quizQuestions?.length || 0}
                                                 </p>
                                             </div>
                                         </div>
@@ -266,6 +333,7 @@ const QuizAboutPage = () => {
                                     {isSubmit ? (
                                         <Button
                                             onClick={startQuiz}
+                                            disabled={isLoading}
                                             className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center"
                                         >
                                             {isLoading ? (
@@ -289,6 +357,7 @@ const QuizAboutPage = () => {
                                         <div>
                                             <Button
                                                 onClick={startQuiz}
+                                                disabled={isLoading}
                                                 className="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center"
                                             >
                                                 {isLoading ? (
@@ -308,7 +377,7 @@ const QuizAboutPage = () => {
                                                     </>
                                                 )}
                                             </Button>
-                                            <Link href={"/check-system"} className="text-orange-400 text-xs text-center flex items-center justify-center gap-1 mt-2 hover:underline"><MdOutlineSystemSecurityUpdateWarning className="text-orange-400 size-4"/>Check Sytem Compatibility</Link>
+                                            <Link href={"/check-system"} className="text-orange-400 text-xs text-center flex items-center justify-center gap-1 mt-2 hover:underline"><MdOutlineSystemSecurityUpdateWarning className="text-orange-400 size-4"/>Check System Compatibility</Link>
                                         </div>
                                     )}
                                 </div>

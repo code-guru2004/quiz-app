@@ -26,10 +26,7 @@ function QuizBuildQuestions({ quizQuestions, setQuizQuestions }) {
   const prefixes = ["A", "B", "C", "D", "E"];
   const endQuestionRef = useRef(null);
   const textAreaRefs = useRef([]);
-  useEffect(() => {
-    console.log(quizQuestions);
-
-  }, [quizQuestions])
+ 
   const addNewQuestion = () => {
     for (let i = 0; i < quizQuestions.length; i++) {
       const q = quizQuestions[i];
@@ -105,6 +102,7 @@ function QuizBuildQuestions({ quizQuestions, setQuizQuestions }) {
     setQuizQuestions(updated);
   };
 
+  // Update the choice
   function updateTheChoicesArray(text, choiceIndex, questionIndex) {
     const updatedQuestions = quizQuestions.map((question, i) => {
       if (questionIndex === i) {
@@ -117,14 +115,14 @@ function QuizBuildQuestions({ quizQuestions, setQuizQuestions }) {
     });
     setQuizQuestions(updatedQuestions);
   }
-
+  // ADD ANSWER FOR QUESTION
   function handleFillingAnswer(answer, questionIndex) {
     const updated = quizQuestions.map((q, idx) =>
       idx === questionIndex ? { ...q, correctAnswer: answer } : q
     );
     setQuizQuestions(updated);
   }
-
+// IMAGE ADD INTO QUESTION
   const handleImageUpload = (url, questionIdx) => {
     const updated = quizQuestions.map((q, idx) =>
       idx === questionIdx ? { ...q, mainQuestionImage: url } : q
@@ -168,6 +166,8 @@ function QuizBuildQuestions({ quizQuestions, setQuizQuestions }) {
             <AnswerInputSection
               onAnswerChange={(text) => handleFillingAnswer(text, idx)}
             />
+
+            {/* DELETE QUESTION */}
             {idx !== 0 && (
               <Trash
                 className="text-red-700 dark:text-red-400 cursor-pointer w-5 right-2 hover:bg-amber-100 dark:hover:bg-amber-800 absolute top-1"
@@ -208,6 +208,7 @@ const SingleQuestion = forwardRef(function SingleQuestion(
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [cloudImages, setCloudImages] = useState([]);
 
+  // LOTTIE REACT ANIMATION
   useEffect(() => {
     const loadAnimation = async () => {
       try {
@@ -219,7 +220,9 @@ const SingleQuestion = forwardRef(function SingleQuestion(
       }
     }
     loadAnimation()
-  }, [])
+  }, []);
+
+  // FILE CHANGE TO STATE
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -228,6 +231,7 @@ const SingleQuestion = forwardRef(function SingleQuestion(
     setPreviewUrl(URL.createObjectURL(file));
   };
 
+  // FILE UPLOAD
   const handleUpload = async () => {
     setIsLoading(true)
     if (!image) return;
@@ -248,6 +252,7 @@ const SingleQuestion = forwardRef(function SingleQuestion(
       setIsLoading(false)
     }
   };
+  // GET ALL UPLOADED IMAGE FROM CLOUDINARY⬇️
   useEffect(() => {
     const fetchImg = async()=>{
       try {
@@ -432,7 +437,7 @@ const SingleQuestion = forwardRef(function SingleQuestion(
 
 
 
-function AnswerInputSection({ onAnswerChange }) {
+function AnswerInputSection({ onAnswerChange }) { // onAnswerChange --> handleFillingAnswer
   const [correctAnswer, setCorrectAnswer] = useState("");
 
   const handleAnswerChange = (answer) => {

@@ -29,7 +29,8 @@ async function jwtMiddleware(req) {
   }
 
   const token = authHeader.split(" ")[1];
-
+  console.log("JWT Token:", token);
+  
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded; // Optional for future use
@@ -42,7 +43,25 @@ async function jwtMiddleware(req) {
 // ✅ Main middleware function
 export async function middleware(req) {
   const url = req.nextUrl.pathname;
+  console.log("🔥🔥🔥🔥Middleware URL:", url);
 
+  if (url.startsWith("/dashboard")) {
+    const token = req.cookies.get("token")?.value; // from cookie
+  //console.log("Dashboard Token:", token);
+  
+    if (!token) {
+      const loginUrl = req.nextUrl.clone();
+      loginUrl.pathname = "/login";
+  
+      // callbackUrl = original destination
+      loginUrl.searchParams.set("callbackUrl", req.nextUrl.pathname + req.nextUrl.search);
+  
+      return NextResponse.redirect(loginUrl);
+    }
+  
+    return NextResponse.next();
+  }
+  
   // --- Admin Basic Auth
   if (url.startsWith("/admin")) {
     const authHeader =
@@ -86,5 +105,6 @@ export async function middleware(req) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/api/protected/:path*"],
+  matcher: ["/admin/:path*", "/api/protected/:path*", "/dashboard/:path*"],
 };
+

@@ -14,16 +14,20 @@ function QuizBuildNavbar({ newQuiz, quizQuestions }) {
   const { allQuiz, setAllQuiz } = useGlobalContextProvider();
   const [category, setCategory] = useState('');
 
+  // LIVE , PRACTICE QUIZ CHANGE
   function handleQuizTypeChange(e) {
     newQuiz.quizMode = e.target.value;
   }
 
+  // DIFFERNENT CATEGORY LINK- APTITUDE, HEALTHCARE
   function handleQuizCategoryChange(e) {
     setCategory(e.target.value);
     newQuiz.quizCategory = e.target.value;
   }
 
+  // 🔥ADD QUIZ TO DB
   async function addNewQuiz() {
+    // ✔️ CHECK THE TYPE SAFETY LIKE EMPTY QUESTION,OPTIONS,ANSWER
     for (let i = 0; i < quizQuestions.length; i++) {
       const q = quizQuestions[i];
       const isMainEmpty = !q.mainQuestion?.trim();
@@ -54,19 +58,19 @@ function QuizBuildNavbar({ newQuiz, quizQuestions }) {
     }
     
 
-    if (newQuiz.quizCategory === '') {
+    if (newQuiz.quizCategory === '') { // ✔️ DOUBLE CHECK ABOUT THE CATEGORY
       toast.error('Select the quiz category.');
       return;
     }
 
-    if (newQuiz.quizTitle.trim().length === 0) {
+    if (newQuiz.quizTitle.trim().length === 0) { // ✔️ DOUBLE CHECK ABOUT THE QUIZ TITLE
       return toast.error('Write the quiz title first');
     }
 
-    setAllQuiz([...allQuiz, newQuiz]);
+    setAllQuiz([...allQuiz, newQuiz]); // MANAGE STATE FOR ADMIN PAGE
 
     try {
-      const addNewQuiz = await axios.post('/api/add-quiz', { ...newQuiz });
+      const addNewQuiz = await axios.post('/api/add-quiz', { ...newQuiz }); // 📂 SAVE TO DB
       toast.success(addNewQuiz?.data.message);
       route.replace('/admin');
     } catch (error) {

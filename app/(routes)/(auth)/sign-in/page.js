@@ -2,7 +2,7 @@
 import useGlobalContextProvider from '@/app/_context/ContextApi';
 import { jwtDecode } from 'jwt-decode';
 import { Loader } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 export default function LoginPage() {
@@ -12,6 +12,11 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  const searchParams = useSearchParams();
+
+  const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
+  console.log(callbackUrl);
 
   const handleSubmit = async (e) => {
     setIsLoading(true);
@@ -27,7 +32,8 @@ export default function LoginPage() {
     if (res.ok && data.token) {
       localStorage.setItem('token', data.token);
       setEmail(userEmail);
-      router.push('/dashboard');
+      const safeUrl = callbackUrl.startsWith("/") ? callbackUrl : "/dashboard";
+      router.push(safeUrl);
       setIsLoading(false)
     } else {
       setError(data.message || 'Login failed');

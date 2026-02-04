@@ -15,11 +15,12 @@ export default function PreparationPage() {
     const [links, setLinks] = useState([{ title: '', url: '', type: 'article', source: '' }]);
     const [preparations, setPreparations] = useState([]);
 
+    // GET ALL PREV PREPARATIONS FROM DB
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const resp = await axios.get('/api/preparation/get');
-                setPreparations(resp?.data?.data || []);
+                setPreparations(resp?.data?.data || []); // UPDATE THE STATE
             } catch (err) {
                 console.error("Failed to fetch preparations:", err);
             }
@@ -37,6 +38,7 @@ export default function PreparationPage() {
         setLinks([...links, { title: '', url: '', type: 'article', source: '' }]);
     };
 
+    // SAVE TO DB
     const handleSubmit = async (e) => {
         e.preventDefault();
         const res = await fetch('/api/preparation/add', {
@@ -52,6 +54,7 @@ export default function PreparationPage() {
             setPreparations(updated?.data.data);
         }
     };
+    // DELETE FROM DB
     const handleDelete = async (id) => {
         try {
             const resp = await axios.post('/api/preparation/delete-topic', { id });
@@ -97,7 +100,7 @@ export default function PreparationPage() {
                     />
                 </div>
 
-                {links.map((link, i) => (
+                {links.map((link, i) => ( // WE CAN ADD MANY PREPARATION LINKS AT ONCE SO I USE map() FUNCTION
                     <div key={i} className="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <input
                             type="text"

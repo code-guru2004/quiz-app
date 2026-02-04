@@ -9,7 +9,7 @@ import User from '@/db/schema/User';
 export async function POST(req) {
   const { email, password } = await req.json();
 
-  await dbConnect;
+  await dbConnect();
   const user = await User.findOne({ email });
   console.log("user",user?.username);
   
@@ -20,7 +20,7 @@ export async function POST(req) {
   const token = jwt.sign({ email: user.email, username: user?.username }, process.env.JWT_SECRET, {
     expiresIn: '1h',
   });
-//console.log("token",token);
+console.log("token",token);
 
   return NextResponse.json({ token });
 }

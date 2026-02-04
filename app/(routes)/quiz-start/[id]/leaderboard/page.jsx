@@ -35,23 +35,35 @@ const LeaderboardPage = () => {
   const [noOfQuestions, setnoOfQuestions] = useState(0);
 
   useEffect(() => {
+    // FETCH ALL USERS' SUBMISSIONS
     const fetchLeaderboard = async () => {
       if (!quizId) return;
       try {
         const res = await axios.post("/api/submissions", { quizId });
         const sorted = res.data.submissions
           .sort((a, b) => b.score - a.score)
-          .map((sub, idx) => ({ ...sub, rank: idx + 1 }));
+          .map((sub, idx) => ({ ...sub, rank: idx + 1 })); // ✔️SORT THE USERS BASED ON SCORE
+//    [
+//   { user: "Bob", score: 95 },
+//   { user: "Alice", score: 85 },
+//   { user: "Charlie", score: 75 }  ---> AFTER SORTING
+//    ]
+
+// [
+//   { user: "Bob", score: 95, rank: 1 },
+//   { user: "Alice", score: 85, rank: 2 },
+//   { user: "Charlie", score: 75, rank: 3 } ---> IN map() FUNCTION
+// ]
 
         setAllSubmissions(sorted);
         const index = sorted.findIndex((s) => s.email === email);
         if (index !== -1) {
           setYourRankNo(index + 1);
-        //  await axios.patch("/api/save-rank", { quizId, rank: index + 1, email });
+        //  await axios.patch("/api/save-rank", { quizId, rank: index + 1, email }); //---> I HAVE DONE SOME IMPROVEMENT 
         }
 
-        setTopTen(sorted.slice(0, 10));
-        setnoOfQuestions(res.data?.noOfQuestions)
+        setTopTen(sorted.slice(0, 10)); // GET TO 10 USERS
+        setnoOfQuestions(res.data?.noOfQuestions) // HELPS TO CALCULATE THE ACCURACY
         const yourRank = sorted.find((s) => s.email === email);
         if (yourRank) setUserRank(yourRank);
       } catch (err) {
@@ -200,7 +212,7 @@ const LeaderboardPage = () => {
         <div className="col-span-2 md:col-span-2 text-right">
           <div className="flex items-center justify-end">
             <span className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-200">
-              {(user.score/noOfQuestions).toFixed(3)}
+              {((user.score/noOfQuestions)*100).toFixed(3)}
             </span>
             <span className="text-xs text-gray-500 dark:text-gray-400 ml-1">%</span>
           </div>

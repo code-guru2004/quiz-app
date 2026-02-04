@@ -11,6 +11,7 @@ import { LuCircleFadingPlus, LuClock, LuBookOpen, LuZap, LuChevronLeft, LuChevro
 import { FiAward, FiBarChart2, FiHardDrive, FiCpu } from "react-icons/fi";
 import { GiTwoCoins } from 'react-icons/gi';
 import { AiOutlineFieldNumber } from 'react-icons/ai';
+import { IoIosWarning } from 'react-icons/io';
 
 export default function AIQuizDashboard() {
   const router = useRouter();
@@ -100,6 +101,9 @@ export default function AIQuizDashboard() {
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mt-2">
             Generate custom quizzes powered by AI
+          </p>
+          <p className='text-xs text-red-500 mt-1 flex items-center gap-2'>
+            ⚠️ Due to high demand, quiz generation may take up to 60 seconds. Please be patient. Sometimes it may take longer. Or you can't get any quiz due to server overload.
           </p>
         </div>
 

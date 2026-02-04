@@ -40,6 +40,7 @@ function QuizStartQuestions({ timeLeft, setTimeLeft, isForceSubmit }) {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
+  // HANDLE THE AUTO SUBMIT AND TIMER
   useEffect(() => {
     if (timeLeft > 0 && !quizCompleted) {
       const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
@@ -62,6 +63,7 @@ function QuizStartQuestions({ timeLeft, setTimeLeft, isForceSubmit }) {
     return () => clearInterval(interval);
   }, [currQuizIndex, reviewQues]);
 
+  // FOR ANY TYPE OF Suspicious activity, WE SUBMIT USER QUIZ 
   useEffect(()=>{
     if(isForceSubmit){
       alert("Suspicious activity detected. Your test has been automatically submitted.");
@@ -71,10 +73,12 @@ function QuizStartQuestions({ timeLeft, setTimeLeft, isForceSubmit }) {
     
   },[isForceSubmit])
 
+  // DOUBLE CONFIRM BEFORE SUBMIT
   const handleConfirmSubmission = () => {
     setWantSubmitted(true);
   };
 
+  // LOGIC FOR NEXT QUIZ
   const handleNext = () => {
     const isLastQuestion = currQuizIndex === quizQuestions.length - 1;
     if (!isLastQuestion && timeLeft > 0) {
@@ -82,22 +86,24 @@ function QuizStartQuestions({ timeLeft, setTimeLeft, isForceSubmit }) {
     }
   };
 
+  // CALCULATE SCORE
   function calculateScore() {
     let score = 0;
     const length = allUserAnswers.length
     for (let i = 0; i < length; i++) {
       const data = allUserAnswers[i]
       const { questionId, selectedOption, index } = data
-      const actualQuizData = quizQuestions[index].correctAnswer
-      console.log(selectedOption+"--->"+actualQuizData);
+      const actualQuizData = quizQuestions[index].correctAnswer // GET THE CORRECT ANSWER
+      // console.log(selectedOption+"--->"+actualQuizData); // TESTING
       
-      if (selectedOption === actualQuizData) {
+      if (selectedOption === actualQuizData) { // CHECK USER ANSWER IS CORRECT OR WRONG
         score = score + 1;
       }
 
     }
-    return score
+    return score;
   }
+// 🔥USER ANSWER SAVE TO DB
   const handleSubmit = async () => {
     const myscore = calculateScore();
     console.log("score "+myscore);
@@ -110,7 +116,6 @@ function QuizStartQuestions({ timeLeft, setTimeLeft, isForceSubmit }) {
       const total = finalTimes.reduce((acc, val) => acc + val, 0);
       setTotaltime(total);
     try {
-      console.log("trycatch");
       
       const resp = await axios.post("/api/submit-quiz", {
         quizId: quizToStartObject.selectQuizToStart._id,
@@ -135,20 +140,23 @@ function QuizStartQuestions({ timeLeft, setTimeLeft, isForceSubmit }) {
     }
   };
 
+  // HANDLE MARK FOR REVIEW
   function handleAddMarkForReview() {
-    if (!reviewQues.includes(currQuizIndex)) {
+    if (!reviewQues.includes(currQuizIndex)) { // CHECK IS THE QUESTION IS ALREADY IN REVIEW OR NOT
       setReviewQues([...reviewQues, currQuizIndex]);
       setIsCurrQuizMarked(true);
       toast.success(`Question ${currQuizIndex + 1} is marked for review`)
     }
   }
 
+  // HANDLE REMOVE FOR REVIEW
   function handleRemoveMarkForReview() {
     const filtered = reviewQues.filter((q) => q !== currQuizIndex);
     setReviewQues(filtered);
     setIsCurrQuizMarked(false);
   }
 
+  // GO TO PREVIOUS QUESTION
   function handlePreviousQuestion() {
     if (currQuizIndex > 0) {
       setCurrQuizIndex(prev => prev - 1)
