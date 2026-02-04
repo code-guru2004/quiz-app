@@ -9,12 +9,14 @@ import axios from "axios";
 import { Bounce, toast } from "react-toastify";
 import Lottie from "lottie-react";
 import { LoaderCircle } from "lucide-react";
+import FloatingCalculator from "./_component/FloatingCalculator";
+import { jwtDecode } from "jwt-decode";
 
 function QuizStart({ params }) {
   const route = useRouter();
   const actualParams = use(params);
   const quizId = actualParams.id;
-  const { allQuiz, quizToStartObject, email } = useGlobalContextProvider();
+  const { allQuiz, quizToStartObject, email, username, setEmail, setUsername } = useGlobalContextProvider();
   const { selectQuizToStart, setSelectQuizToStart } = quizToStartObject;
 
   const [timeLeft, setTimeLeft] = useState(null);
@@ -22,17 +24,37 @@ function QuizStart({ params }) {
   const [focusLossCount, setFocusLossCount] = useState(0);
   const focusLossCountRef = useRef(0);
   const [isForceSubmit, setIsForceSubmit] = useState(false)
-  //const [animationData, setAnimationData] = useState(null);
+  const [showCalculator, setShowCalculator] = useState(selectQuizToStart?.calculatorAllowed || true); // Add state for calculator
 
-  // useEffect(()=>{
-  //   try {
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const decoded = jwtDecode(token);
+    setEmail(decoded.email);
+    setUsername(decoded.username);
+    // console.log(username,email);
+    const handleBlur = () => {
+      focusLossCountRef.current += 1; // Update the ref
+      setFocusLossCount(focusLossCountRef.current); // Update state for display
 
-  //   } catch (error) {
-  //     const res = fetch("/assets/loading.json")
-  //     const data = res.json()
-  //     setAnimationData(data)
-  //   }
-  // },[])
+      toast.warn(`Don't click outside the quiz window!`, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Bounce,
+      });
+    };
+
+    window.addEventListener("blur", handleBlur);
+
+    return () => {
+      window.removeEventListener("blur", handleBlur);
+    };
+  }, []);
 
   useEffect(() => {
     if (timeLeft !== null && timeLeft > 0 && !quizCompleted) {
@@ -63,30 +85,7 @@ function QuizStart({ params }) {
     setFocusLossCount(0)
   }, [quizId]);
 
-  useEffect(() => {
-    const handleBlur = () => {
-      focusLossCountRef.current += 1; // Update the ref
-      setFocusLossCount(focusLossCountRef.current); // Update state for display
 
-      toast.warn(`Don't click outside the quiz window!`, {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-        transition: Bounce,
-      });
-    };
-
-    window.addEventListener("blur", handleBlur);
-
-    return () => {
-      window.removeEventListener("blur", handleBlur);
-    };
-  }, []);
 
   useEffect(() => {
     if (focusLossCount === 3) {
@@ -109,6 +108,10 @@ function QuizStart({ params }) {
   }, [focusLossCount])
   return (
     <div className="flex flex-col px-1 md:px-24 mt-[35px]">
+
+      {/* Add Floating Calculator here */}
+      {showCalculator && <FloatingCalculator />}
+
       {selectQuizToStart === null ? (
         <div className="h-svh flex flex-col gap-2 items-center justify-center w-full">
           <div className="flex items-center justify-center min-h-screen  ">
@@ -137,7 +140,7 @@ function QuizStart({ params }) {
           </div>
           <div className="mt-10 w-full flex items-center justify-center">
             <QuizStartQuestions timeLeft={timeLeft} setTimeLeft={setTimeLeft} isForceSubmit={isForceSubmit} />
-            
+
           </div>
         </>
       )}

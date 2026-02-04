@@ -8,6 +8,7 @@ export async function POST(request) {
 
   try {
     const { quizId, email, score, perQuestionTimes, totaltime, selectedAnswers } = await request.json();
+   
 
     if (!quizId || !email || typeof score !== "number") {
       return NextResponse.json(
@@ -18,6 +19,9 @@ export async function POST(request) {
 
     const quiz = await Quiz.findById(quizId);
     const user = await User.findOne({ email });
+
+    
+    
 
     if (!user) {
       return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });

@@ -131,6 +131,10 @@ const quizSchema = new mongoose.Schema({
     required: true,
     default: 'Practice Quiz',
   },
+  calculatorAllowed: {
+    type: Boolean,
+    default: false
+  },
   createdByAI: {
     type: Boolean,
     default: false

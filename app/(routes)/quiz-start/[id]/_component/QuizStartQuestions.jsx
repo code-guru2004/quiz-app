@@ -106,7 +106,7 @@ function QuizStartQuestions({ timeLeft, setTimeLeft, isForceSubmit }) {
 // 🔥USER ANSWER SAVE TO DB
   const handleSubmit = async () => {
     const myscore = calculateScore();
-    console.log("score "+myscore);
+    //console.log("score "+myscore);
     setQuizCompleted(true)
     setScore(myscore)
     setWantSubmitted(false)

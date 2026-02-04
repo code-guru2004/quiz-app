@@ -15,6 +15,7 @@ export async function POST(request) {
             );
         }
 
+      
         const quiz = await Quiz.findById(quizId);
 
         if (!quiz) {
@@ -35,7 +36,7 @@ export async function POST(request) {
                 { status: 200 }
             );
         }
-
+       
         // Push "started" submission
         quiz.userSubmissions.push({
             email,

@@ -1,17 +1,21 @@
-'use client';
-import useGlobalContextProvider from '@/app/_context/ContextApi';
-import { jwtDecode } from 'jwt-decode';
-import { Loader } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+"use client";
 
-export default function LoginPage() {
+import useGlobalContextProvider from "@/app/_context/ContextApi";
+import { jwtDecode } from "jwt-decode";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+
+export default function SignInClient() {
   const { setEmail } = useGlobalContextProvider();
   const router = useRouter();
-  const [userEmail, setUserEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+
+  const [userEmail, setUserEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
 
   const handleSubmit = async (e) => {
     setIsLoading(true);
@@ -27,7 +31,8 @@ export default function LoginPage() {
     if (res.ok && data.token) {
       localStorage.setItem('token', data.token);
       setEmail(userEmail);
-      router.push('/dashboard');
+      //const safeUrl = callbackUrl.startsWith("/") ? callbackUrl : "/dashboard";
+      router.push("/dashboard");
       setIsLoading(false)
     } else {
       setError(data.message || 'Login failed');

@@ -14,6 +14,7 @@ import { TbListDetails } from "react-icons/tb";
 import Link from "next/link";
 import { MdOutlineSystemSecurityUpdateWarning } from "react-icons/md";
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
 const QuizAboutPage = ({params}) => {
     const router = useRouter();
@@ -22,8 +23,17 @@ const QuizAboutPage = ({params}) => {
     const [isLoading, setIsLoading] = useState(true);
     const [isSubmit, setIsSubmit] = useState(false);
     const [readMore, setReadMore] = useState(false);
-    const { email, quizToStartObject, username } = useGlobalContextProvider();
-    
+    const { email, quizToStartObject, username,setEmail,setUsername } = useGlobalContextProvider();
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        const decoded = jwtDecode(token);
+                  setEmail(decoded.email);
+                  setUsername(decoded.username);
+                //   console.log(username,email);
+                  
+    }, []);
+
+    // Fetch quiz data
     useEffect(() => {
         if(!quizId){
             router.replace("/dashboard");
@@ -36,7 +46,7 @@ const QuizAboutPage = ({params}) => {
             try {
                 const resp = await axios.get(`/api/get-quiz-id/${quizId}`);
                 const data = resp.data;
-                console.log(data);
+               
                 
                 if (data?.success === true) {
                     const quizData = data.quizData;
@@ -152,6 +162,8 @@ const QuizAboutPage = ({params}) => {
             })
         });
         return await res.json();
+        //console.log("Starting quiz for:", { quizId: _id, email, username });
+        
     };
 
     const startQuiz = async () => {
