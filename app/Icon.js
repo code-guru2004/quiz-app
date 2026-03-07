@@ -3,7 +3,7 @@ import { FaCss3, FaDatabase, FaHtml5, FaJava, FaPython, FaReact } from "react-ic
 import { RiNextjsFill, RiUserCommunityFill } from "react-icons/ri";
 import { MdQuiz } from "react-icons/md";
 import { PiBrainDuotone, PiMathOperationsFill } from "react-icons/pi";
-import { SiMongodb, SiMysql, SiTypescript, SiWorldhealthorganization } from "react-icons/si";
+import { SiMongodb, SiMysql, SiTcs, SiTypescript, SiWorldhealthorganization } from "react-icons/si";
 import { TbBrandCpp, TbMathSymbols } from "react-icons/tb";
 import { GiGiftOfKnowledge, GiLaurelsTrophy } from "react-icons/gi";
 import { IoHardwareChipSharp } from "react-icons/io5";
@@ -30,4 +30,5 @@ export const ICONS = [
   { name: 'Hardware', icon: <IoHardwareChipSharp className="text-gray-500 text-2xl" /> },
   { name: 'Database', icon: <FaDatabase className="text-blue-500 text-2xl" /> },
   { name: 'Contest', icon: <GiLaurelsTrophy className="text-orange-500 text-2xl" /> },
+  {name: 'TCS NQT', icon: <SiTcs className="text-blue-500 text-2xl" />},
 ];
